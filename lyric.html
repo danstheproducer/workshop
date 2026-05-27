@@ -4309,19 +4309,11 @@ function attachSwipe(el, handlers, tapHandler) {
   }, { passive: false });
 }
 
-// — iOS keyboard handling —
-// When the iOS keyboard appears, the viewport shrinks. Use visualViewport
-// to keep the lyric pad and copy button visible.
-function adjustForKeyboard() {
-  if (!window.visualViewport) return;
-  const vh = window.visualViewport.height;
-  document.documentElement.style.setProperty('--app-h', vh + 'px');
-}
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', adjustForKeyboard);
-  window.visualViewport.addEventListener('scroll', adjustForKeyboard);
-  adjustForKeyboard();
-}
+// Keyboard handling: intentionally none. We use 100dvh for the container
+// (via --app-h fallback) which stays stable when the virtual keyboard opens,
+// so the phrase pills, sheet outline, and footer buttons don't shift. The
+// keyboard simply overlays the bottom of the layout; the textarea's own
+// internal scroll keeps the caret visible while typing.
 
 // Events
 attachSwipe(phrasePill, {
