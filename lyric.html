@@ -1559,6 +1559,13 @@
 </style>
 </head>
 <body>
+<!-- Pull-to-refresh indicator: shown when user drags down from the top -->
+<div class="pull-refresh" id="pullRefresh" aria-hidden="true">
+  <svg class="pull-refresh-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12a9 9 0 1 1-3.06-6.75"/>
+    <polyline points="21 4 21 10 15 10"/>
+  </svg>
+</div>
 <!-- Frame overlay: holds the corner icons + popups; constrained to phone shape on desktop -->
 <div class="frame-overlay">
   <button class="focus-exit-btn" id="focusExitBtn" aria-label="Exit focus mode" title="Exit focus mode">
