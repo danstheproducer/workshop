@@ -1519,6 +1519,43 @@
       left: 1.25rem;
     }
   }
+
+  /* — Pull-to-refresh indicator (PWA reload via pull-down gesture) — */
+  .pull-refresh {
+    position: fixed;
+    top: max(0.75rem, calc(env(safe-area-inset-top) + 0.4rem));
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-160%);
+    box-shadow: 0 4px 16px rgba(28, 20, 16, 0.18);
+    transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.15s ease;
+  }
+  .pull-refresh.pulling {
+    transition: color 0.15s ease;
+  }
+  .pull-refresh.ready { color: var(--accent); }
+  .pull-refresh-icon {
+    transition: transform 0.05s linear;
+  }
+  .pull-refresh.refreshing .pull-refresh-icon {
+    animation: prSpin 0.7s linear infinite;
+    transition: none;
+    transform: none;
+  }
+  @keyframes prSpin {
+    to { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
