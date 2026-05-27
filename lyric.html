@@ -1,0 +1,4420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="lyric">
+<meta name="application-name" content="lyric">
+<meta name="theme-color" content="#ebe1c8">
+<title>lyric</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23ebe1c8'/><text x='32' y='49' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='44' font-weight='600' font-style='italic' fill='%239c2918'>L</text><line x1='17' y1='55' x2='47' y2='55' stroke='%231c1410' stroke-width='2' stroke-linecap='round' opacity='0.7'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23ebe1c8'/><text x='90' y='130' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='118' font-weight='600' font-style='italic' fill='%239c2918'>L</text><line x1='52' y1='148' x2='128' y2='148' stroke='%231c1410' stroke-width='4.5' stroke-linecap='round' opacity='0.7'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ebe1c8;
+    --ink: #1c1410;
+    --ink-soft: #4a3a2a;
+    --ink-faint: #8a7660;
+    --accent: #9c2918;
+    --line: rgba(28, 20, 16, 0.18);
+    --pad-bg: rgba(28, 20, 16, 0.025);
+    --pad-font-scale: 1.1;
+  }
+
+  body.dark {
+    --bg: #1a1410;
+    --ink: #ebe1c8;
+    --ink-soft: #c5b598;
+    --ink-faint: #8a7660;
+    --accent: #d96a52;
+    --line: rgba(235, 225, 200, 0.18);
+    --pad-bg: rgba(235, 225, 200, 0.035);
+  }
+
+  /* — Focus mode: full-screen the lyric sheet — */
+  body.focus-mode .frame-overlay > *:not(.focus-exit-btn),
+  body.focus-mode .phrase-section,
+  body.focus-mode .pad-footer,
+  body.focus-mode .pad-meta {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+  }
+  body.focus-mode .container {
+    padding-top: max(2.25rem, calc(env(safe-area-inset-top) + 1.25rem));
+    padding-bottom: max(0.4rem, env(safe-area-inset-bottom));
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    gap: 0;
+  }
+  body.focus-mode .pad {
+    font-size: calc(1.65rem * var(--pad-font-scale));
+    line-height: 1.55;
+    padding: 1rem 1.1rem;
+    border: none;
+    background: transparent;
+  }
+  body.focus-mode .pad-section { flex: 1; }
+
+  /* Focus exit button (X) — only visible in focus mode, lives inside frame-overlay */
+  .focus-exit-btn {
+    position: absolute;
+    top: max(0.85rem, calc(env(safe-area-inset-top) + 0.25rem));
+    right: max(1rem, calc(env(safe-area-inset-right) + 0.4rem));
+    z-index: 100;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, color 0.15s ease, border-color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  body.focus-mode .focus-exit-btn {
+    opacity: 0.55;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  body.focus-mode .focus-exit-btn:hover {
+    opacity: 1;
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(ellipse 100% 80% at center, transparent 50%, rgba(40, 25, 10, 0.18) 100%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0.3 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: max(3.75rem, calc(env(safe-area-inset-top) + 3rem));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+    padding-bottom: max(0.5rem, calc(env(safe-area-inset-bottom) + 0.15rem));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    height: var(--app-h, 100dvh);
+    gap: 1.25rem;
+    min-width: 0;
+  }
+
+  .phrase-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+    flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* — Frame overlay: holds corner icons above all panels — */
+  .frame-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+  }
+  .frame-overlay > * { pointer-events: auto; }
+
+  /* — Top-right stack: settings icon + language toggle — */
+  .top-right-stack {
+    position: absolute;
+    top: max(0.85rem, calc(env(safe-area-inset-top) + 0.15rem));
+    right: max(1rem, calc(env(safe-area-inset-right) + 0.3rem));
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+  }
+  .top-right-stack:hover { opacity: 1; }
+
+  .corner-icon-btn {
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: color 0.15s ease, transform 0.08s ease;
+  }
+  .corner-icon-btn:hover { color: var(--ink); }
+  .corner-icon-btn:active { transform: scale(0.92); }
+
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* — Archive button & search button (top-left, side by side) — */
+  .archive-btn {
+    position: absolute;
+    top: max(0.6rem, calc(env(safe-area-inset-top) - 0.05rem));
+    left: max(1.1rem, calc(env(safe-area-inset-left) + 0.45rem));
+    background: transparent;
+    border: none;
+    width: 44px;
+    height: 44px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: color 0.15s ease, transform 0.08s ease, opacity 0.2s ease;
+    opacity: 0.5;
+  }
+  .archive-btn:hover { color: var(--ink); opacity: 1; }
+  .archive-btn:active { transform: scale(0.92); }
+
+  .search-corner-btn {
+    position: absolute;
+    top: max(0.85rem, calc(env(safe-area-inset-top) + 0.15rem));
+    left: max(4.25rem, calc(env(safe-area-inset-left) + 3.6rem));
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: color 0.15s ease, transform 0.08s ease, opacity 0.2s ease;
+    opacity: 0.5;
+  }
+  .search-corner-btn:hover { color: var(--ink); opacity: 1; }
+  .search-corner-btn:active { transform: scale(0.92); }
+
+  /* Hide archive icon when archive is open (becomes redundant) */
+  body.archive-open .archive-btn { opacity: 0; pointer-events: none; }
+  body.archive-open .search-corner-btn { opacity: 0; pointer-events: none; }
+  body.archive-open #mainSettingsBtn { opacity: 0; pointer-events: none; }
+  body.search-open .search-corner-btn { opacity: 0; pointer-events: none; }
+  body.search-open .archive-btn { opacity: 0; pointer-events: none; }
+  body.search-open #mainSettingsBtn { opacity: 0; pointer-events: none; }
+  body.settings-open .archive-btn { opacity: 0; pointer-events: none; }
+  body.settings-open .search-corner-btn { opacity: 0; pointer-events: none; }
+
+  /* — Search panel — */
+  .search-panel {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    padding-top: max(2.25rem, calc(env(safe-area-inset-top) + 0.75rem));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+    padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+    visibility: hidden;
+  }
+  .search-panel.open {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .search-header {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+  }
+  .search-input-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-input-icon {
+    position: absolute;
+    left: 0.85rem;
+    color: var(--ink-faint);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--pad-bg);
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 0.65rem 1rem 0.65rem 2.4rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+    -webkit-appearance: none;
+  }
+  .search-input:focus { border-color: var(--ink-soft); }
+  .search-input::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .search-results {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .search-hint {
+    text-align: center;
+    color: var(--ink-faint);
+    font-style: italic;
+    padding: 2.5rem 1rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+  }
+  .search-result {
+    background: var(--pad-bg);
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 0.7rem 1rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.08s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: manipulation;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .search-result:hover { border-color: var(--ink-soft); background: rgba(28, 20, 16, 0.04); }
+  .search-result:active { transform: scale(0.985); }
+  .search-result mark {
+    background: transparent;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .search-count {
+    text-align: center;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.5rem 0 0.75rem;
+  }
+
+  .lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    padding: 0.4rem 0.45rem;
+    transition: color 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    touch-action: manipulation;
+    min-height: 32px;
+    min-width: 32px;
+  }
+
+  .lang-btn:hover { color: var(--ink-soft); }
+
+  .lang-btn.active {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .lang-sep {
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    opacity: 0.5;
+    user-select: none;
+  }
+
+  .phrase-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  /* Second phrase row: hidden until enabled */
+  .phrase-row-second {
+    display: none;
+    margin-top: -0.35rem;
+  }
+  body.has-second-pill .phrase-row-second {
+    display: flex;
+    animation: pill2In 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @keyframes pill2In {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .phrase-pill-secondary {
+    padding: 0.95rem 3.5rem 0.95rem 1.4rem;
+    border-color: var(--ink-soft);
+    border-style: dashed;
+  }
+  .phrase-secondary {
+    font-size: clamp(1.25rem, 4.6vw, 2rem);
+  }
+  .add-fab-secondary {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+    right: 0.45rem;
+    box-shadow: 1.5px 1.5px 0 var(--accent);
+  }
+  .add-fab-secondary:active {
+    transform: translateY(-50%) translate(1px, 1px) scale(0.95);
+    box-shadow: 1px 1px 0 var(--accent);
+  }
+
+  .phrase-pill {
+    flex: 1;
+    border: 1px solid var(--ink);
+    border-radius: 28px;
+    padding: 1.25rem 4rem 1.25rem 1.75rem;
+    background: transparent;
+    cursor: pointer;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    text-align: center;
+    position: relative;
+    transition: background 0.12s ease, transform 0.08s ease, border-color 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    font-family: inherit;
+    color: inherit;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    touch-action: manipulation;
+  }
+
+  /* Desktop: signal that the pill is draggable */
+  @media (hover: hover) and (pointer: fine) {
+    .phrase-pill { cursor: grab; }
+    .phrase-pill:active { cursor: grabbing; }
+  }
+
+  .phrase-pill:hover { background: rgba(28, 20, 16, 0.05); }
+
+  .phrase-pill:active {
+    transform: scale(0.97);
+    background: rgba(28, 20, 16, 0.08);
+    border-color: var(--accent);
+  }
+
+  .phrase-pill.swipe-up { transform: translateY(-8px); }
+
+  .phrase {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(1.55rem, 5.8vw, 2.6rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-wrap: balance;
+    transition: opacity 0.16s ease, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .phrase.fading {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  /* Small inline back/forward buttons flanking the pill */
+  .nav-mini {
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    line-height: 1;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    opacity: 0.5;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: color 0.12s ease, opacity 0.15s ease, transform 0.08s ease;
+  }
+  .nav-mini:hover:not(:disabled) { color: var(--ink); opacity: 1; }
+  .nav-mini:active:not(:disabled) { transform: scale(0.85); }
+  .nav-mini:disabled { opacity: 0.18; cursor: default; }
+
+  /* The + FAB integrated into the pill — sits at the right edge */
+  .add-fab {
+    position: absolute;
+    right: 0.55rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    border: 1px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.25rem;
+    line-height: 1;
+    font-weight: 300;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    touch-action: none;
+    box-shadow: 2px 2px 0 var(--accent);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: transform 0.08s ease, background 0.12s ease;
+    z-index: 2;
+  }
+  .add-fab:active {
+    cursor: grabbing;
+    transform: translateY(-50%) translate(1px, 1px) scale(0.96);
+    box-shadow: 1px 1px 0 var(--accent);
+  }
+  .add-fab:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .add-fab.flash { animation: fabFlash 0.45s ease; }
+  @keyframes fabFlash {
+    0%   { background: var(--ink); transform: translateY(-50%) scale(1); }
+    40%  { background: var(--accent); transform: translateY(-50%) scale(1.12); }
+    100% { background: var(--ink); transform: translateY(-50%) scale(1); }
+  }
+
+  .pad-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+    min-width: 0;
+    position: relative;
+  }
+
+  /* — Drag-to-place phrase: floating ghost + drop indicator — */
+  .phrase-ghost {
+    position: fixed;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.6rem 1.1rem;
+    border-radius: 9999px;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.2;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    max-width: 85vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.2s ease;
+    opacity: 0.94;
+  }
+  .phrase-ghost.dropping {
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .phrase-ghost.dismissing {
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+
+  .drop-indicator {
+    position: absolute;
+    height: 2px;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(156, 41, 24, 0.4);
+    transition: opacity 0.12s ease, top 0.08s ease;
+  }
+  .drop-indicator.show { opacity: 0.9; }
+  .drop-indicator::before,
+  .drop-indicator::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    top: -2px;
+  }
+  .drop-indicator::before { left: -3px; }
+  .drop-indicator::after { right: -3px; }
+
+  /* Pad gets a subtle border accent when something is hovering over it during drag */
+  .pad.drag-over {
+    border-color: var(--accent);
+  }
+
+  .pad {
+    flex: 1;
+    width: 100%;
+    background: var(--pad-bg);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 1.15rem 1.25rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 400;
+    font-size: calc(1.2rem * var(--pad-font-scale));
+    line-height: 1.6;
+    color: var(--ink);
+    resize: none;
+    outline: none;
+    min-height: 0;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    -webkit-appearance: none;
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+  }
+  /* Brief pulse when a phrase is added */
+  .pad.added-flash {
+    animation: padFlash 0.6s ease;
+  }
+  @keyframes padFlash {
+    0% { background: var(--pad-bg); }
+    25% { background: rgba(156, 41, 24, 0.08); }
+    100% { background: var(--pad-bg); }
+  }
+
+  .pad::placeholder {
+    color: var(--ink-faint);
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .pad:focus {
+    border-color: var(--ink-soft);
+    background: rgba(28, 20, 16, 0.04);
+  }
+
+  .pad-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0;
+    margin-top: -0.15rem;
+    margin-left: -0.55rem;
+    margin-right: -0.55rem;
+  }
+
+  .pad-action-btn {
+    background: transparent;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0.5rem 0.55rem;
+    min-height: 40px;
+    transition: color 0.15s ease, transform 0.08s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  .pad-action-btn:hover { color: var(--ink); }
+  .pad-action-btn:active { transform: scale(0.96); }
+  .pad-action-btn.flash { color: var(--accent); }
+
+  /* Save button: linked = pad is bound to a saved creation, auto-saves on edit */
+  .pad-action-btn#saveBtn.linked {
+    color: var(--accent);
+  }
+  .pad-action-btn#saveBtn.linked::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.45em;
+    vertical-align: 0.15em;
+  }
+  .pad-action-btn#saveBtn.saving {
+    color: var(--ink-soft);
+    opacity: 0.7;
+  }
+  .pad-action-btn#saveBtn.saving::before {
+    animation: pulse 0.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* — Archive modal — */
+  .archive-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 14, 10, 0);
+    pointer-events: none;
+    z-index: 45;
+    visibility: hidden;
+    transition: background 0.3s ease, visibility 0s linear 0.3s;
+  }
+  .archive-backdrop.open {
+    background: rgba(20, 14, 10, 0.5);
+    pointer-events: auto;
+    visibility: visible;
+    transition: background 0.3s ease, visibility 0s linear 0s;
+  }
+  /* Backdrop only matters on desktop, where the archive is a centered card */
+  @media (max-width: 719px) {
+    .archive-backdrop { display: none; }
+  }
+
+  .archive {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    padding-top: max(2.25rem, calc(env(safe-area-inset-top) + 0.75rem));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+    padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+    visibility: hidden;
+  }
+
+  .archive.open {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .archive::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 100% 80% at center, transparent 50%, rgba(40, 25, 10, 0.18) 100%);
+    z-index: -1;
+  }
+
+  .archive-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .archive-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .archive-close {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .archive-close:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .archive-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .archive-item {
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 0.9rem 1rem;
+    background: var(--pad-bg);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    touch-action: manipulation;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .archive-item:hover {
+    border-color: var(--ink-soft);
+    background: rgba(28, 20, 16, 0.04);
+  }
+
+  .archive-item:active { transform: scale(0.995); }
+
+  .archive-item.linked {
+    border-color: var(--accent);
+    background: rgba(156, 41, 24, 0.04);
+  }
+
+  .archive-item-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.4em;
+    vertical-align: 0.15em;
+  }
+
+  .archive-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .archive-item-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  .archive-item-delete {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    padding: 0.3rem 0.5rem;
+    text-transform: uppercase;
+    transition: color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  .archive-item-delete:hover { color: var(--accent); }
+
+  .archive-item-preview {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+  }
+
+  .archive-empty {
+    text-align: center;
+    color: var(--ink-faint);
+    font-style: italic;
+    padding: 3rem 1rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+  }
+
+  /* — Pad meta: zero-height overlay; saved indicator floats over pad — */
+  .pad-meta {
+    height: 0;
+    overflow: visible;
+    position: relative;
+    pointer-events: none;
+  }
+  .pad-saved-at {
+    position: absolute;
+    bottom: 0.45rem;
+    right: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    background: var(--bg);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .pad-saved-at:empty { opacity: 0; }
+  .pad-saved-at.fading { opacity: 0; }
+
+  /* — Undo toast (after adding a phrase) — */
+  .toast {
+    position: fixed;
+    bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 5rem));
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.7rem 0.85rem 0.7rem 1.1rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 60;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+    box-shadow: 0 4px 20px rgba(28, 20, 16, 0.25);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s;
+  }
+  .toast-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .toast-action {
+    background: transparent;
+    border: 1px solid rgba(235, 225, 200, 0.4);
+    color: var(--bg);
+    padding: 0.35rem 0.7rem;
+    border-radius: 9999px;
+    font-family: inherit;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .toast-action:hover { background: rgba(235, 225, 200, 0.1); }
+
+  /* — Archive search bar — */
+  .archive-search {
+    width: 100%;
+    background: var(--pad-bg);
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.75rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+    -webkit-appearance: none;
+  }
+  .archive-search:focus { border-color: var(--ink-soft); }
+  .archive-search::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  /* — Archive header with settings button — */
+  .archive-icon-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+  .archive-icon-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .archive-icon-btn:active { transform: scale(0.92); }
+  .archive-header {
+    justify-content: space-between !important;
+  }
+
+  /* — Title field in creation cards — */
+  .archive-item-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+    cursor: text;
+    padding: 2px 4px;
+    margin-left: -4px;
+    border-radius: 3px;
+    transition: background 0.15s ease;
+    word-break: break-word;
+  }
+  .archive-item-title:hover { background: rgba(28, 20, 16, 0.05); }
+  .archive-item-title.editing {
+    outline: 1px solid var(--ink-soft);
+    background: var(--bg);
+    cursor: text;
+  }
+  .archive-item-title[contenteditable="true"]:focus { outline: 1px solid var(--ink); }
+
+  .archive-item-actions {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+  }
+  .archive-item-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.4rem 0.55rem;
+    transition: color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    min-height: 32px;
+    min-width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  .archive-item-icon-btn:hover { color: var(--ink); background: rgba(28, 20, 16, 0.05); }
+  .archive-item-icon-btn.delete:hover { color: var(--accent); }
+
+  /* — Settings popup (dropdown anchored under gear icon, inside frame-overlay) — */
+  .settings-pop {
+    position: absolute;
+    top: max(3.4rem, calc(env(safe-area-inset-top) + 2.6rem));
+    right: max(0.85rem, calc(env(safe-area-inset-right) + 0.35rem));
+    width: 290px;
+    max-width: calc(100% - 1.5rem);
+    max-height: 70vh;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(28, 20, 16, 0.18), 0 2px 8px rgba(28, 20, 16, 0.08);
+    z-index: 65;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-8px) scale(0.96);
+    transform-origin: top right;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+    overflow: hidden;
+  }
+  .settings-pop.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    visibility: visible;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s;
+  }
+  .settings-pop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 0.85rem 0.55rem 1rem;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .settings-pop-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .settings-pop-close {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .settings-pop-close:hover { color: var(--ink); background: rgba(28, 20, 16, 0.05); }
+  .settings-pop-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.85rem 1rem 0.95rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .setting-row-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .setting-hint-inline {
+    text-transform: none;
+    letter-spacing: 0.05em;
+    font-style: italic;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.78rem;
+  }
+  .settings-pop .setting-row {
+    padding-bottom: 0.85rem;
+  }
+  .settings-pop .setting-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .setting-row-block { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+  .setting-label {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  .setting-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  /* Toggle switch */
+  .toggle { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: rgba(28, 20, 16, 0.18);
+    transition: background 0.2s ease;
+    border-radius: 9999px;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--bg);
+    transition: transform 0.2s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+  body.dark .toggle-slider { background: rgba(235, 225, 200, 0.25); }
+
+  /* Slider */
+  .slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--line);
+    border-radius: 9999px;
+    outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Banished + favorites lists in settings */
+  .banished-list, .favorites-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 0.3rem;
+  }
+  .banished-chip, .favorite-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--pad-bg);
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 0.3rem 0.7rem;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+  .favorite-chip { color: var(--ink); }
+  .chip-remove {
+    background: transparent;
+    border: none;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 0 0 0 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip-remove:hover { color: var(--accent); }
+  .list-empty {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+  }
+
+  /* — Pill long-press menu — */
+  .pill-menu {
+    position: fixed;
+    z-index: 65;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 14px;
+    padding: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 28px rgba(28, 20, 16, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.9);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+    min-width: 200px;
+  }
+  .pill-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0s;
+  }
+  .pill-menu-item {
+    background: transparent;
+    border: none;
+    color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.7rem 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 10px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .pill-menu-item:hover { background: rgba(235, 225, 200, 0.1); }
+  .pill-menu-item:active { background: rgba(235, 225, 200, 0.18); }
+  .pill-menu-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    width: 1.2em;
+    text-align: center;
+  }
+
+  /* — Favorite heart indicator on pill — */
+  .phrase-favorited::after {
+    content: '♥';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.65rem;
+    color: var(--accent);
+    font-size: 0.85rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .phrase-pill { position: relative; }
+
+  .archive-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 0.85rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  .archive-action-btn {
+    background: transparent;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0.5rem 0.2rem;
+    min-height: 40px;
+    transition: color 0.15s ease, transform 0.08s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  .archive-action-btn:hover { color: var(--ink); }
+  .archive-action-btn:active { transform: scale(0.96); }
+  .archive-action-btn.flash { color: var(--accent); }
+
+  @media (min-width: 720px) {
+    /* On desktop, keep phone-like proportions: ~430px wide, ~920px tall, centered. */
+    body {
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 0;
+    }
+    .container {
+      max-width: 430px;
+      height: calc(100vh - 3rem);
+      max-height: 920px;
+      margin: 0 auto;
+      box-shadow: 0 8px 50px rgba(28, 20, 16, 0.18),
+                  0 0 0 1px rgba(28, 20, 16, 0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      padding-top: 3.75rem;
+      padding-right: 1.5rem;
+      padding-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+    /* Phone-sized typography on desktop */
+    .phrase { font-size: clamp(1.95rem, 2.4vw, 2.3rem); }
+    .pad { font-size: 1.1rem; }
+
+    /* Archive modal becomes a centered phone-sized panel too */
+    .archive {
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      width: 100%;
+      max-width: 430px;
+      height: calc(100vh - 3rem);
+      max-height: 920px;
+      transform: translate(-50%, -50%) translateY(150vh);
+      border-radius: 18px;
+      box-shadow: 0 8px 50px rgba(28, 20, 16, 0.22),
+                  0 0 0 1px rgba(28, 20, 16, 0.08);
+      padding-top: 2rem;
+      padding-bottom: 1.25rem;
+    }
+    .archive.open {
+      transform: translate(-50%, -50%) translateY(0);
+    }
+
+    /* Constrain the corner-icon frame to the phone shape on desktop so the buttons sit at the frame's edges, not the whole viewport's edges */
+    .frame-overlay {
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      inset: auto;
+      width: 100%;
+      max-width: 430px;
+      height: calc(100vh - 3rem);
+      max-height: 920px;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Search panel: same phone shape on desktop */
+    .search-panel {
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      inset: auto;
+      width: 100%;
+      max-width: 430px;
+      height: calc(100vh - 3rem);
+      max-height: 920px;
+      transform: translate(-50%, -50%) translateY(150vh);
+      border-radius: 18px;
+      box-shadow: 0 8px 50px rgba(28, 20, 16, 0.22),
+                  0 0 0 1px rgba(28, 20, 16, 0.08);
+      padding-top: 2rem;
+      padding-bottom: 1.25rem;
+    }
+    .search-panel.open {
+      transform: translate(-50%, -50%) translateY(0);
+    }
+
+    /* Center the language stack + archive button inside the phone-shaped container */
+    .top-right-stack {
+      top: 0.85rem;
+      right: 1rem;
+    }
+    .archive-btn {
+      top: 0.85rem;
+      left: 1.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+<!-- Frame overlay: holds the corner icons + popups; constrained to phone shape on desktop -->
+<div class="frame-overlay">
+  <button class="focus-exit-btn" id="focusExitBtn" aria-label="Exit focus mode" title="Exit focus mode">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  <button class="archive-btn" id="archiveBtn" aria-label="Past creations" title="Past creations">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="7" x2="20" y2="7"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+      <line x1="4" y1="17" x2="14" y2="17"/>
+    </svg>
+  </button>
+  <button class="search-corner-btn" id="searchBtn" aria-label="Search phrases" title="Search phrases">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="20" y1="20" x2="16.5" y2="16.5"/>
+    </svg>
+  </button>
+  <div class="top-right-stack">
+    <button class="corner-icon-btn" id="mainSettingsBtn" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" data-lang="en" aria-label="English">EN</button>
+      <span class="lang-sep">·</span>
+      <button class="lang-btn" data-lang="es" aria-label="Español">ES</button>
+    </div>
+  </div>
+  <!-- Settings popup: anchored under the gear icon (inside frame-overlay so it stays in the phone frame on desktop) -->
+  <div class="settings-pop" id="settings" aria-hidden="true" role="dialog">
+    <div class="settings-pop-header">
+      <span class="settings-pop-title" id="settingsTitle">Settings</span>
+      <button class="settings-pop-close" id="settingsBackBtn" aria-label="Close">✕</button>
+    </div>
+    <div class="settings-pop-body">
+      <div class="setting-row setting-row-block">
+        <div class="setting-row-head">
+          <span class="setting-label" id="fontSizeLabel">Text size</span>
+          <span class="setting-hint setting-hint-inline" id="fontSizeHint">Slide to preview</span>
+        </div>
+        <input type="range" id="fontSizeSlider" min="0.9" max="1.5" step="0.05" value="1.1" class="slider">
+      </div>
+      <div class="setting-row">
+        <span class="setting-label" id="darkModeLabel">Dark mode</span>
+        <label class="toggle">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label" id="focusModeLabel">Focus mode</span>
+        <label class="toggle">
+          <input type="checkbox" id="focusModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label" id="secondPillLabel">Second phrase</span>
+        <label class="toggle">
+          <input type="checkbox" id="secondPillToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row setting-row-block">
+        <span class="setting-label" id="banishedLabel">Banished phrases</span>
+        <div class="banished-list" id="banishedList"></div>
+      </div>
+      <div class="setting-row setting-row-block">
+        <span class="setting-label" id="favoritesLabel">Favorite phrases</span>
+        <div class="favorites-list" id="favoritesList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="phrase-section">
+    <div class="phrase-row">
+      <button class="nav-mini" id="prevBtn" title="Previous" aria-label="Previous">‹</button>
+      <div class="phrase-pill" id="phrasePill" role="button" tabindex="0" aria-label="Tap for new phrase">
+        <div class="phrase" id="phrase">loading the well</div>
+        <button class="add-fab" id="addBtn" title="Add to sheet" aria-label="Add to sheet">+</button>
+      </div>
+      <button class="nav-mini" id="nextBtn" title="Next" aria-label="Next">›</button>
+    </div>
+    <div class="phrase-row phrase-row-second" id="phraseRow2">
+      <button class="nav-mini" id="prevBtn2" title="Previous" aria-label="Previous">‹</button>
+      <div class="phrase-pill phrase-pill-secondary" id="phrasePill2" role="button" tabindex="0" aria-label="Tap for new phrase">
+        <div class="phrase phrase-secondary" id="phrase2">…</div>
+        <button class="add-fab add-fab-secondary" id="addBtn2" title="Add to sheet" aria-label="Add to sheet">+</button>
+      </div>
+      <button class="nav-mini" id="nextBtn2" title="Next" aria-label="Next">›</button>
+    </div>
+  </div>
+
+  <div class="pad-section">
+    <textarea
+      class="pad"
+      id="pad"
+      placeholder="tap + to add lines · write freely · press enter for new lines · build verses, choruses, anything…"
+      spellcheck="false"
+      autocomplete="off"
+    ></textarea>
+    <div class="pad-meta" id="padMeta">
+      <span></span>
+      <span class="pad-saved-at" id="padSavedAt"></span>
+    </div>
+    <div class="pad-footer">
+      <button class="pad-action-btn" id="newBtn">New</button>
+      <button class="pad-action-btn" id="saveBtn">Save</button>
+      <button class="pad-action-btn" id="copyBtn">Copy</button>
+    </div>
+  </div>
+</div>
+
+<!-- Undo toast: brief inline confirm after adding a phrase -->
+<div class="toast" id="undoToast" aria-hidden="true">
+  <span class="toast-label" id="toastLabel">Added</span>
+  <button class="toast-action" id="undoBtn">Undo</button>
+</div>
+
+<!-- Archive modal -->
+<div class="archive-backdrop" id="archiveBackdrop" aria-hidden="true"></div>
+<div class="archive" id="archive" aria-hidden="true">
+  <div class="archive-header">
+    <button class="archive-close" id="archiveCloseBtn" aria-label="Close">✕</button>
+  </div>
+  <input type="search" class="archive-search" id="archiveSearch" placeholder="Search…" autocomplete="off" spellcheck="false">
+  <div class="archive-list" id="archiveList"></div>
+  <div class="archive-footer">
+    <button class="archive-action-btn" id="exportBtn">Export backup</button>
+    <button class="archive-action-btn" id="importBtn">Import backup</button>
+  </div>
+</div>
+
+<!-- Phrase search panel -->
+<div class="search-panel" id="searchPanel" aria-hidden="true">
+  <div class="search-header">
+    <div class="search-input-wrap">
+      <svg class="search-input-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="20" y1="20" x2="16.5" y2="16.5"/>
+      </svg>
+      <input type="search" class="search-input" id="searchInput" placeholder="Type a word…" autocomplete="off" spellcheck="false">
+    </div>
+    <button class="archive-close" id="searchCloseBtn" aria-label="Close">✕</button>
+  </div>
+  <div class="search-results" id="searchResults">
+    <div class="search-hint" id="searchHint">Type any word to see all phrases that contain it.</div>
+  </div>
+</div>
+
+<!-- Long-press menu on the phrase pill -->
+<div class="pill-menu" id="pillMenu" aria-hidden="true">
+  <button class="pill-menu-item" id="favoriteAction">
+    <span class="pill-menu-icon" id="favoriteIcon">♡</span>
+    <span id="favoriteLabel">Favorite</span>
+  </button>
+  <button class="pill-menu-item" id="banishAction">
+    <span class="pill-menu-icon">⊘</span>
+    <span id="banishLabel">Banish this phrase</span>
+  </button>
+</div>
+
+<script>
+const phrases = [
+  // — Classic idioms & sayings —
+  "toe the line","bite the bullet","kick the bucket","cross that bridge","cry over spilled milk",
+  "beat around the bush","cat's out of the bag","devil's in the details","skeleton in the closet",
+  "elephant in the room","back to square one","third time's the charm","raining cats and dogs",
+  "ace up my sleeve","easier said than done","the whole nine yards","two birds with one stone",
+  "piece of cake","break a leg","a dime a dozen","walking on eggshells","biting off more than you can chew",
+  "throwing in the towel","pulling out all the stops","going down in flames","riding shotgun",
+  "dead in the water","mum's the word","the jig is up","the gloves are off","the writing's on the wall",
+  "the ship has sailed","the plot thickens","the rest is history","no rest for the wicked",
+  "speak of the devil","when pigs fly","when hell freezes over","once in a blue moon",
+  "a snowball's chance in hell","a ghost of a chance","a fighting chance","skin in the game",
+  "a bone to pick","bigger fish to fry","cards on the table","all bets are off",
+  "the ball is in your court","chickens come home to roost","what goes around comes around",
+  "you reap what you sow","only time will tell","jumping the gun","missed the boat",
+  "off the deep end","under the weather","over the moon","reading between the lines",
+  "burning the candle at both ends","cutting corners","let sleeping dogs lie",
+  "you can't have your cake and eat it too","don't put all your eggs in one basket",
+  "a bird in the hand","the early bird gets the worm","the squeaky wheel gets the grease",
+  "don't bite the hand that feeds you","don't look a gift horse in the mouth",
+  "you can lead a horse to water","hold your horses","straight from the horse's mouth",
+  "dark horse","one-trick pony","wild goose chase","silly goose","your goose is cooked",
+  "lame duck","ugly duckling","sitting duck","water off a duck's back","fish out of water",
+  "plenty of fish in the sea","red herring","opening a can of worms",
+  "the apple doesn't fall far","one bad apple","an apple a day","you are what you eat",
+  "the proof is in the pudding","icing on the cake","take it with a grain of salt",
+  "rub salt in the wound","salt of the earth","bread and butter","cream of the crop",
+  "cream rises to the top","spill the beans","spill the tea","cat got my tongue",
+
+  // — Lyric phrases that work as standalone sayings —
+  "in the end it doesn't even matter","say my name","light my fire","smells like teen spirit",
+  "hit me baby one more time","you can't always get what you want","born to run","here comes the sun",
+  "sympathy for the devil","paint it black","comfortably numb","don't stop believin'",
+  "livin' on a prayer","every breath you take","in the air tonight","sweet child o' mine",
+  "lose yourself","started from the bottom","hello darkness my old friend",
+  "somebody that I used to know","knockin' on heaven's door","blowin' in the wind",
+  "the times they are a-changin'","I can't get no satisfaction","money for nothing",
+  "life in the fast lane","dust in the wind","with or without you","the sound of silence",
+  "like a rolling stone","whole lotta love","ramble on","wish you were here",
+  "another brick in the wall","is there anybody out there","let it be","come together",
+  "helter skelter","nothing else matters","for whom the bell tolls","fade to black",
+  "wherever I may roam","where is my mind","enjoy the silence","never let me down again",
+  "love will tear us apart","friday I'm in love","boys don't cry","common people",
+  "come as you are","something in the way","back against the wall","take it easy",
+  "take it or leave it","wake me up when september ends","boulevard of broken dreams",
+  "basket case","when I come around","good riddance","somebody told me",
+  "all these things that I've done","when you were young","stairway to heaven",
+
+  // — Poetic / lyrical phrases —
+  "between a rock and a hard place","the calm before the storm","the eye of the storm",
+  "weather the storm","against the grain","into the void","into the unknown","to the bitter end",
+  "to the moon and back","flying too close to the sun","playing with fire","walking the wire",
+  "dancing in the dark","dancing with the devil","deal with the devil","sold my soul",
+  "lost my way","crossroads","fork in the road","end of the line","point of no return",
+  "last call","last dance","last resort","first light","first blood","blood on my hands",
+  "hands are tied","tongue tied","lips are sealed","behind closed doors","beneath the surface",
+  "under your spell","under my skin","in my bones","in my blood","in my veins","in your head",
+  "in your shadow","in your wake","out of my mind","out of my hands","out of my reach",
+  "out of the blue","out of nowhere","cold shoulder","cold feet","ice in my veins",
+  "fire in my belly","heart of gold","heart of stone","stone cold","dead silence",
+  "deafening silence","shadows on the wall","echoes in the dark","ghost in the machine",
+  "ghost of you","a shadow of myself","shadow of a doubt","benefit of the doubt",
+  "guilty as charged","guilty as sin","pure as the driven snow","blacker than night",
+  "darker than midnight","as the crow flies","bird's eye view","the long and short of it",
+  "the bottom line","the white whale","the great escape","pulling a houdini","doing a 180",
+  "making a beeline","hitting the road","on the road again","the open road","the long road home",
+  "home is where the heart is","can't go home again","lost in translation","lost in the sauce",
+  "lost in the woods","into the wild","wild at heart","heart of darkness",
+
+  // — Weird / colloquial / vintage —
+  "well I'll be damned","I'll be a monkey's uncle","holy moly","holy smokes",
+  "jesus take the wheel","god help me","lord have mercy","oh my stars","bless your heart",
+  "butter my biscuit","hot diggity","no skin off my back","sweat bullets","cool as a cucumber",
+  "hot under the collar","blew a gasket","lost my marbles","off my rocker","a screw loose",
+  "not playing with a full deck","the lights are on but nobody's home","sharp as a tack",
+  "dead as a doornail","sick as a dog","fit as a fiddle","right as rain","happy as a clam",
+  "snug as a bug","busy as a bee","blind as a bat","quiet as a mouse","sly as a fox",
+  "stubborn as a mule","dumb as a rock","light as a feather","heavy as lead","smooth as silk",
+  "hard as nails","tough as leather","soft as butter","sweet as honey","bitter as gall",
+  "drunk as a skunk","mad as a wet hen","ugly as sin","pretty as a picture","fresh as a daisy",
+  "cold as ice","hot as hades","the bee's knees","the cat's pajamas","the cat's meow",
+  "the dog's bollocks","the whole shebang","the whole enchilada","soup to nuts","alpha to omega",
+  "it's curtains for you","curtain call","the final curtain","the show must go on",
+  "break the fourth wall","behind the curtain","the man behind the curtain","nothing up my sleeve",
+  "abracadabra","open sesame","knock on wood","fingers crossed","pray tell","on the down low",
+  "on the QT","on the sly","in cahoots","thick as thieves","thick as molasses","slow as molasses",
+
+  // — Film / literary / mythical —
+  "through the looking glass","down the rabbit hole","off to never-never land",
+  "somewhere over the rainbow","follow the yellow brick road","there's no place like home",
+  "may the force be with you","I'll be back","hasta la vista baby","here's looking at you kid",
+  "frankly my dear","may the odds be ever in your favor","winter is coming","all men must die",
+  "you know nothing","the night is dark and full of terrors","one ring to rule them all",
+  "not all those who wander are lost","so it goes","the answer is forty-two","don't panic",
+  "nevermore","quoth the raven","once upon a midnight dreary","do not go gentle",
+  "rage against the dying of the light","the road less traveled","two roads diverged",
+  "miles to go before I sleep","the woods are lovely dark and deep","tilting at windmills",
+  "opening pandora's box","cutting the gordian knot","achilles heel","sword of damocles",
+  "pyrrhic victory","trojan horse","siren song","midas touch","herculean task",
+  "icarian fall","sisyphean","promethean fire","faustian bargain","machiavellian",
+  "orwellian","kafkaesque","byzantine","draconian","the king is dead","long live the king",
+  "my kingdom for a horse","et tu brute","veni vidi vici","carpe diem","memento mori",
+  "ad astra per aspera","fortune favors the bold","cogito ergo sum","in vino veritas",
+
+  // — Modern / slang / philosophical —
+  "no cap","it is what it is","that's the way the cookie crumbles","them's the breaks",
+  "you win some you lose some","better late than never","all good things must end",
+  "tomorrow is another day","tomorrow never comes","seize the day","yolo","life is short",
+  "live a little","ride or die","live and let live","live fast die young",
+  "burn out or fade away","only the good die young","legends never die","nothing lasts forever",
+  "nothing gold can stay","all that glitters is not gold","beauty is in the eye of the beholder",
+  "beauty is only skin deep","don't judge a book by its cover","actions speak louder than words",
+  "talk is cheap","put your money where your mouth is","money talks","costs an arm and a leg",
+  "burning a hole in my pocket","break the bank","bring home the bacon","when in rome",
+  "rome wasn't built in a day","all roads lead to rome","cross the rubicon","ides of march",
+  "what's done is done","let bygones be bygones","water under the bridge","burn the bridge",
+  "scorched earth","raise hell","give 'em hell","come hell or high water","through thick and thin",
+  "till the cows come home","till the end of time","till the wheels fall off",
+
+  // — Color / mood / songwriter ammo —
+  "baby blue","midnight blue","true blue","into the blue","fade to grey","shades of grey",
+  "black and blue","black and white","seeing red","in the red","in the black","bleeding heart",
+  "broken heart","heartstrings","heartbreak hotel","lovesick","lovestruck","lovelorn",
+  "lovers lane","the chase is on","the hunt is on","the game is afoot","the game is up",
+  "game over","rage on","rage quit","burn baby burn","let it burn","let it ride","let it bleed",
+  "let it go","let it snow","let it rain","make it rain","make it count","make it happen",
+  "make it last","make it stop","shake it off","shake it loose","shake it up",
+  "shake the foundations","rock the boat","rock bottom","between the lines","outside the lines",
+  "color outside the lines","draw the line","hold the line","walk the line","cross the line",
+  "the dotted line","fine print","small print","the long con","the short con","the long shot",
+  "the long haul","the long game","the short game","play the long game","play to win",
+  "play for keeps","play it cool","play it safe","play it by ear","play your cards right",
+  "play the fool",
+
+  // — Existential / final —
+  "the end of all things","the beginning of the end","the beginning of forever","forever young",
+  "forever and a day","one and done","once and for all","once and forever","never again",
+  "now or never","now and forever","always and forever","forever in our hearts",
+  "rest in peace","rest in power","gone but not forgotten","never forget","never look back",
+  "don't look back","never say never","never say die","die another day","another day another dollar",
+  "another time another place","right place wrong time","right time wrong place",
+  "wrong place wrong time","right person wrong time","fight or flight","fight the good fight",
+  "the last fight","the final fight","one last ride","one for the road","one last call",
+  "one more for the road","one for the books","one in a million","one of a kind",
+  "first of its kind","last of its kind","the last of us","the first of many",
+
+  // — Everyday natural turns of phrase — (conversational connectors)
+  "by the way","as a matter of fact","to tell you the truth","to be honest","if you ask me",
+  "between you and me","in the meantime","for the time being","in any case","either way",
+  "any way you slice it","as far as I can tell","as luck would have it","come to think of it",
+  "on second thought","on the other hand","for that matter","in that case","by the same token",
+  "all things considered","when all is said and done","now that you mention it","needless to say",
+  "for what it's worth","at the end of the day","long story short","to make a long story short",
+
+  // — Stock responses & conversation —
+  "go figure","who knew","you never know","you don't say","you said it","you can say that again",
+  "fair enough","no kidding","you bet","like I said","as I was saying","there you have it",
+  "there you go","there it is","here we go","here we are","that's the spirit",
+  "now you're talking","now we're getting somewhere",
+
+  // — Approximation, summary, framing —
+  "more or less","give or take","all in all","by and large","for the most part",
+  "more often than not","as a rule","the lion's share","the better part of",
+
+  // — Time & frequency (natural) —
+  "once in a while","every now and then","every once in a while","from time to time",
+  "now and then","now and again","as we speak","any minute now","any day now",
+  "sooner or later","one of these days","before you know it","next thing you know",
+  "in no time","in due time","in good time","about time","high time","long overdue",
+  "long gone","many moons ago","back in the day","those were the days","a long time coming",
+  "the day will come","my day will come",
+
+  // — Position, direction, motion —
+  "before my eyes","right before my eyes","in plain sight","out of sight",
+  "out of sight out of mind","on my mind","across the room","across the way",
+  "around the bend","around the corner","down the line","over the edge","over the top",
+  "above all else","first and foremost","last but not least","first things first",
+  "one step at a time","side by side","step by step","little by little","bit by bit",
+  "day by day","night by night",
+
+  // — Pairs & binomials (the natural building blocks) —
+  "give and take","hit and miss","hit or miss","fits and starts","nooks and crannies",
+  "bits and pieces","odds and ends","back and forth","to and fro","here and there",
+  "this or that","pros and cons","ups and downs","ins and outs","highs and lows",
+  "night and day","day and night","through and through","over and over","again and again",
+  "here we go again","here goes nothing","one and the same","one or the other",
+
+  // — Everyday descriptive —
+  "good as new","good as gone","as good as it gets","the best of the best","worth every penny",
+  "worth its weight in gold","good as gold","the bigger picture","the big picture","no big deal",
+  "don't sweat the small stuff","all's well that ends well","the best laid plans",
+
+  // — Luck & chance —
+  "blind luck","dumb luck","beginner's luck","luck of the draw","the hand you're dealt",
+  "the cards you're dealt","wild card","trump card","ace in the hole","calling your bluff",
+  "a fool's errand","pipe dream","wishful thinking","in your dreams","dream on","keep dreaming",
+
+  // — Speed & sudden time —
+  "in the blink of an eye","in a heartbeat","in a flash","lightning fast","the speed of light",
+  "before you can blink","like a ton of bricks","the penny dropped","it dawned on me",
+  "it hit me","it occurred to me","like clockwork",
+
+  // — Determination & effort —
+  "whatever it takes","no matter what","no matter the cost","at all costs","at any cost",
+  "by any means necessary","one way or another","some way or another","any way you look at it",
+  "the way I see it","give it your all","give it everything","give it a shot","give it a whirl",
+  "give it a try","take a shot","take a swing","take the plunge","take a chance","take a leap",
+  "leap of faith","come what may","whatever comes",
+
+  // — Fatalism / wisdom of the everyday —
+  "such is life","c'est la vie","the way it is","the way it goes","the way of the world",
+  "tale as old as time","old as time","old as the hills","since time immemorial","way back when",
+  "it figures","figures","go figure",
+
+  // — Open-endedness & lists —
+  "and so on","and so forth","and the like","and what have you","what have you","you name it",
+  "the works","the whole works","you get the idea",
+
+  // — Doubt, certainty, conviction —
+  "it goes without saying","without a doubt","no doubt about it","without question",
+  "beyond a doubt","of course","naturally","as expected","I had a feeling","gut feeling",
+  "trust me on this","as sure as the sun rises","I knew it","I knew it all along",
+
+  // — Body & physical (everyday) —
+  "head to toe","top to bottom","inside out","back to front","right side up","upside down",
+  "topsy turvy","head over heels","to the bone","to the core","skin and bones","flesh and blood",
+  "blood, sweat and tears","sweat and tears","blood and bones","mind body and soul",
+  "heart and soul","body and soul",
+
+  // — Atmospheric / songwriter-friendly natural —
+  "in the morning light","the dead of night","the dead of winter","the heat of summer",
+  "the dawn of time","the crack of dawn","by the light of the moon","under the stars",
+  "the morning after","the night before","in the still of the night","the witching hour",
+  "the small hours","the wee hours","first thing in the morning","late at night",
+
+  // — Misc natural —
+  "to each their own","different strokes","whatever floats your boat","a wild ride",
+  "one hell of a ride","a hell of a thing","a hell of a night","a hell of a day",
+
+  // — Hierarchy, position, status, scale —
+  "top of the pyramid","top of the heap","top of the food chain","top of the mountain",
+  "top of the world","top of the line","top of the ladder","top of the class",
+  "top tier","top dog","top brass","top shelf","top of the charts","king of the hill",
+  "king of the castle","ruler of the roost","leader of the pack","head of the pack",
+  "front of the pack","ahead of the pack","ahead of the curve","ahead of the game",
+  "ahead of the times","ahead of your time","behind the curve","behind the times",
+  "behind the eight ball","middle of the pack","middle of the road","middle of nowhere",
+  "smack in the middle","right in the middle","caught in the middle","the bottom of the barrel",
+  "the bottom of the heap","the bottom of the food chain","bottom of the totem pole",
+  "bottom rung","the lowest rung","bottom feeder","the lowest of the low",
+  "low man on the totem pole","the runt of the litter","the pick of the litter",
+  "the cherry on top","the icing on the cake","the cream of the crop","the upper crust",
+  "the upper echelon","the upper hand","got the upper hand","the inner circle",
+  "the inner sanctum","the powers that be","the higher ups","the rank and file",
+  "the establishment","the old guard","the new guard","the elite few","the chosen few",
+  "the chosen one","the lucky few","the privileged few","the great unwashed",
+  "the silent majority","the vocal minority","the lowest common denominator",
+  "the tip of the iceberg","the tip of the spear","the cutting edge","on the cutting edge",
+  "the bleeding edge","at the forefront","at the frontier","the leading edge",
+  "the pinnacle of","the peak of","the height of","the apex","the summit","the zenith",
+  "the depths of","the bowels of","the heart of","the soul of","the core of",
+  "the center of it all","the eye of the needle","the edge of the world","the ends of the earth",
+  "to the ends of the earth","on the edge","on the brink","on the verge","the verge of",
+  "the brink of","a step above","a cut above","head and shoulders above","worlds apart",
+  "light years ahead","in a league of its own","in a class of its own","a class apart",
+  "second to none","best in class","best of breed","first among equals","one of a kind",
+  "the gold standard","the benchmark","set the standard","set the bar","raise the bar",
+  "lower the bar","the bar is high","new heights","scale new heights","reach for the sky",
+  "the sky's the limit","through the roof","off the charts","off the scale","off the map",
+  "hit a new low","hit a new high","an all-time high","an all-time low","high water mark",
+  "high noon","high time","high stakes","the high road","the low road","the road less traveled",
+  "the path of least resistance","the easy way out","the hard way","the long way around",
+  "the scenic route","center stage","front and center","backstage","behind the scenes",
+  "in the wings","in the spotlight","under the spotlight","stealing the show","stealing the spotlight",
+  "the main event","the headliner","the opening act","the closing act","the supporting cast",
+  "an afterthought","second fiddle","playing second fiddle","third wheel","odd one out",
+  "the missing piece","the missing link","the weak link","the strongest link",
+  "a link in the chain","the last link","the final piece","the final straw",
+  "the straw that broke the camel's back","tipping the scales","tipping point","turning point",
+  "point of departure","point of origin","ground zero","square one","starting line",
+  "finish line","home stretch","the final stretch","the last leg","the last lap","the home run",
+  "knocking it out of the park","out of the ballpark","in a different league",
+  "not in the same league","not even close","a far cry from","worlds away",
+
+  // — From books, plays, scripture, film (origins most people forget) —
+  // Shakespeare
+  "break the ice","in a pickle","wear my heart on my sleeve","the green-eyed monster",
+  "method to the madness","the world is your oyster","a foregone conclusion","love is blind",
+  "vanish into thin air","into thin air","neither here nor there","the be-all and end-all",
+  "salad days","all the world's a stage","to thine own self be true","a pound of flesh",
+  "star-crossed lovers","lend me your ears","the milk of human kindness","the dogs of war",
+  "let slip the dogs of war","what dreams may come","to be or not to be","what's in a name",
+  "parting is such sweet sorrow","the lady doth protest too much","alas poor Yorick",
+  "fair is foul and foul is fair","tomorrow and tomorrow and tomorrow",
+  "sound and fury signifying nothing","once more into the breach","band of brothers",
+  "a rose by any other name","wherefore art thou","too much of a good thing",
+  // Bible
+  "the apple of my eye","a wolf in sheep's clothing","go the extra mile",
+  "the blind leading the blind","by the skin of my teeth","at my wit's end","an eye for an eye",
+  "fall from grace","forbidden fruit","the patience of a saint","a leopard can't change its spots",
+  "a labor of love","a drop in the bucket","the prodigal son","manna from heaven",
+  "the promised land","let there be light","a house divided","my brother's keeper",
+  "the meek shall inherit","cast the first stone","an eye for an eye, a tooth for a tooth",
+  "turn the other cheek","the spirit is willing but the flesh is weak","sign of the times",
+  "the patience of Job",
+  // Aesop & fables
+  "sour grapes","crying wolf","the boy who cried wolf","slow and steady wins the race",
+  "look before you leap","kill the golden goose","a wolf in sheep's clothing","crying poor",
+  // Carroll
+  "mad as a hatter","off with their heads","curiouser and curiouser","late, very late",
+  // Dickens
+  "bah humbug","the best of times the worst of times","it was the best of times",
+  "please sir I want some more","great expectations","what the dickens",
+  // Other novels
+  "catch-22","big brother","big brother is watching","brave new world","heart of darkness",
+  "the horror, the horror","no man is an island","ask not for whom the bell tolls",
+  "the green light","old man and the sea","grapes of wrath","of mice and men",
+  "the best laid plans of mice and men","one flew over","the road goes ever on",
+  "my precious","you shall not pass","not all those who wander are lost",
+  "the medium is the message","the unbearable lightness","the banality of evil",
+  // Detective fiction
+  "elementary, my dear Watson","the game is afoot","no stone unturned",
+  "the usual suspects","round up the usual suspects",
+  // Twain / Americana
+  "the report of my death has been greatly exaggerated","tom sawyer's fence",
+  "huck finn","lighting out for the territory",
+  // Film lines that became phrases
+  "we're not in Kansas anymore","houston, we have a problem","an offer you can't refuse",
+  "keep your friends close and your enemies closer","leave the gun, take the cannoli",
+  "I see dead people","show me the money","you had me at hello","I'll have what she's having",
+  "say hello to my little friend","you can't handle the truth","go ahead, make my day",
+  "you talking to me","here's johnny","life is like a box of chocolates",
+  "stupid is as stupid does","run, forrest, run","I'll be back","hasta la vista",
+  "if you build it they will come","there's no place like home","follow the white rabbit",
+  "blue pill or red pill","take the red pill","I am your father","I have a bad feeling about this",
+  "the force is strong with this one","live long and prosper","beam me up","to boldly go",
+  "set phasers to stun","resistance is futile","make it so","engage",
+  // Yogi-isms & American sayings with attributable origin
+  "it ain't over till the fat lady sings","it ain't over till it's over",
+  "déjà vu all over again","when you come to a fork in the road, take it",
+  "the only thing we have to fear is fear itself","ask not what your country can do for you",
+  "a date which will live in infamy","I have a dream","tear down this wall",
+  "the buck stops here","speak softly and carry a big stick",
+  // Frost & poets
+  "miles to go before I sleep","the woods are lovely, dark and deep",
+  "two roads diverged in a wood","good fences make good neighbors","nothing gold can stay",
+  "do not go gentle into that good night","rage, rage against the dying of the light",
+  // Eliot
+  "this is the way the world ends","not with a bang but a whimper","april is the cruellest month",
+  // Hemingway-ish
+  "the sun also rises","a moveable feast","grace under pressure",
+  // Greek tragedy / classics into everyday
+  "the gordian knot","cutting the gordian knot","cassandra's curse","narcissus","echo",
+  "pyrrhic victory","crossing the rubicon","draw a line in the sand",
+
+  // — Profession & trade idioms (concrete imagery, poetic potential) —
+  // Sailing & maritime
+  "batten down the hatches","all hands on deck","run a tight ship","learn the ropes",
+  "show me the ropes","three sheets to the wind","the bitter end","cut and run",
+  "high and dry","in the doldrums","loose cannon","pipe down","in deep water",
+  "take the wind out of my sails","take the wind out of your sails","safe harbor",
+  "the tide is turning","the tide turns","swimming against the tide","under the radar",
+  "on the rocks","a sinking ship","abandon ship","rats fleeing a sinking ship",
+  "give it a wide berth","taken aback","the cut of your jib","under your own steam",
+  "anchors aweigh","cast off","set sail","becalmed","dead in the water",
+  "a ship without a rudder","keel over","careened","shipwrecked","castaway",
+  "drowning not waving","throwing a lifeline","man overboard","the lighthouse keeper",
+  // Military & war
+  "in the trenches","in the line of fire","under fire","caught in the crossfire",
+  "circle the wagons","close ranks","on the front lines","on the home front",
+  "the smoking gun","stick to your guns","hold your fire","hold the fort",
+  "a war of attrition","the cavalry is coming","here comes the cavalry",
+  "fall on your sword","bury the hatchet","the spoils of war","to the victor go the spoils",
+  "shell-shocked","battle-tested","battle-scarred","battle-hardened","baptism by fire",
+  "a war chest","the war room","above your pay grade","on the warpath","raise the white flag",
+  "wave the white flag","the lull before the battle","the dust has settled","when the dust settles",
+  "no man's land","the home stretch is in sight",
+  // Carpentry & construction
+  "hit the nail on the head","the cornerstone","the foundation is laid","built to last",
+  "a house of cards","castles in the sky","castles in the air","pillar of the community",
+  "a pillar of strength","the keystone","pull the rug out","the rug was pulled out",
+  "on shaky ground","on solid ground","common ground","middle ground","holding ground",
+  "the blueprint","by design","raise the roof","bring the house down","under one roof",
+  "the four walls","painted into a corner","backed into a corner","build a bridge",
+  "burn a bridge","build it from the ground up","tear it down to the studs",
+  "the writing on the wall","load-bearing","a structure crumbling",
+  // Kitchen & cooking
+  "too many cooks","too many cooks spoil the broth","bring to a boil","a slow burn",
+  "on the back burner","on the front burner","if you can't stand the heat get out of the kitchen",
+  "a recipe for disaster","a recipe for success","the secret sauce","in the soup",
+  "in the weeds","stewing on it","let it simmer","boiling point","the pot calling the kettle black",
+  "a watched pot never boils","pie in the sky","a slice of the pie","a piece of the pie",
+  "food for thought","chew the fat","hard to swallow","a bitter pill to swallow",
+  "swallow your pride","eat your words","eat crow","eat humble pie","handed on a silver platter",
+  "the world on a platter","separating the wheat from the chaff","the fat of the land",
+  "a half-baked idea","cooking up a storm","stir the pot","spice things up",
+  // Music & sound
+  "strike a chord","hit a sour note","a sour note","music to my ears","face the music",
+  "fine-tuned","in tune","out of tune","in step","out of step","a different drummer",
+  "march to the beat of your own drum","change your tune","the same old song","the same old tune",
+  "swan song","in harmony","in concert with","the last act","an encore","standing ovation",
+  "play second fiddle","blow your own horn","sing a different tune","singing the blues",
+  "the curtain call","the closing chord","fade out","fade in",
+  // Theater & performance
+  "steal the show","a tough act to follow","a hard act to follow","the curtain falls",
+  "the curtain rises","showstopper","take a bow","chew the scenery","ham it up",
+  "a one-man show","play the part","look the part","the role of a lifetime",
+  "flip the script","off the cuff","ad lib","play to the audience","break a leg",
+  "the understudy","waiting in the wings","exit stage left","exit stage right",
+  // Mining & prospecting
+  "the mother lode","strike gold","strike pay dirt","pan out","didn't pan out",
+  "the canary in the coal mine","diamond in the rough","a gold rush","chip away at",
+  "a chip on your shoulder","a chip off the old block","digging deep","get to the bottom of",
+  "below the surface","unearthed","buried treasure","mining for gold",
+  // Farming & agriculture
+  "plant the seeds","the seeds of doubt","sow the seeds","harvest time",
+  "make hay while the sun shines","put out to pasture","a bumper crop","the lay of the land",
+  "close to the ground","a bull in a china shop","like herding cats","the herd mentality",
+  "the early bird","the black sheep","the runt of the litter","the prize calf",
+  "leading the lambs to slaughter","a wolf among sheep","a fallow field","fields gone fallow",
+  "weeding the garden","pulling weeds","the rows you've hoed","the row you hoe",
+  // Boxing & ring sports
+  "below the belt","hitting below the belt","against the ropes","on the ropes",
+  "saved by the bell","throw in the towel","punch above your weight","punch drunk",
+  "a knockout punch","a one-two punch","pull no punches","roll with the punches",
+  "take it on the chin","down for the count","out for the count","step into the ring",
+  "in your corner","a glass jaw","the bell tolls","split decision",
+  // Baseball & American sports
+  "swing for the fences","step up to the plate","striking out","three strikes you're out",
+  "thrown a curveball","a hail mary","a slam dunk","a long shot","in over your head",
+  "come up short","monday morning quarterback","armchair quarterback","batting a thousand",
+  "off the bench","sidelined","benched","the final whistle","sudden death",
+  "playing for keeps","the rookie","the veteran",
+  // Driving & mechanics
+  "in the driver's seat","back-seat driver","crash and burn","off the rails","on the rails",
+  "running out of gas","hit the brakes","step on the gas","the wheels came off",
+  "spinning my wheels","spinning your wheels","setting wheels in motion","a bumpy ride",
+  "where the rubber meets the road","in the rearview mirror","hit a roadblock",
+  "give it the green light","get the green light","running a red light","fork in the road",
+  // Tailoring, sewing, textiles
+  "on pins and needles","threadbare","hanging by a thread","a thread of hope",
+  "pulling at threads","a common thread","spin a yarn","the fabric of society",
+  "the fabric of our lives","tied up in knots","in stitches","a stitch in time",
+  "cut from the same cloth","needle in a haystack","patchwork","woven into",
+  "come apart at the seams","bursting at the seams","unraveling","unspooled",
+  "tangled up","loose threads","tying up loose ends",
+  // Legal & court
+  "the verdict is in","the jury's still out","a foregone conclusion","case closed",
+  "judge and jury","on trial","under oath","a fair shake","the letter of the law",
+  "the spirit of the law","by the book","throw the book at","above the law",
+  "guilty by association","plea bargain","cross-examined","the cold light of evidence",
+  // Medical
+  "the heart of the matter","on life support","a clean bill of health","in critical condition",
+  "on the mend","dead on arrival","a shot in the arm","a tough pill to swallow",
+  "doctor's orders","the patient is stable","check your pulse","flatlined","life signs",
+  "vital signs","a wound that won't heal","old wounds","reopening old wounds",
+  "bleeding out","stitching it up","scar tissue","the bandage won't hold",
+  // Money & trade
+  "bottom dollar","penny for your thoughts","pinching pennies","penny wise pound foolish",
+  "worth a king's ransom","highway robbery","dirt cheap","the going rate","pay top dollar",
+  "bull market","bear market","bet the farm","the house always wins","you can bank on it",
+  "cashing in","cashing out","the cost of doing business","the bottom fell out",
+  // Hunting
+  "the hunter becomes the hunted","in your sights","in the crosshairs","set your sights",
+  "on the prowl","close in for the kill","the chase","the quarry","a sitting target",
+  "bait and switch","baiting the trap","the trap is set","walked right into it",
+  "running with the wolves","circling overhead","the vultures circle",
+  // Smithing & metalwork
+  "strike while the iron is hot","forge ahead","forging a path","hammer it out",
+  "tempered by fire","red hot","white hot","cold steel","beaten into shape",
+  "molded","cast iron","brittle as glass","rusted through",
+  // Writing, publishing, printing
+  "a new chapter","turning the page","a footnote","a footnote in history","read the fine print",
+  "the last word","the final word","write your own story","off the page","between the lines",
+  "a clean slate","start with a clean slate","wipe the slate clean","the plot thickens",
+  // Photography & cinema
+  "a snapshot in time","out of the picture","the bigger picture","a picture is worth a thousand words",
+  "in soft focus","out of focus","crystal clear","develops slowly","exposed to the light",
+  "in negative","double exposure","cut to black","the final frame","roll the credits",
+  // Religion / wing-and-a-prayer everyday
+  "on a wing and a prayer","by the grace of god","god willing","heaven knows",
+  "god only knows","in the lap of the gods","against all odds","saying a prayer",
+  "the gods are smiling","the gods have spoken","praying for rain",
+  // Architecture & ruins
+  "a house divided cannot stand","crumbling at the foundation","a hollow shell",
+  "load-bearing wall","the cracks are showing","cracks in the facade","papering over the cracks",
+  "the empty room","four walls and a roof",
+
+  // — Weather & sky —
+  "winds of change","gone with the wind","throw caution to the wind","every cloud has a silver lining",
+  "under a cloud","head in the clouds","a tempest in a teapot","lightning in a bottle",
+  "the eye of the hurricane","a ray of sunshine","come rain or shine","fair weather friend",
+  "a storm is brewing","a perfect storm","caught in the storm","the calm after the storm",
+  "like lightning","struck by lightning","thunder and lightning","weather permitting",
+  "the dog days of summer","bitter cold","below zero","a chill in the air","the air is thick",
+  "the air is heavy","the first snow","a blizzard","the wind howls","howling wind",
+  "pouring rain","a downpour","a dry spell","second wind","catch your breath",
+  "knocked the wind out of me","a clear blue sky","not a cloud in the sky","red sky at morning",
+  "the calm before the storm","clouds on the horizon","fog rolling in","a thick fog",
+  "ice cold","a heat wave","under the sun","nothing new under the sun","the morning dew",
+
+  // — Spanish phrases now live in phrasesEs — kept here as a separator —
+
+  // — Cards & gambling —
+  "all in","going all in","fold your hand","the hand you're dealt","hold your cards close",
+  "poker face","double down","hedge your bets","snake eyes","the dice are loaded",
+  "the chips are down","a lucky streak","ante up","cash in your chips","when the chips are down",
+  "show your hand","play your hand","raise the stakes","a stacked deck","shuffle the deck",
+  "a fresh hand","a dead man's hand","bet against the house","pay the piper","the dealer's choice",
+  "hit the jackpot","the cards are stacked","the deck is stacked","read 'em and weep",
+  "luck of the draw","beginner's luck","the roll of the dice","let it ride","high roller",
+  "no dice","the gambler","know when to fold 'em","know when to hold 'em","loaded dice",
+  "the ace of spades","a royal flush","queen of hearts","king of diamonds","jack of all trades",
+  "ace in the hole","wild card","trump card","tip your hand","keep it close to the vest",
+
+  // — Smoke, fire, ashes —
+  "where there's smoke there's fire","smoke and mirrors","up in smoke","like a moth to a flame",
+  "candle in the wind","can't hold a candle to","snuffed out","smoldering","ashes to ashes",
+  "dust to dust","rise from the ashes","phoenix from the ashes","a phoenix rising",
+  "burned to the ground","scorched","charred","the embers","still burning","the flames",
+  "consumed by fire","a fire ignited","the fuse was lit","lit the fuse","a powder keg",
+  "a tinderbox","a spark in the dark","add fuel to the fire","fan the flames","stoke the fire",
+  "out of the frying pan into the fire","baptism by fire","crash and burn","burn it down",
+  "burn it all down","watch it burn","watching the world burn","trial by fire","burning bright",
+  "burning out","light a match","strike a match","a single spark","catching fire",
+
+  // — Light & shadow —
+  "shed light on","in the dark about","kept in the dark","see the light","walk into the light",
+  "the dark side","light at the end of the tunnel","casting shadows","long shadow",
+  "out of the shadows","into the light","a shaft of light","a beam of light","the first light",
+  "the last light","the dying light","twilight","before the dawn","in the half-light","the gloaming",
+  "shadow play","a flicker of light","a guiding light","a beacon","the lamp in the window",
+  "the streetlight glow","the porch light's on","a lighthouse in the dark","a candle still burning",
+  "the dawn breaks","the dawn breaks slow","sunlight on water","golden hour","blue hour",
+
+  // — Doors & thresholds —
+  "open the door","slam the door","when one door closes another opens","at death's door",
+  "knocking at the door","foot in the door","cross the threshold","the door of opportunity",
+  "show me the door","the door is closed","on the doorstep","a locked door","the key to the door",
+  "the door swings both ways","darkening my doorstep","through the door","step through the door",
+  "the gate","the gates of heaven","the gates of hell","pearly gates","the gatekeeper",
+  "the open road","the open window","a window of opportunity","a window into the soul",
+  "behind the door","beyond the door","the door I never opened","the bridge I never crossed",
+
+  // — Heaven, hell, the devil —
+  "hell on earth","hellbent","fire and brimstone","hell to pay","a hell-raiser","heaven sent",
+  "heaven help me","heaven help us","the holy of holies","better the devil you know",
+  "the devil's playground","between the devil and the deep blue sea","devil-may-care",
+  "give the devil his due","pact with the devil","selling your soul","damnation",
+  "damned if you do","damned if you do, damned if you don't","through hell","been through hell",
+  "come back from hell","hell hath no fury","hell hath no fury like a woman scorned",
+  "to hell and back","the road to hell is paved with good intentions","the devil's in the details",
+  "the devil you know","dance with the devil","the devil's bargain","the devil's hour",
+  "speak of the devil and he shall appear","an angel on one shoulder","a devil on the other shoulder",
+  "saints and sinners","saints preserve us","god's honest truth","god knows","god only knows",
+
+  // — Sleep, dreams, night —
+  "sleeping like a baby","sleep on it","sleep with one eye open","sweet dreams","the stuff of dreams",
+  "a dream come true","between the sheets","walking in my sleep","until the morning light",
+  "the sandman cometh","a bad dream","a nightmare","night terrors","restless nights","can't sleep",
+  "counting sheep","toss and turn","in my dreams","daydreaming","broken sleep","the long night",
+  "a sleepless night","3 AM thoughts","4 AM phone calls","the dark night of the soul",
+  "dreams within dreams","waking from a dream","the dream is over","wide awake","dead asleep",
+  "fast asleep","drifting off","slipping into sleep","beauty sleep","forty winks",
+  "burning the midnight oil","the moon is high","the moon hangs low","the stars are out",
+  "the night is young","the night calls my name","one of those nights","tonight's the night",
+
+  // — Childhood & schoolyard —
+  "cross your heart hope to die","stick a needle in your eye","finders keepers",
+  "finders keepers losers weepers","sticks and stones","sticks and stones may break my bones",
+  "last one is a rotten egg","made you look","no take-backsies","double dare","triple dare",
+  "jinx","jinxed","pinky promise","pinky swear","cooties","truth or dare","never have I ever",
+  "not it","calling shotgun","you're it","tag you're it","olly olly oxen free",
+  "red rover red rover","hide and seek","ready or not here I come","liar liar pants on fire",
+  "I'm rubber you're glue","the floor is lava","cat's in the cradle","ring around the rosie",
+  "criss-cross applesauce","the cat's got your tongue","mother may I","simon says",
+  "I dare you","double-dog dare you","scout's honor","cross my heart","swear on my life",
+  "back in school","passing notes","the cool kids","the back of the bus","recess",
+
+  // — Water (beyond sailing) —
+  "still waters run deep","wash my hands of it","a tidal wave","the rising tide",
+  "a drop in the ocean","treading water","swimming with sharks","the well is dry","troubled waters",
+  "muddy the waters","in hot water","holding water","doesn't hold water","drinking from a firehose",
+  "a watershed moment","swept away","the current pulls","against the current","the undertow",
+  "pulled under","a wave of emotion","a sea of faces","a sea change","the deep end","the shallow end",
+  "stagnant water","running water","the river runs deep","crossing the river","downstream",
+  "upstream","river of tears","an ocean between us","the deep blue","into the deep",
+  "rising waters","sinking feeling","keeps me afloat","keep your head above water","drowning",
+  "drowning in it","baptized in the river","holy water","the river bends","when it rains it pours",
+
+  // — Numbers —
+  "it takes two to tango","three's a crowd","four corners of the earth","six feet under",
+  "the seven year itch","seventh heaven","the nine to five","dressed to the nines","on cloud nine",
+  "the eleventh hour","baker's dozen","hindsight is 20/20","fifty-fifty","my two cents",
+  "two of a kind","three strikes","a four-letter word","five o'clock shadow","the sixth sense",
+  "a thousand words","a million miles away","a million little things","nine lives",
+  "the perfect ten","unlucky thirteen","24/7","the 99 percent","ground zero","square one",
+  "high five","take five","at sixes and sevens","behind the eight ball","whole nine yards",
+  "ten out of ten","a thousand cuts","death by a thousand cuts","one too many","one for the books",
+  "a second chance","third time lucky","the seven seas","the seven deadly sins","forty days and forty nights",
+  "a hundred to one","one in a thousand","a million to one","a billion stars",
+
+  // — Modern internet / Gen-Z —
+  "hits different","it's giving","the vibe","bad vibes","good vibes","vibe check","mood",
+  "big mood","the energy","the energy is off","throw shade","lowkey","highkey",
+  "main character energy","side quest","the algorithm","terminally online","chronically online",
+  "touch grass","delulu","caught in 4k","the ick","gave me the ick","left on read","ghosted",
+  "ghosting","a red flag","red flags","a green flag","bestie","ate that","she ate",
+  "no thoughts head empty","unhinged","living rent-free in my head","living my best life",
+  "it's a whole vibe","the audacity","the absolute audacity","I can't even","I'm dead",
+  "I'm screaming","crying laughing","sending me","sent me","slay","slayed","ate and left no crumbs",
+  "the bare minimum","gatekeeping","love language","attachment style","emotionally unavailable",
+  "soft launch","hard launch","situationship","trauma bonding","healing era","villain era",
+  "in my feelings","in my era","main character moment"
+];
+
+// — Spanish phrases — authentic refranes, dichos, expresiones —
+// Prioritizes Mexican Spanish but includes broader Spanish-language sayings.
+const phrasesEs = [
+  // Refranes clásicos
+  "a mal tiempo buena cara","no hay mal que por bien no venga",
+  "camarón que se duerme se lo lleva la corriente","en boca cerrada no entran moscas",
+  "dime con quién andas y te diré quién eres","perro que ladra no muerde",
+  "en casa del herrero, cuchillo de palo","más vale tarde que nunca",
+  "al que madruga Dios le ayuda","ojos que no ven, corazón que no siente",
+  "a caballo regalado no se le ve el colmillo","no por mucho madrugar amanece más temprano",
+  "el que con lobos anda, a aullar se enseña","agua que no has de beber, déjala correr",
+  "de tal palo, tal astilla","más vale solo que mal acompañado",
+  "en el país de los ciegos, el tuerto es rey","al mal paso, darle prisa",
+  "no hay mal que dure cien años","la suerte está echada","el tiempo lo cura todo",
+  "nadie sabe lo que tiene hasta que lo pierde","haz el bien sin mirar a quién",
+  "del dicho al hecho hay mucho trecho","más vale prevenir que lamentar",
+  "cría cuervos y te sacarán los ojos","no hay peor ciego que el que no quiere ver",
+  "aunque la mona se vista de seda, mona se queda","quien mucho abarca, poco aprieta",
+  "barriga llena, corazón contento","más sabe el diablo por viejo que por diablo",
+  "el que ríe al último, ríe mejor","a buen entendedor, pocas palabras",
+  "cada loco con su tema","no todo lo que brilla es oro","poco a poco se va lejos",
+  "no dejes para mañana lo que puedes hacer hoy","a falta de pan, tortillas",
+  "a donde fueres, haz lo que vieres","quien siembra vientos, recoge tempestades",
+  "el que la sigue, la consigue","a lo hecho, pecho","lo barato sale caro",
+  "más vale pájaro en mano que ciento volando","cada cabeza es un mundo",
+  "en todas partes se cuecen habas","vísteme despacio que tengo prisa",
+  "genio y figura hasta la sepultura","caras vemos, corazones no sabemos",
+  "donde hubo fuego, cenizas quedan","hierba mala nunca muere",
+  "el que no tranza no avanza","a grandes males, grandes remedios",
+  "la cabra siempre tira al monte","a buenas horas, mangas verdes",
+  "cuando el río suena, agua lleva","hablando del rey de Roma",
+  "al pan, pan y al vino, vino","sobre gustos no hay nada escrito",
+  "cada quien con sus mañas","tanto va el cántaro al agua que al final se rompe",
+  "el que se quema con leche, hasta al jocoque le sopla",
+  "el que no llora, no mama","para todo mal, mezcal; para todo bien, también",
+  "más vale ser cabeza de ratón que cola de león","el hábito no hace al monje",
+  "cría fama y échate a dormir","al árbol que crece torcido, jamás su tronco endereza",
+  "cae más pronto un hablador que un cojo","el que mucho habla, mucho yerra",
+  "el que no arriesga, no gana","el que no oye consejos no llega a viejo",
+  "el muerto al pozo y el vivo al gozo","no hay rosa sin espinas",
+  "ojo por ojo, diente por diente","el que a hierro mata, a hierro muere",
+  "el que parte y reparte, se queda con la mayor parte",
+  "más vale maña que fuerza","el que es buen gallo, donde quiera canta",
+  "el que se enoja, pierde","no hay quinto malo","viejos los cerros y reverdecen",
+  "no se hizo la miel para la boca del burro","quien calla, otorga",
+  "el silencio es oro","el pez por la boca muere","la curiosidad mató al gato",
+  "más vale rojo en cara que negro en corazón",
+
+  // Dichos mexicanos
+  "echarle más crema a sus tacos","no tener pelos en la lengua","estar en las nubes",
+  "tirar la casa por la ventana","costar un ojo de la cara","costar un riñón",
+  "estar hasta la madre","ni modo","como agua para chocolate","como Pedro por su casa",
+  "como gallo en patio ajeno","salir hasta en la sopa","echar el rollo",
+  "echar el cuento","echar relajo","echar la hueva","hacer el oso","hacerse pato",
+  "hacerse el loco","hacer la lucha","quedar bien","quedar como rey","quedar mal",
+  "estar de pelos","estar tronado","estar cañón","estar grueso","estar pesado",
+  "estar al cien","armar el pancho","hacer pancho","no manches","sale y vale",
+  "ahí muere","ándale pues","échale ganas","ya ni la amuelas","ya estuvo",
+  "ya merito","ahorita vuelvo","luego luego","al ratito","de volada",
+  "de aquellas","de pena ajena","ya valió","valer un comino","poca madre",
+  "a toda madre","de poca","qué padre","qué chido","qué onda","sin pedo",
+  "sin bronca","no hay pedo","no hay bronca","ahí nomás","ahí la llevo",
+  "ahí vamos","aquí andamos","puro pa' delante","ni un paso atrás",
+
+  // Expresiones cotidianas
+  "a todo esto","a todas estas","por cierto","a propósito","por si las moscas",
+  "por si las dudas","por si acaso","en todo caso","en cualquier caso",
+  "de cualquier manera","de todos modos","de todas formas","sea como sea",
+  "cueste lo que cueste","pase lo que pase","caiga quien caiga","salga lo que salga",
+  "llueva o truene","contra viento y marea","sin lugar a dudas","sin duda alguna",
+  "sin más ni más","sin más preámbulos","a la buena de Dios","a ver qué pasa",
+  "a ver cómo nos va","ya veremos","habrá que ver","con el tiempo",
+  "con el paso del tiempo","al fin y al cabo","al final del día","a fin de cuentas",
+  "en resumidas cuentas","ni más ni menos","tal cual","así como así","así nomás",
+  "así de simple","más o menos","poco más, poco menos",
+
+  // Tiempo, destino
+  "el tiempo dirá","a su debido tiempo","en su momento","fuera de tiempo",
+  "antes de tiempo","después de la tempestad viene la calma",
+  "más temprano que tarde","tarde o temprano","algún día","algún día de estos",
+  "cualquier día de estos","de vez en cuando","de cuando en cuando","cada tanto",
+  "un día sí, un día no","mañana será otro día","cada quien con su destino",
+  "el destino nos alcanza","lo que ha de ser, será","lo que ha de pasar, pasará",
+  "lo escrito, escrito","lo que es para uno, llega","cada quien con su cruz",
+  "a cada quien lo suyo","lo justo es lo justo","mientras haya vida hay esperanza",
+  "donde menos se piensa, salta la liebre","cuando menos se espera",
+  "todo a su tiempo","todo llega","todo pasa","todo cambia","nada es para siempre",
+  "nada dura para siempre","todo tiene su final","todo tiene su precio",
+
+  // Amor, desamor, corazón
+  "el amor todo lo puede","el amor es ciego","en el amor y en la guerra todo se vale",
+  "donde hay amor, hay vida","el amor verdadero nunca muere",
+  "amores reñidos, los más queridos","el primer amor nunca se olvida",
+  "para el amor no hay edad","una de cal y otra de arena","ni contigo ni sin ti",
+  "con el corazón roto","con el corazón en pedazos","con el alma en pedazos",
+  "el corazón partido","desangrarse por dentro","muriéndose por dentro",
+  "el corazón apretado","el alma desgarrada","corazón herido","corazón de piedra",
+  "alma en pena","alma errante","alma vacía","alma rota",
+  "el último adiós","el primer beso","el último beso","la última mirada",
+  "amor de mis amores","amor de toda la vida","mi vida entera","mi razón de ser",
+  "la luz de mis ojos","el dueño de mi alma","el ladrón de mi corazón",
+  "media naranja","cara mitad","compañera del alma","compañero del alma",
+
+  // Muerte, finales, despedida
+  "la muerte no avisa","hasta el polvo","de polvo somos y al polvo volveremos",
+  "polvo eres y en polvo te convertirás","que descanse en paz","que en paz descanse",
+  "hasta el último día","cuando llegue la hora","cuando me llegue mi hora",
+  "a la hora de la verdad","a la hora de la hora","en la hora final",
+  "la última morada","el último viaje","el camino sin regreso","el adiós final",
+  "hasta la última gota","hasta el final","hasta donde aguante el cuerpo",
+  "hasta que el cuerpo aguante","mientras el cuerpo aguante","hasta el último suspiro",
+  "hasta el último aliento","con el último aliento","exhalar el último suspiro",
+  "se nos fue","ya descansa","ya está en el cielo","ya está con Dios",
+
+  // Religioso, espiritual
+  "si Dios quiere","si Dios nos da licencia","si Dios nos presta vida",
+  "que Dios te bendiga","que Dios te acompañe","vaya con Dios","Dios mediante",
+  "por mi madrecita santa","Ave María purísima","Dios mío","Dios bendiga",
+  "gloria a Dios","bendito sea Dios","que Dios nos agarre confesados",
+  "Dios aprieta pero no ahorca","cuando Dios cierra una puerta, abre una ventana",
+  "Dios sabe lo que hace","sabrá Dios","Dios dirá","que Dios te oiga",
+  "quiera Dios","ojalá","ojalá y que sí","Dios no lo quiera",
+  "primero Dios","con el favor de Dios","que en gloria esté","ánimas benditas",
+  "Virgen santísima","Virgen de Guadalupe","Madre santa","alma bendita",
+
+  // Atmosférico, poético
+  "a flor de piel","a contracorriente","al filo del abismo","al filo de la navaja",
+  "al borde del precipicio","al pie de la letra","a pies juntillas",
+  "en la flor de la vida","en la cumbre","en el ocaso","de cabo a rabo",
+  "de pies a cabeza","de punta a punta","de arriba abajo","entre la espada y la pared",
+  "entre dos aguas","entre dos mundos","entre el cielo y la tierra",
+  "entre el cielo y el infierno","entre sombras","entre los muertos","entre los vivos",
+  "en la frontera","al otro lado","del otro lado","más allá","más acá","en el más allá",
+  "en la oscuridad","a la sombra","bajo la luna","bajo las estrellas",
+  "a la luz de la luna","a la luz de las velas","en el silencio","en el viento",
+  "con el viento","contra el viento","viento en popa","viento a favor",
+  "en la noche","al amanecer","al anochecer","al despuntar del alba","al caer la noche",
+  "en plena madrugada","al filo de la madrugada","de madrugada",
+  "antes del alba","después del ocaso","entre noche y día","en penumbras",
+  "en tinieblas","a oscuras","bajo el sol","bajo la lluvia","con la lluvia",
+  "con el frío","con el calor","con la tormenta","después de la lluvia",
+
+  // Cuerpo, físico
+  "con el corazón en la mano","con el alma en un hilo","con los pelos de punta",
+  "con la sangre en el ojo","con el agua al cuello","con el agua hasta el cuello",
+  "hasta la médula","hasta los huesos","hasta el tuétano","en cuerpo y alma",
+  "de cuerpo presente","con el alma desnuda","con el corazón abierto",
+  "con las manos vacías","con las manos llenas","con las manos atadas",
+  "con la frente en alto","con la cabeza baja","de rodillas","de pie",
+  "boca abajo","boca arriba","de espaldas","de frente","cara a cara",
+  "frente a frente","piel con piel","mano a mano","codo a codo",
+  "hombro con hombro","corazón con corazón","alma con alma",
+
+  // Intensidad, extremos
+  "a todo dar","a todo trapo","a todo lo que da","a más no poder","al cien por ciento",
+  "al tope","a morir","a la brava","sin freno","sin parar","sin descanso",
+  "hasta el fondo","hasta el tope","al borde","al límite","sin medida",
+  "de cabeza","sin cabeza","sin rumbo","sin destino","sin más",
+  "de un jalón","de una sentada","de un solo trago","sin respirar","sin pensarlo",
+  "a ciegas","a tientas","a oscuras","a fuerzas","a la fuerza",
+  "por las buenas o por las malas","de grado o por fuerza","quieras que no",
+
+  // Colores, estados
+  "azul como el mar","negro como la noche","rojo como la sangre","blanco como la nieve",
+  "verde de envidia","amarillo de miedo","pálido como un muerto","frío como el hielo",
+  "cálido como el sol","lleno de vida","vacío por dentro","roto por dentro",
+  "muerto por dentro","encendido por dentro","con fuego adentro","con frío adentro",
+  "negro presagio","mala espina","mal augurio","buen augurio","corazonada",
+  "presentimiento","mal de ojo","de buena suerte","de mala suerte",
+
+  // Determinación, esfuerzo
+  "echarle ganas","no rajarse","no aflojar","aguantar vara","aguantar a pie firme",
+  "darle con todo","irse con todo","jugársela","jugarse el todo por el todo",
+  "salir a darlo todo","poner toda la carne en el asador","ir con todo",
+  "a darle hasta que duela","no doblegarse","mantenerse firme","no dar el brazo a torcer",
+  "no bajar la guardia","seguir adelante","seguir en pie","levantarse y seguir",
+  "caerse y levantarse","aprender a caer","aprender a levantarse",
+
+  // Pérdida, derrota, melancolía
+  "perder hasta la camisa","perder el rumbo","perder el norte","perder la cabeza",
+  "perder la calma","perder los estribos","perder la fe","perder la esperanza",
+  "perder el tiempo","perder la batalla","perder la guerra","caer en desgracia",
+  "tocar fondo","ir cuesta abajo","ir de mal en peor","ir para abajo",
+  "venirse abajo","derrumbarse por dentro","quebrarse por dentro","romperse por dentro",
+
+  // Universo, cosmos
+  "bajo el mismo cielo","bajo el mismo sol","bajo las mismas estrellas",
+  "a la misma luna","a la luz del día","a plena luz del día","en pleno día",
+  "en plena noche","en pleno invierno","en pleno verano","entre cuatro paredes",
+  "en el medio de la nada","en el fin del mundo","al final del mundo",
+  "al borde del mundo","en el último rincón","en lo más profundo","en lo más alto",
+  "en lo más oscuro","en lo más claro","en el centro de todo","en el ojo del huracán",
+  "en el corazón de la noche","en el corazón del bosque","en el corazón de la ciudad",
+  "en pleno corazón","en lo profundo del alma","en el fondo del alma",
+
+  // Vida, suerte, fortuna
+  "la vida es así","la vida da vueltas","la vida es una ruleta","la vida no es justa",
+  "la vida sigue","la vida no perdona","la vida te golpea","la vida enseña",
+  "la vida te lleva","la vida nos lleva","todo se paga en la vida",
+  "todo se cobra en esta vida","la vida cobra","la vida pone a cada quien en su lugar",
+  "buena estrella","mala estrella","con la estrella","sin estrella","de buena cuna",
+  "venido a menos","venido a más","echado a la suerte","jugado a la suerte"
+];
+
+// — Shuffle bag with anti-clumping for true variety —
+let shuffleBag = [];
+let bagIndex = 0;
+
+// Words to ignore when checking similarity between consecutive phrases
+const STOP_WORDS = new Set([
+  "the","a","an","in","on","of","to","and","or","but","is","are","was","were",
+  "be","been","being","have","has","had","do","does","did","i","you","we","they",
+  "he","she","it","this","that","these","those","for","with","at","by","from",
+  "my","your","our","their","his","her","its","as","if","so","no","not","up",
+  "out","off","into","onto","over","under","one","two","get","got","go","goes",
+  "going","gone","let","lets","just","like","than","then","there","here","when",
+  "where","what","who","how","why","all","any","some","más","menos","de","la",
+  "el","los","las","un","una","y","o","que","no","si","en","con","sin","por",
+  "para","del","al","se","lo","le","les","te","me","es","son","ser","esta","este"
+]);
+
+function getSigWords(phrase) {
+  let s = sigWordCache.get(phrase);
+  if (!s) {
+    s = new Set(phrase.toLowerCase()
+      .replace(/[^\w\sáéíóúñü]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOP_WORDS.has(w)));
+    sigWordCache.set(phrase, s);
+  }
+  return s;
+}
+
+function sharesTooMuch(a, b) {
+  if (!a || !b) return false;
+  const wordsA = getSigWords(a);
+  const wordsB = getSigWords(b);
+  if (wordsA.size === 0 || wordsB.size === 0) return false;
+  let shared = 0;
+  for (const w of wordsB) {
+    if (wordsA.has(w)) shared++;
+  }
+  const minLen = Math.min(wordsA.size, wordsB.size);
+  if (minLen <= 2 && shared >= 1) return true;
+  return shared >= 2;
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// — Language state & master pool —
+let currentLang = 'en';
+let masterPhrases = [];
+
+function buildMaster() {
+  const pool = currentLang === 'es' ? phrasesEs : phrases;
+  const unique = [...new Set(pool)].filter(p => !banished.has(p));
+  masterPhrases = shuffleArray(unique);
+}
+
+function refillBag(avoidFirst) {
+  do {
+    shuffleBag = shuffleArray(masterPhrases);
+  } while (avoidFirst && shuffleBag[0] === avoidFirst && masterPhrases.length > 1);
+  bagIndex = 0;
+}
+
+function drawFromBag() {
+  if (bagIndex >= shuffleBag.length) {
+    refillBag(shuffleBag[shuffleBag.length - 1]);
+  }
+
+  const prev = cursor >= 0 ? history[cursor] : null;
+  let next = shuffleBag[bagIndex];
+
+  // Anti-clumping: if the next draw shares significant words with the previous
+  // phrase, look ahead a few positions in the bag and swap with the first
+  // dissimilar one. Keeps consecutive rolls feeling varied.
+  if (prev && sharesTooMuch(next, prev)) {
+    const lookahead = Math.min(bagIndex + 8, shuffleBag.length - 1);
+    for (let i = bagIndex + 1; i <= lookahead; i++) {
+      if (!sharesTooMuch(shuffleBag[i], prev)) {
+        [shuffleBag[bagIndex], shuffleBag[i]] = [shuffleBag[i], shuffleBag[bagIndex]];
+        next = shuffleBag[bagIndex];
+        break;
+      }
+    }
+  }
+
+  bagIndex++;
+  return next;
+}
+
+// — History navigation —
+let history = [];
+let cursor = -1;
+
+const phraseEl = document.getElementById('phrase');
+const phrasePill = document.getElementById('phrasePill');
+const prevBtn = document.getElementById('prevBtn');
+const addBtn = document.getElementById('addBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pad = document.getElementById('pad');
+const copyBtn = document.getElementById('copyBtn');
+const saveBtn = document.getElementById('saveBtn');
+const newBtn = document.getElementById('newBtn');
+const archiveBtn = document.getElementById('archiveBtn');
+const archive = document.getElementById('archive');
+const archiveList = document.getElementById('archiveList');
+const archiveCloseBtn = document.getElementById('archiveCloseBtn');
+const archiveBackdrop = document.getElementById('archiveBackdrop');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
+const archiveSearch = document.getElementById('archiveSearch');
+const settingsBackBtn = document.getElementById('settingsBackBtn');
+const undoBtn = document.getElementById('undoBtn');
+const favoriteAction = document.getElementById('favoriteAction');
+const banishAction = document.getElementById('banishAction');
+const darkModeToggle = document.getElementById('darkModeToggle');
+const focusModeToggle = document.getElementById('focusModeToggle');
+const fontSizeSlider = document.getElementById('fontSizeSlider');
+const mainSettingsBtn = document.getElementById('mainSettingsBtn');
+const searchBtn = document.getElementById('searchBtn');
+const searchPanel = document.getElementById('searchPanel');
+const searchInput = document.getElementById('searchInput');
+const searchCloseBtn = document.getElementById('searchCloseBtn');
+const searchResults = document.getElementById('searchResults');
+const searchHint = document.getElementById('searchHint');
+const phrasePill2 = document.getElementById('phrasePill2');
+const phraseEl2 = document.getElementById('phrase2');
+const addBtn2 = document.getElementById('addBtn2');
+const prevBtn2 = document.getElementById('prevBtn2');
+const nextBtn2 = document.getElementById('nextBtn2');
+const secondPillToggle = document.getElementById('secondPillToggle');
+const langBtns = document.querySelectorAll('.lang-btn');
+
+const PLACEHOLDER = {
+  en: 'tap + to add lines · write freely · press enter for new lines · build verses, choruses, anything…',
+  es: 'toca + para agregar líneas · escribe libremente · presiona enter para nuevas líneas · construye versos, coros, lo que quieras…'
+};
+
+async function loadLang() {
+  const v = await storageGet('lang');
+  if (v && (v === 'en' || v === 'es')) currentLang = v;
+}
+
+async function saveLang() {
+  await storageSet('lang', currentLang);
+}
+
+function applyLanguageUI() {
+  langBtns.forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === currentLang);
+  });
+  document.documentElement.lang = currentLang;
+  const isEs = currentLang === 'es';
+  pad.placeholder = isEs
+    ? 'toca + para agregar líneas · escribe libremente · presiona enter para nuevas líneas · construye versos, coros, lo que quieras…'
+    : 'tap + to add lines · write freely · press enter for new lines · build verses, choruses, anything…';
+  archiveCloseBtn.setAttribute('aria-label', isEs ? 'Cerrar' : 'Close');
+  exportBtn.textContent = isEs ? 'Exportar respaldo' : 'Export backup';
+  importBtn.textContent = isEs ? 'Importar respaldo' : 'Import backup';
+  newBtn.textContent = isEs ? 'Nuevo' : 'New';
+  copyBtn.textContent = isEs ? 'Copiar' : 'Copy';
+  archiveSearch.placeholder = isEs ? 'Buscar…' : 'Search…';
+  // Settings labels
+  const settingsTitle = document.getElementById('settingsTitle');
+  if (settingsTitle) settingsTitle.textContent = isEs ? 'Ajustes' : 'Settings';
+  const darkLbl = document.getElementById('darkModeLabel');
+  if (darkLbl) darkLbl.textContent = isEs ? 'Modo oscuro' : 'Dark mode';
+  const focusLbl = document.getElementById('focusModeLabel');
+  if (focusLbl) focusLbl.textContent = isEs ? 'Modo enfoque' : 'Focus mode';
+  const secondPillLbl = document.getElementById('secondPillLabel');
+  if (secondPillLbl) secondPillLbl.textContent = isEs ? 'Segunda frase' : 'Second phrase';
+  const fontLbl = document.getElementById('fontSizeLabel');
+  if (fontLbl) fontLbl.textContent = isEs ? 'Tamaño del texto' : 'Text size';
+  const fontHint = document.getElementById('fontSizeHint');
+  if (fontHint) fontHint.textContent = isEs ? 'Desliza para ajustar' : 'Slide to preview';
+  const banishedLbl = document.getElementById('banishedLabel');
+  if (banishedLbl) banishedLbl.textContent = isEs ? 'Frases prohibidas' : 'Banished phrases';
+  const favoritesLbl = document.getElementById('favoritesLabel');
+  if (favoritesLbl) favoritesLbl.textContent = isEs ? 'Frases favoritas' : 'Favorite phrases';
+  mainSettingsBtn.setAttribute('aria-label', isEs ? 'Ajustes' : 'Settings');
+  settingsBackBtn.setAttribute('aria-label', isEs ? 'Cerrar' : 'Close');
+  searchBtn.setAttribute('aria-label', isEs ? 'Buscar frases' : 'Search phrases');
+  searchCloseBtn.setAttribute('aria-label', isEs ? 'Cerrar' : 'Close');
+  searchInput.placeholder = isEs ? 'Escribe una palabra…' : 'Type a word…';
+  if (searchHint && !searchInput.value) {
+    searchHint.textContent = isEs
+      ? 'Escribe cualquier palabra para ver todas las frases que la contienen.'
+      : 'Type any word to see all phrases that contain it.';
+  }
+  updateSaveButtonState();
+  updatePadMeta();
+  applyFavoriteUI();
+}
+
+function setLanguage(lang) {
+  if (lang === currentLang) return;
+  currentLang = lang;
+  buildMaster();
+  refillBag();
+  history = [];
+  cursor = -1;
+  history2 = [];
+  cursor2 = -1;
+  applyLanguageUI();
+  rollNew();
+  if (settings.secondPill) rollSecondPill();
+  saveLang();
+  // If archive is open, re-render with the new language
+  if (archive.classList.contains('open')) renderArchive();
+  haptic(10);
+}
+
+async function loadPad() {
+  const v = await storageGet('lyrics');
+  if (v) pad.value = v;
+  updatePadMeta();
+}
+
+async function savePad() {
+  await storageSet('lyrics', pad.value);
+}
+
+// — Storage wrapper —
+// Primary: localStorage (persists on device, survives session).
+// Mirror: window.storage if available (Claude artifact storage).
+// This way, data survives even if one layer clears.
+async function storageGet(key) {
+  // Try localStorage first
+  try {
+    const v = localStorage.getItem(key);
+    if (v !== null) return v;
+  } catch (e) {}
+  // Fall back to window.storage
+  try {
+    if (window.storage) {
+      const r = await window.storage.get(key);
+      if (r && r.value) {
+        // Mirror back to localStorage for next time
+        try { localStorage.setItem(key, r.value); } catch (e) {}
+        return r.value;
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+async function storageSet(key, value) {
+  // Write to localStorage (most reliable on-device)
+  try { localStorage.setItem(key, value); } catch (e) {}
+  // Also mirror to window.storage when available
+  try { if (window.storage) await window.storage.set(key, value); } catch (e) {}
+}
+
+// Subtle haptic tick where supported (iOS 18+, Android)
+function haptic(ms = 10) {
+  if (navigator.vibrate) {
+    try { navigator.vibrate(ms); } catch (e) {}
+  }
+}
+
+function rollNew() {
+  const next = drawFromBag();
+  history = history.slice(0, cursor + 1);
+  history.push(next);
+  cursor = history.length - 1;
+  renderCurrent();
+  haptic(8);
+}
+
+function goBack() {
+  if (cursor > 0) {
+    cursor--;
+    renderCurrent();
+    haptic(6);
+  }
+}
+
+function goForward() {
+  if (cursor < history.length - 1) {
+    cursor++;
+    renderCurrent();
+    haptic(6);
+  }
+}
+
+function renderCurrent() {
+  phraseEl.classList.add('fading');
+  setTimeout(() => {
+    phraseEl.textContent = history[cursor];
+    updateNavStates();
+    applyFavoriteUI();
+    phraseEl.classList.remove('fading');
+  }, 160);
+}
+
+function updateNavStates() {
+  prevBtn.disabled = cursor <= 0;
+  nextBtn.disabled = cursor >= history.length - 1;
+}
+
+function addCurrent() {
+  if (cursor < 0) return;
+  addPhraseToPad(history[cursor], addBtn);
+}
+
+function addPhraseToPad(phrase, sourceBtn) {
+  if (!phrase) return;
+
+  // Snapshot for undo
+  lastAddedSnapshot = {
+    content: pad.value,
+    selStart: pad.selectionStart,
+    selEnd: pad.selectionEnd,
+    timestamp: Date.now()
+  };
+
+  // Insert at the current cursor position; if textarea is empty, just set.
+  // If we're not focused at all, append at the end.
+  let insertPos = pad.selectionStart;
+  let endPos = pad.selectionEnd;
+  const padIsFocused = document.activeElement === pad;
+  if (!padIsFocused) {
+    insertPos = pad.value.length;
+    endPos = pad.value.length;
+  }
+
+  const before = pad.value.slice(0, insertPos);
+  const after = pad.value.slice(endPos);
+
+  let prefix = '';
+  let suffix = '';
+  if (before.length > 0 && !before.endsWith('\n')) prefix = '\n';
+  if (after.length > 0 && !after.startsWith('\n')) suffix = '\n';
+  if (pad.value === '') { prefix = ''; suffix = ''; }
+
+  const inserted = prefix + phrase + suffix;
+  pad.value = before + inserted + after;
+
+  // Move cursor to right after the inserted phrase (before the trailing \n if any)
+  const newCursor = (before + prefix + phrase).length;
+  if (padIsFocused) {
+    pad.setSelectionRange(newCursor, newCursor);
+  } else {
+    pad.scrollTop = pad.scrollHeight;
+  }
+
+  // Brief pulse on the pad
+  pad.classList.remove('added-flash');
+  void pad.offsetWidth;
+  pad.classList.add('added-flash');
+  setTimeout(() => pad.classList.remove('added-flash'), 600);
+
+  // Button feedback
+  if (sourceBtn) {
+    sourceBtn.classList.remove('flash');
+    void sourceBtn.offsetWidth;
+    sourceBtn.classList.add('flash');
+    setTimeout(() => sourceBtn.classList.remove('flash'), 450);
+  }
+
+  haptic(15);
+  savePad();
+  updatePadMeta();
+  autoSaveLinked();
+  showUndoToast();
+}
+
+function showUndoToast() {
+  const t = document.getElementById('undoToast');
+  const label = document.getElementById('toastLabel');
+  const isEs = currentLang === 'es';
+  label.textContent = isEs ? 'Añadido' : 'Added';
+  document.getElementById('undoBtn').textContent = isEs ? 'Deshacer' : 'Undo';
+  t.classList.add('show');
+  t.setAttribute('aria-hidden', 'false');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(hideUndoToast, 3000);
+}
+
+function hideUndoToast() {
+  const t = document.getElementById('undoToast');
+  t.classList.remove('show');
+  t.setAttribute('aria-hidden', 'true');
+}
+
+function undoLastAdd() {
+  if (!lastAddedSnapshot) return;
+  pad.value = lastAddedSnapshot.content;
+  if (document.activeElement === pad) {
+    pad.setSelectionRange(lastAddedSnapshot.selStart, lastAddedSnapshot.selEnd);
+  }
+  lastAddedSnapshot = null;
+  savePad();
+  updatePadMeta();
+  autoSaveLinked();
+  hideUndoToast();
+  haptic(10);
+}
+
+// — Drag-to-place: hold the + button and drag the phrase into the pad —
+let dragGhost = null;
+let dropIndicator = null;
+let dropLine = -1;
+
+function ensureDropIndicator() {
+  if (!dropIndicator) {
+    dropIndicator = document.createElement('div');
+    dropIndicator.className = 'drop-indicator';
+    document.querySelector('.pad-section').appendChild(dropIndicator);
+  }
+  return dropIndicator;
+}
+
+function createDragGhost(text, x, y) {
+  const g = document.createElement('div');
+  g.className = 'phrase-ghost';
+  g.textContent = text;
+  document.body.appendChild(g);
+  positionGhost(g, x, y);
+  return g;
+}
+
+function positionGhost(g, x, y) {
+  g.style.left = x + 'px';
+  g.style.top = (y - 30) + 'px';  // float slightly above finger
+}
+
+function getPadLineHeight() {
+  const cs = getComputedStyle(pad);
+  let lh = parseFloat(cs.lineHeight);
+  if (isNaN(lh) || !lh) lh = parseFloat(cs.fontSize) * 1.6;
+  return lh;
+}
+
+function getDropLine(x, y) {
+  const rect = pad.getBoundingClientRect();
+  // Be generous with the hit zone — anywhere over the pad counts
+  if (x < rect.left || x > rect.right || y < rect.top - 4 || y > rect.bottom + 4) return -1;
+  const cs = getComputedStyle(pad);
+  const lh = getPadLineHeight();
+  const padTop = parseFloat(cs.paddingTop);
+  const yInContent = (y - rect.top) - padTop + pad.scrollTop;
+  let line = Math.max(0, Math.round(yInContent / lh));
+  // Cap to current line count (so dropping below the last line appends to end)
+  const totalLines = pad.value === '' ? 0 : pad.value.split('\n').length;
+  return Math.min(line, totalLines);
+}
+
+function showDropIndicatorAt(lineIndex) {
+  const ind = ensureDropIndicator();
+  const cs = getComputedStyle(pad);
+  const lh = getPadLineHeight();
+  const padTop = parseFloat(cs.paddingTop);
+  const padLeft = parseFloat(cs.paddingLeft);
+  const padRight = parseFloat(cs.paddingRight);
+
+  // Pad's offset within pad-section
+  const offsetTop = pad.offsetTop;
+  const offsetLeft = pad.offsetLeft;
+
+  const top = offsetTop + padTop + (lineIndex * lh) - pad.scrollTop - 1;
+  ind.style.top = top + 'px';
+  ind.style.left = (offsetLeft + padLeft) + 'px';
+  ind.style.width = (pad.offsetWidth - padLeft - padRight) + 'px';
+  ind.classList.add('show');
+}
+
+function hideDropIndicator() {
+  if (dropIndicator) dropIndicator.classList.remove('show');
+}
+
+function insertAtLine(phrase, lineIndex) {
+  // Snapshot for undo BEFORE the change
+  lastAddedSnapshot = {
+    content: pad.value,
+    selStart: pad.selectionStart,
+    selEnd: pad.selectionEnd
+  };
+  if (pad.value === '') {
+    pad.value = phrase;
+  } else {
+    const lines = pad.value.split('\n');
+    lines.splice(lineIndex, 0, phrase);
+    pad.value = lines.join('\n');
+  }
+  // Brief pulse
+  pad.classList.remove('added-flash');
+  void pad.offsetWidth;
+  pad.classList.add('added-flash');
+  setTimeout(() => pad.classList.remove('added-flash'), 600);
+
+  haptic(15);
+  savePad();
+  autoSaveLinked();
+  showUndoToast();
+}
+
+function setupPillMouseDrag(pill, getPhrase) {
+  // Desktop-only: click and drag the pill itself to place a phrase. On touch the
+  // pill keeps its existing swipe gestures (handled by attachSwipe).
+  let startX = 0, startY = 0;
+  let isDragging = false;
+
+  function onMove(e) {
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (!isDragging && Math.hypot(dx, dy) > 12) {
+      const phrase = getPhrase();
+      if (!phrase) return;
+      isDragging = true;
+      dragGhost = createDragGhost(phrase, e.clientX, e.clientY);
+    }
+
+    if (isDragging) {
+      e.preventDefault();
+      positionGhost(dragGhost, e.clientX, e.clientY);
+      const line = getDropLine(e.clientX, e.clientY);
+      if (line >= 0) {
+        pad.classList.add('drag-over');
+        showDropIndicatorAt(line);
+      } else {
+        pad.classList.remove('drag-over');
+        hideDropIndicator();
+      }
+    }
+  }
+
+  function onEnd(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    const targetLine = getDropLine(e.clientX, e.clientY);
+    pad.classList.remove('drag-over');
+    hideDropIndicator();
+    if (targetLine >= 0) {
+      const phrase = getPhrase();
+      if (phrase) {
+        insertAtLine(phrase, targetLine);
+        if (dragGhost) dragGhost.classList.add('dropping');
+      } else {
+        if (dragGhost) dragGhost.classList.add('dismissing');
+      }
+    } else {
+      if (dragGhost) dragGhost.classList.add('dismissing');
+    }
+    const g = dragGhost;
+    setTimeout(() => { if (g) g.remove(); }, 220);
+    dragGhost = null;
+    isDragging = false;
+
+    // Suppress the click that would otherwise fire after mouseup
+    pill._wasDragging = true;
+    setTimeout(() => { pill._wasDragging = false; }, 80);
+  }
+
+  pill.addEventListener('mousedown', (e) => {
+    // Only primary mouse button; ignore clicks that began on nested controls
+    if (e.button !== 0) return;
+    if (e.target.closest('.add-fab')) return;
+    if (e.target.closest('.nav-mini')) return;
+    // Don't engage while any panel is open
+    if (document.body.classList.contains('archive-open')) return;
+    if (document.body.classList.contains('search-open')) return;
+
+    startX = e.clientX;
+    startY = e.clientY;
+    isDragging = false;
+
+    const moveHandler = (ev) => onMove(ev);
+    const upHandler = (ev) => {
+      onEnd(ev);
+      document.removeEventListener('mousemove', moveHandler);
+      document.removeEventListener('mouseup', upHandler);
+    };
+    document.addEventListener('mousemove', moveHandler);
+    document.addEventListener('mouseup', upHandler);
+  });
+
+  // Capture-phase click suppressor: block the pill's tap-roll if a drag just happened
+  pill.addEventListener('click', (e) => {
+    if (pill._wasDragging) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      pill._wasDragging = false;
+    }
+  }, true);
+}
+
+function setupAddDrag(btn, getPhrase) {
+  let startX = 0, startY = 0;
+  let isDragging = false;
+  let localDropLine = -1;
+
+  function onStart(e) {
+    if (e.touches && e.touches.length !== 1) return;
+    const p = e.touches ? e.touches[0] : e;
+    startX = p.clientX;
+    startY = p.clientY;
+    isDragging = false;
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  function onMove(e) {
+    const p = e.touches ? e.touches[0] : e;
+    const dx = p.clientX - startX;
+    const dy = p.clientY - startY;
+
+    if (!isDragging && Math.hypot(dx, dy) > 12) {
+      // Enter drag mode
+      const phrase = getPhrase();
+      if (!phrase) return;
+      isDragging = true;
+      dragGhost = createDragGhost(phrase, p.clientX, p.clientY);
+      haptic(15);
+    }
+
+    if (isDragging) {
+      if (e.cancelable) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+      positionGhost(dragGhost, p.clientX, p.clientY);
+      localDropLine = getDropLine(p.clientX, p.clientY);
+      if (localDropLine >= 0) {
+        pad.classList.add('drag-over');
+        showDropIndicatorAt(localDropLine);
+      } else {
+        pad.classList.remove('drag-over');
+        hideDropIndicator();
+      }
+    }
+  }
+
+  function onEnd(e) {
+    if (!isDragging) return;
+    const p = e.changedTouches ? e.changedTouches[0] : e;
+    if (e.cancelable) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+    const targetLine = getDropLine(p.clientX, p.clientY);
+    pad.classList.remove('drag-over');
+    hideDropIndicator();
+
+    if (targetLine >= 0) {
+      const phrase = getPhrase();
+      if (phrase) {
+        insertAtLine(phrase, targetLine);
+        if (dragGhost) dragGhost.classList.add('dropping');
+      } else {
+        if (dragGhost) dragGhost.classList.add('dismissing');
+      }
+    } else {
+      if (dragGhost) dragGhost.classList.add('dismissing');
+      haptic(8);
+    }
+    const g = dragGhost;
+    setTimeout(() => { if (g) g.remove(); }, 220);
+    dragGhost = null;
+    isDragging = false;
+
+    btn._wasDragging = true;
+    setTimeout(() => { btn._wasDragging = false; }, 80);
+  }
+
+  function onCancel() {
+    if (dragGhost) { dragGhost.remove(); dragGhost = null; }
+    hideDropIndicator();
+    pad.classList.remove('drag-over');
+    isDragging = false;
+  }
+
+  btn.addEventListener('touchstart', onStart, { passive: true });
+  btn.addEventListener('touchmove', onMove, { passive: false });
+  btn.addEventListener('touchend', onEnd);
+  btn.addEventListener('touchcancel', onCancel);
+
+  btn.addEventListener('mousedown', (e) => {
+    onStart(e);
+    const moveHandler = (ev) => onMove(ev);
+    const upHandler = (ev) => {
+      onEnd(ev);
+      document.removeEventListener('mousemove', moveHandler);
+      document.removeEventListener('mouseup', upHandler);
+    };
+    document.addEventListener('mousemove', moveHandler);
+    document.addEventListener('mouseup', upHandler);
+  });
+}
+
+async function copyAll() {
+  if (!pad.value) return;
+  const isEs = currentLang === 'es';
+  const copyLabel = isEs ? 'Copiar' : 'Copy';
+  const copiedLabel = isEs ? '¡Copiado!' : 'Copied!';
+  try {
+    await navigator.clipboard.writeText(pad.value);
+    flashAction(copyBtn, copiedLabel, copyLabel);
+    haptic(10);
+  } catch (err) {
+    pad.select();
+    try {
+      document.execCommand('copy');
+      flashAction(copyBtn, copiedLabel, copyLabel);
+      haptic(10);
+    } catch (e) {}
+  }
+}
+
+function flashAction(btn, flashText, originalText) {
+  btn.textContent = flashText;
+  btn.classList.add('flash');
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.classList.remove('flash');
+  }, 1400);
+}
+
+// — Archive (past creations) —
+let creations = [];
+let currentCreationId = null;
+let autoSaveTimer = null;
+
+// — New: favorites, banished, settings, search —
+let favorites = new Set();   // Set of phrase strings the user has hearted
+let banished = new Set();    // Set of phrase strings the user has banished
+let settings = {
+  dark: false,
+  focus: false,
+  fontScale: 1.1,
+  secondPill: false
+};
+let archiveSearchTerm = '';
+let lastAddedSnapshot = null;  // { content, cursor, timestamp } for undo
+
+// — Cached significant-word sets for anti-clumping (avoid recomputing) —
+const sigWordCache = new Map();
+
+async function loadCreations() {
+  try {
+    const v = await storageGet('creations');
+    if (v) creations = JSON.parse(v);
+  } catch (e) {
+    creations = [];
+  }
+  const id = await storageGet('currentCreationId');
+  if (id && creations.find(c => c.id === id)) {
+    currentCreationId = id;
+  } else {
+    currentCreationId = null;
+  }
+
+}
+
+async function saveCreations() {
+  await storageSet('creations', JSON.stringify(creations));
+}
+
+async function saveCurrentCreationId() {
+  await storageSet('currentCreationId', currentCreationId || '');
+}
+
+function updateSaveButtonState() {
+  const isEs = currentLang === 'es';
+  if (currentCreationId) {
+    saveBtn.textContent = isEs ? 'Guardado' : 'Saved';
+    saveBtn.classList.add('linked');
+  } else {
+    saveBtn.textContent = isEs ? 'Guardar' : 'Save';
+    saveBtn.classList.remove('linked');
+  }
+}
+
+// Auto-save: when the pad is linked to a saved creation, sync edits to it.
+function autoSaveLinked() {
+  clearTimeout(autoSaveTimer);
+  if (!currentCreationId) return;
+  const isEs = currentLang === 'es';
+  saveBtn.classList.add('saving');
+  saveBtn.textContent = isEs ? 'Guardando…' : 'Saving…';
+  autoSaveTimer = setTimeout(async () => {
+    const c = creations.find(x => x.id === currentCreationId);
+    if (c) {
+      c.content = pad.value;
+      c.updatedAt = Date.now();
+      await saveCreations();
+    }
+    saveBtn.classList.remove('saving');
+    updateSaveButtonState();
+    flashSavedAt();
+  }, 500);
+}
+
+function formatDate(timestamp) {
+  const d = new Date(timestamp);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 86400000);
+  const dDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const time = d.toLocaleTimeString(currentLang === 'es' ? 'es-MX' : 'en-US',
+    { hour: 'numeric', minute: '2-digit' });
+  if (dDay.getTime() === today.getTime()) return (currentLang === 'es' ? 'Hoy' : 'Today') + ' · ' + time;
+  if (dDay.getTime() === yesterday.getTime()) return (currentLang === 'es' ? 'Ayer' : 'Yesterday') + ' · ' + time;
+  const opts = { month: 'short', day: 'numeric' };
+  if (d.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
+  return d.toLocaleDateString(currentLang === 'es' ? 'es-MX' : 'en-US', opts) + ' · ' + time;
+}
+
+async function saveCurrent() {
+  const content = pad.value.trim();
+  const isEs = currentLang === 'es';
+  const restLabel = currentCreationId ? (isEs ? 'Guardado' : 'Saved') : (isEs ? 'Guardar' : 'Save');
+
+  if (!content) {
+    flashAction(saveBtn, isEs ? '¡Vacío!' : 'Empty!', restLabel);
+    haptic(5);
+    return;
+  }
+
+  if (currentCreationId) {
+    // Already linked — sync any pending changes immediately
+    clearTimeout(autoSaveTimer);
+    const c = creations.find(x => x.id === currentCreationId);
+    if (c) {
+      c.content = pad.value;
+      c.updatedAt = Date.now();
+      await saveCreations();
+    }
+    flashAction(saveBtn, isEs ? '¡Guardado!' : 'Saved!', restLabel);
+    flashSavedAt();
+    haptic(10);
+    return;
+  }
+
+  // First save — create new entry and link the pad to it
+  const entry = {
+    id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+    content: pad.value,
+    createdAt: Date.now()
+  };
+  creations.unshift(entry);
+  currentCreationId = entry.id;
+  await saveCreations();
+  await saveCurrentCreationId();
+
+  updateSaveButtonState();
+  flashAction(saveBtn, isEs ? '¡Guardado!' : 'Saved!', isEs ? 'Guardado' : 'Saved');
+  flashSavedAt();
+  haptic(15);
+}
+
+async function startNew() {
+  // Already empty and unlinked? Nothing to start fresh from.
+  if (!pad.value && !currentCreationId) return;
+
+  const isEs = currentLang === 'es';
+
+  if (currentCreationId) {
+    // Pad is linked — work is safely in the archive. Force a final save,
+    // then unlink and clear so the next typing starts a new lyric.
+    clearTimeout(autoSaveTimer);
+    const c = creations.find(x => x.id === currentCreationId);
+    if (c) {
+      c.content = pad.value;
+      c.updatedAt = Date.now();
+      await saveCreations();
+    }
+    pad.value = '';
+    currentCreationId = null;
+    await saveCurrentCreationId();
+    await savePad();
+    updateSaveButtonState();
+    updatePadMeta();
+    flashAction(newBtn, isEs ? '¡Nuevo!' : 'New!', isEs ? 'Nuevo' : 'New');
+    haptic(15);
+    return;
+  }
+
+  // Pad has unsaved content (not linked yet) — confirm before discarding
+  const msg = isEs
+    ? '¿Descartar este borrador sin guardar y empezar uno nuevo?'
+    : 'Discard this unsaved draft and start a new lyric?';
+  if (!confirm(msg)) return;
+
+  pad.value = '';
+  await savePad();
+  updatePadMeta();
+  flashAction(newBtn, isEs ? '¡Nuevo!' : 'New!', isEs ? 'Nuevo' : 'New');
+  haptic(15);
+}
+
+function openArchive() {
+  renderArchive();
+  archive.classList.add('open');
+  archive.setAttribute('aria-hidden', 'false');
+  archiveBackdrop.classList.add('open');
+  archiveBackdrop.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('archive-open');
+  haptic(8);
+}
+
+function closeArchive() {
+  archive.classList.remove('open');
+  archive.setAttribute('aria-hidden', 'true');
+  archiveBackdrop.classList.remove('open');
+  archiveBackdrop.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('archive-open');
+}
+
+function renderArchive() {
+  archiveList.innerHTML = '';
+  const isEs = currentLang === 'es';
+  if (creations.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'archive-empty';
+    empty.textContent = isEs
+      ? 'No hay creaciones guardadas todavía.\nEscribe algo y toca Guardar para empezar.'
+      : 'No saved creations yet.\nWrite something and tap Save to start.';
+    empty.style.whiteSpace = 'pre-line';
+    archiveList.appendChild(empty);
+    return;
+  }
+  // Filter by search term
+  const term = archiveSearchTerm.trim().toLowerCase();
+  let filtered = [...creations];
+  if (term) {
+    filtered = filtered.filter(c =>
+      (c.content || '').toLowerCase().includes(term) ||
+      (c.title || '').toLowerCase().includes(term));
+  }
+  // Sort by most recent edit
+  filtered.sort((a, b) => {
+    const aT = a.updatedAt || a.createdAt || 0;
+    const bT = b.updatedAt || b.createdAt || 0;
+    return bT - aT;
+  });
+  if (filtered.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'archive-empty';
+    empty.textContent = isEs ? 'Sin resultados.' : 'No matches.';
+    archiveList.appendChild(empty);
+    return;
+  }
+  filtered.forEach((c) => {
+    const item = document.createElement('div');
+    item.className = 'archive-item';
+    if (c.id === currentCreationId) item.classList.add('linked');
+
+    const header = document.createElement('div');
+    header.className = 'archive-item-header';
+
+    const title = document.createElement('div');
+    title.className = 'archive-item-title';
+    title.textContent = getCreationTitle(c);
+    title.title = isEs ? 'Toca para renombrar' : 'Tap to rename';
+    title.addEventListener('click', (e) => {
+      e.stopPropagation();
+      title.contentEditable = 'true';
+      title.classList.add('editing');
+      const range = document.createRange();
+      range.selectNodeContents(title);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      title.focus();
+    });
+    title.addEventListener('blur', async () => {
+      const newTitle = title.textContent.trim();
+      title.contentEditable = 'false';
+      title.classList.remove('editing');
+      if (newTitle) {
+        c.title = newTitle;
+      } else {
+        delete c.title;
+        title.textContent = getCreationTitle(c);
+      }
+      await saveCreations();
+    });
+    title.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
+      else if (e.key === 'Escape') {
+        e.preventDefault();
+        title.textContent = getCreationTitle(c);
+        title.blur();
+      }
+    });
+
+    const actions = document.createElement('div');
+    actions.className = 'archive-item-actions';
+
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'archive-item-icon-btn';
+    shareBtn.setAttribute('aria-label', isEs ? 'Compartir' : 'Share');
+    shareBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>';
+    shareBtn.addEventListener('click', (e) => { e.stopPropagation(); shareCreation(c); });
+
+    const del = document.createElement('button');
+    del.className = 'archive-item-icon-btn delete';
+    del.setAttribute('aria-label', isEs ? 'Borrar' : 'Delete');
+    del.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+    del.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const msg = isEs ? '¿Borrar esta creación?' : 'Delete this creation?';
+      if (confirm(msg)) {
+        creations = creations.filter(x => x.id !== c.id);
+        if (currentCreationId === c.id) {
+          currentCreationId = null;
+          await saveCurrentCreationId();
+          updateSaveButtonState();
+        }
+        await saveCreations();
+        renderArchive();
+        haptic(20);
+      }
+    });
+
+    actions.appendChild(shareBtn);
+    actions.appendChild(del);
+    header.appendChild(title);
+    header.appendChild(actions);
+
+    // Date line
+    const date = document.createElement('span');
+    date.className = 'archive-item-date';
+    if (c.id === currentCreationId) {
+      const dot = document.createElement('span');
+      dot.className = 'archive-item-dot';
+      date.appendChild(dot);
+      date.appendChild(document.createTextNode(
+        (isEs ? 'Editando ahora · ' : 'Editing now · ') + formatDate(c.updatedAt || c.createdAt)
+      ));
+    } else {
+      const ts = c.updatedAt && c.updatedAt > c.createdAt ? c.updatedAt : c.createdAt;
+      const prefix = c.updatedAt && c.updatedAt > c.createdAt
+        ? (isEs ? 'Editado · ' : 'Edited · ') : '';
+      date.textContent = prefix + formatDate(ts);
+    }
+
+    const preview = document.createElement('div');
+    preview.className = 'archive-item-preview';
+    preview.textContent = c.content;
+
+    item.appendChild(header);
+    item.appendChild(date);
+    item.appendChild(preview);
+
+    // Card-level tap loads — skip if editing title or tapped a button
+    item.addEventListener('click', (e) => {
+      if (title.classList.contains('editing')) return;
+      if (e.target.closest('button')) return;
+      loadCreation(c);
+    });
+    archiveList.appendChild(item);
+  });
+}
+
+async function loadCreation(c) {
+  // If already loaded as the linked creation with matching content, just close silently.
+  if (c.id === currentCreationId && pad.value === c.content) {
+    closeArchive();
+    return;
+  }
+  const hasUnsaved = pad.value.trim() &&
+    pad.value.trim() !== c.content.trim() &&
+    c.id !== currentCreationId;
+  if (hasUnsaved && !currentCreationId) {
+    const msg = currentLang === 'es'
+      ? '¿Reemplazar el contenido actual con esta creación? (Lo actual no está guardado.)'
+      : 'Replace current content with this creation? (Current content isn\'t saved.)';
+    if (!confirm(msg)) return;
+  }
+  pad.value = c.content;
+  currentCreationId = c.id;
+  await saveCurrentCreationId();
+  await savePad();
+  updateSaveButtonState();
+  updatePadMeta();
+  closeArchive();
+  pad.scrollTop = 0;
+  haptic(12);
+}
+
+// — Export / Import backup —
+function exportBackup() {
+  const data = {
+    app: 'phrase-generator',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    lang: currentLang,
+    pad: pad.value,
+    creations: creations
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `phrase-generator-backup-${ts}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const lbl = currentLang === 'es' ? 'Exportar respaldo' : 'Export backup';
+  const flash = currentLang === 'es' ? '¡Exportado!' : 'Exported!';
+  flashAction(exportBtn, flash, lbl);
+  haptic(15);
+}
+
+function importBackup() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  input.addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    document.body.removeChild(input);
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data || !Array.isArray(data.creations)) {
+        alert(currentLang === 'es'
+          ? 'El archivo de respaldo no es válido.'
+          : 'Backup file is not valid.');
+        return;
+      }
+      const incoming = data.creations.filter(c => c && c.id && typeof c.content === 'string');
+      const existingIds = new Set(creations.map(c => c.id));
+      const newOnes = incoming.filter(c => !existingIds.has(c.id));
+      const msg = currentLang === 'es'
+        ? `¿Importar ${newOnes.length} creaciones nuevas? (Se conservan las que ya tienes.)`
+        : `Import ${newOnes.length} new creations? (Your existing ones will be kept.)`;
+      if (newOnes.length === 0) {
+        alert(currentLang === 'es'
+          ? 'Todas las creaciones del respaldo ya están en tu archivo.'
+          : 'All creations in this backup are already in your archive.');
+        return;
+      }
+      if (!confirm(msg)) return;
+      creations = [...newOnes, ...creations].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      await saveCreations();
+    
+      if (archive.classList.contains('open')) renderArchive();
+      const lbl = currentLang === 'es' ? 'Importar respaldo' : 'Import backup';
+      const flash = currentLang === 'es' ? '¡Importado!' : 'Imported!';
+      flashAction(importBtn, flash, lbl);
+      haptic(20);
+    } catch (err) {
+      alert((currentLang === 'es' ? 'Error al leer el archivo: ' : 'Couldn\'t read file: ') + err.message);
+    }
+  });
+  input.click();
+}
+
+// — Pad meta (no-op now; line/word counter removed) —
+function updatePadMeta() { /* removed by request */ }
+
+// — Last-saved indicator (briefly shows after auto-save) —
+function flashSavedAt() {
+  const el = document.getElementById('padSavedAt');
+  if (!el) return;
+  const isEs = currentLang === 'es';
+  const t = new Date().toLocaleTimeString(isEs ? 'es-MX' : 'en-US',
+    { hour: 'numeric', minute: '2-digit' });
+  el.textContent = (isEs ? 'Guardado · ' : 'Saved · ') + t;
+  el.classList.remove('fading');
+  clearTimeout(window._savedFadeTimer);
+  window._savedFadeTimer = setTimeout(() => el.classList.add('fading'), 2500);
+}
+
+// — Smart enter: double-Enter inserts a stanza separator —
+function maybeStanzaSeparator(e) {
+  if (e.key !== 'Enter') return false;
+  if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return false;
+  const before = pad.value.slice(0, pad.selectionStart);
+  if (before.endsWith('\n\n')) {
+    e.preventDefault();
+    const sep = '———\n';
+    const after = pad.value.slice(pad.selectionEnd);
+    const newPos = pad.selectionStart + sep.length;
+    pad.value = before + sep + after;
+    pad.setSelectionRange(newPos, newPos);
+    savePad();
+    updatePadMeta();
+    autoSaveLinked();
+    haptic(5);
+    return true;
+  }
+  return false;
+}
+
+// — Title helpers for creations —
+function getCreationTitle(c) {
+  if (c.title && c.title.trim()) return c.title.trim();
+  const first = (c.content || '').split('\n').find(l => l.trim());
+  if (!first) return currentLang === 'es' ? 'Sin título' : 'Untitled';
+  return first.trim().slice(0, 60);
+}
+
+// — Live phrase search panel —
+function openSearch() {
+  searchPanel.classList.add('open');
+  searchPanel.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('search-open');
+  setTimeout(() => searchInput.focus(), 280);
+  renderSearchResults();
+  haptic(8);
+}
+function closeSearch() {
+  searchPanel.classList.remove('open');
+  searchPanel.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('search-open');
+  searchInput.blur();
+}
+function renderSearchResults() {
+  const term = searchInput.value.trim().toLowerCase();
+  searchResults.innerHTML = '';
+  const isEs = currentLang === 'es';
+  if (!term) {
+    const hint = document.createElement('div');
+    hint.className = 'search-hint';
+    hint.textContent = isEs
+      ? 'Escribe cualquier palabra para ver todas las frases que la contienen.'
+      : 'Type any word to see all phrases that contain it.';
+    searchResults.appendChild(hint);
+    return;
+  }
+  const pool = currentLang === 'es' ? phrasesEs : phrases;
+  const seen = new Set();
+  const matches = [];
+  for (const p of pool) {
+    if (seen.has(p)) continue;
+    seen.add(p);
+    if (p.toLowerCase().includes(term)) matches.push(p);
+    if (matches.length >= 200) break;
+  }
+  if (matches.length === 0) {
+    const hint = document.createElement('div');
+    hint.className = 'search-hint';
+    hint.textContent = isEs ? 'Sin resultados.' : 'No matches.';
+    searchResults.appendChild(hint);
+    return;
+  }
+  // Count line
+  const count = document.createElement('div');
+  count.className = 'search-count';
+  count.textContent = matches.length >= 200
+    ? (isEs ? '200+ resultados — refina la búsqueda' : '200+ matches — narrow your search')
+    : (isEs ? `${matches.length} resultado${matches.length === 1 ? '' : 's'}` : `${matches.length} result${matches.length === 1 ? '' : 's'}`);
+  searchResults.appendChild(count);
+  // Highlight helper
+  const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`(${escapeRegex(term)})`, 'gi');
+  matches.forEach(phrase => {
+    const el = document.createElement('button');
+    el.className = 'search-result';
+    el.innerHTML = phrase.replace(re, '<mark>$1</mark>');
+    el.addEventListener('click', () => {
+      // Push as current phrase and close
+      history.push(phrase);
+      cursor = history.length - 1;
+      renderCurrent();
+      closeSearch();
+      haptic(15);
+    });
+    searchResults.appendChild(el);
+  });
+}
+
+// — Share an individual creation —
+async function shareCreation(c) {
+  const title = getCreationTitle(c);
+  const text = c.content;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, text });
+      haptic(10);
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(`${title}\n\n${text}`);
+    const isEs = currentLang === 'es';
+    alert(isEs ? 'Copiado al portapapeles' : 'Copied to clipboard');
+    haptic(10);
+  } catch (e) {}
+}
+
+// — Favorites & banished —
+async function loadFavorites() {
+  const v = await storageGet('favorites');
+  if (v) { try { favorites = new Set(JSON.parse(v)); } catch (e) { favorites = new Set(); } }
+}
+async function saveFavorites() { await storageSet('favorites', JSON.stringify([...favorites])); }
+async function loadBanished() {
+  const v = await storageGet('banished');
+  if (v) { try { banished = new Set(JSON.parse(v)); } catch (e) { banished = new Set(); } }
+}
+async function saveBanished() { await storageSet('banished', JSON.stringify([...banished])); }
+
+function isFavorited(phrase) { return favorites.has(phrase); }
+
+async function toggleFavoriteCurrent() {
+  if (cursor < 0) return;
+  const phrase = history[cursor];
+  if (favorites.has(phrase)) favorites.delete(phrase);
+  else favorites.add(phrase);
+  await saveFavorites();
+  applyFavoriteUI();
+  haptic(10);
+}
+
+async function banishCurrent() {
+  if (cursor < 0) return;
+  const phrase = history[cursor];
+  banished.add(phrase);
+  favorites.delete(phrase);
+  await saveBanished();
+  await saveFavorites();
+  buildMaster();
+  refillBag();
+  haptic(20);
+  rollNew();
+}
+
+function applyFavoriteUI() {
+  if (cursor < 0) return;
+  const phrase = history[cursor];
+  const fav = isFavorited(phrase);
+  phrasePill.classList.toggle('phrase-favorited', fav);
+  const isEs = currentLang === 'es';
+  const favIcon = document.getElementById('favoriteIcon');
+  const favLabel = document.getElementById('favoriteLabel');
+  if (favIcon) favIcon.textContent = fav ? '♥' : '♡';
+  if (favLabel) {
+    favLabel.textContent = fav
+      ? (isEs ? 'Quitar favorito' : 'Unfavorite')
+      : (isEs ? 'Favorito' : 'Favorite');
+  }
+}
+
+// — Settings —
+async function loadSettings() {
+  const v = await storageGet('settings');
+  if (v) { try { Object.assign(settings, JSON.parse(v)); } catch (e) {} }
+  applySettings();
+}
+async function saveSettings() { await storageSet('settings', JSON.stringify(settings)); }
+function applySettings() {
+  document.body.classList.toggle('dark', !!settings.dark);
+  document.body.classList.toggle('focus-mode', !!settings.focus);
+  document.documentElement.style.setProperty('--pad-font-scale', settings.fontScale);
+  const theme = settings.dark ? '#1a1410' : '#ebe1c8';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme);
+  const darkToggle = document.getElementById('darkModeToggle');
+  const focusToggle = document.getElementById('focusModeToggle');
+  const fontSlider = document.getElementById('fontSizeSlider');
+  if (darkToggle) darkToggle.checked = !!settings.dark;
+  if (focusToggle) focusToggle.checked = !!settings.focus;
+  if (fontSlider) fontSlider.value = settings.fontScale;
+  if (secondPillToggle) secondPillToggle.checked = !!settings.secondPill;
+  applySecondPillVisibility();
+}
+
+function openSettings() {
+  document.getElementById('settings').classList.add('open');
+  document.getElementById('settings').setAttribute('aria-hidden', 'false');
+  document.body.classList.add('settings-open');
+  renderBanishedList();
+  renderFavoritesList();
+  haptic(8);
+}
+function closeSettings() {
+  document.getElementById('settings').classList.remove('open');
+  document.getElementById('settings').setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('settings-open');
+}
+function toggleSettings() {
+  if (document.getElementById('settings').classList.contains('open')) closeSettings();
+  else openSettings();
+}
+
+// Close popup when clicking/tapping outside it
+document.addEventListener('pointerdown', (e) => {
+  const popup = document.getElementById('settings');
+  if (!popup.classList.contains('open')) return;
+  if (popup.contains(e.target)) return;
+  if (e.target.closest('#mainSettingsBtn')) return;
+  closeSettings();
+}, true);
+
+function renderBanishedList() {
+  const list = document.getElementById('banishedList');
+  if (!list) return;
+  list.innerHTML = '';
+  const isEs = currentLang === 'es';
+  if (banished.size === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'list-empty';
+    empty.textContent = isEs ? 'Ninguna por ahora.' : 'None yet.';
+    list.appendChild(empty);
+    return;
+  }
+  [...banished].sort().forEach(phrase => {
+    const chip = document.createElement('span');
+    chip.className = 'banished-chip';
+    chip.textContent = phrase;
+    const remove = document.createElement('button');
+    remove.className = 'chip-remove';
+    remove.textContent = '✕';
+    remove.addEventListener('click', async () => {
+      banished.delete(phrase);
+      await saveBanished();
+      buildMaster();
+      refillBag();
+      renderBanishedList();
+      haptic(5);
+    });
+    chip.appendChild(remove);
+    list.appendChild(chip);
+  });
+}
+
+function renderFavoritesList() {
+  const list = document.getElementById('favoritesList');
+  if (!list) return;
+  list.innerHTML = '';
+  const isEs = currentLang === 'es';
+  if (favorites.size === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'list-empty';
+    empty.textContent = isEs ? 'Ninguna por ahora.' : 'None yet.';
+    list.appendChild(empty);
+    return;
+  }
+  [...favorites].sort().forEach(phrase => {
+    const chip = document.createElement('span');
+    chip.className = 'favorite-chip';
+    chip.textContent = phrase;
+    const remove = document.createElement('button');
+    remove.className = 'chip-remove';
+    remove.textContent = '✕';
+    remove.addEventListener('click', async () => {
+      favorites.delete(phrase);
+      await saveFavorites();
+      renderFavoritesList();
+      applyFavoriteUI();
+      haptic(5);
+    });
+    chip.appendChild(remove);
+    list.appendChild(chip);
+  });
+}
+
+// — Second phrase pill (optional, toggled in settings) —
+let history2 = [];
+let cursor2 = -1;
+
+function getSecondPhrase() {
+  return cursor2 < 0 ? null : history2[cursor2];
+}
+
+function rollSecondPill() {
+  if (!masterPhrases.length) return;
+  // Pick a phrase distinct from pill 1's current and the current pill 2 phrase
+  const blocked = new Set([getSecondPhrase(), history[cursor]].filter(Boolean));
+  let next = null;
+  for (let i = 0; i < 12; i++) {
+    const candidate = masterPhrases[Math.floor(Math.random() * masterPhrases.length)];
+    if (!blocked.has(candidate)) { next = candidate; break; }
+  }
+  if (!next) next = masterPhrases[Math.floor(Math.random() * masterPhrases.length)];
+  // Truncate any forward stack, then push and advance cursor
+  history2 = history2.slice(0, cursor2 + 1);
+  history2.push(next);
+  cursor2 = history2.length - 1;
+  renderSecondCurrent();
+  haptic(8);
+}
+
+function goBack2() {
+  if (cursor2 > 0) {
+    cursor2--;
+    renderSecondCurrent();
+    haptic(6);
+  }
+}
+
+function goForward2() {
+  if (cursor2 < history2.length - 1) {
+    cursor2++;
+    renderSecondCurrent();
+    haptic(6);
+  }
+}
+
+function renderSecondCurrent() {
+  phraseEl2.classList.add('fading');
+  setTimeout(() => {
+    phraseEl2.textContent = history2[cursor2];
+    updateNavStates2();
+    phraseEl2.classList.remove('fading');
+  }, 140);
+}
+
+function updateNavStates2() {
+  if (prevBtn2) prevBtn2.disabled = cursor2 <= 0;
+  if (nextBtn2) nextBtn2.disabled = cursor2 >= history2.length - 1;
+}
+
+function addSecondCurrent() {
+  const phrase = getSecondPhrase();
+  if (!phrase) return;
+  addPhraseToPad(phrase, addBtn2);
+}
+
+function applySecondPillVisibility() {
+  document.body.classList.toggle('has-second-pill', !!settings.secondPill);
+  if (settings.secondPill && cursor2 < 0) {
+    rollSecondPill();
+  }
+}
+
+// — Pill long-press menu (banish / favorite) —
+let pillPressTimer = null;
+let pillPressFired = false;
+function setupPillLongPress() {
+  const menu = document.getElementById('pillMenu');
+  phrasePill.addEventListener('touchstart', (e) => {
+    // Don't start long-press detection if touch began on the + button
+    if (e.target.closest('#addBtn')) return;
+    pillPressFired = false;
+    clearTimeout(pillPressTimer);
+    pillPressTimer = setTimeout(() => {
+      pillPressFired = true;
+      showPillMenu();
+    }, 550);
+  }, { passive: true });
+  phrasePill.addEventListener('touchmove', () => clearTimeout(pillPressTimer), { passive: true });
+  phrasePill.addEventListener('touchend', () => clearTimeout(pillPressTimer));
+  phrasePill.addEventListener('touchcancel', () => clearTimeout(pillPressTimer));
+  phrasePill.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    showPillMenu();
+  });
+  document.addEventListener('click', (e) => {
+    if (menu.classList.contains('open') && !menu.contains(e.target) && e.target !== phrasePill) {
+      hidePillMenu();
+    }
+  });
+}
+function showPillMenu() {
+  applyFavoriteUI();
+  const menu = document.getElementById('pillMenu');
+  const rect = phrasePill.getBoundingClientRect();
+  const menuW = 220;
+  const left = Math.max(12, Math.min(window.innerWidth - menuW - 12, rect.left + rect.width / 2 - menuW / 2));
+  const top = rect.bottom + 8;
+  menu.style.left = left + 'px';
+  menu.style.top = top + 'px';
+  menu.classList.add('open');
+  menu.setAttribute('aria-hidden', 'false');
+  haptic(20);
+}
+function hidePillMenu() {
+  const menu = document.getElementById('pillMenu');
+  menu.classList.remove('open');
+  menu.setAttribute('aria-hidden', 'true');
+}
+
+// Init
+(async () => {
+  await loadLang();
+  await loadSettings();
+  await loadPad();
+  await loadCreations();
+  await loadFavorites();
+  await loadBanished();
+  buildMaster();
+  refillBag();
+  applyLanguageUI();
+  setupPillLongPress();
+  setupAddDrag(addBtn, () => cursor < 0 ? null : history[cursor]);
+  setupAddDrag(addBtn2, () => getSecondPhrase());
+  setupPillMouseDrag(phrasePill, () => cursor < 0 ? null : history[cursor]);
+  setupPillMouseDrag(phrasePill2, () => getSecondPhrase());
+  updatePadMeta();
+  rollNew();
+})();
+
+// Language toggle handlers
+langBtns.forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+});
+
+// Archive open/close + save/new + export/import
+archiveBtn.addEventListener('click', openArchive);
+archiveCloseBtn.addEventListener('click', closeArchive);
+archiveBackdrop.addEventListener('click', closeArchive);
+saveBtn.addEventListener('click', saveCurrent);
+newBtn.addEventListener('click', startNew);
+exportBtn.addEventListener('click', exportBackup);
+importBtn.addEventListener('click', importBackup);
+
+// Search panel
+searchBtn.addEventListener('click', openSearch);
+searchCloseBtn.addEventListener('click', closeSearch);
+searchInput.addEventListener('input', renderSearchResults);
+
+// Settings
+mainSettingsBtn.addEventListener('click', toggleSettings);
+settingsBackBtn.addEventListener('click', closeSettings);
+
+// Focus mode exit button
+document.getElementById('focusExitBtn').addEventListener('click', async () => {
+  settings.focus = false;
+  applySettings();
+  await saveSettings();
+  haptic(8);
+});
+darkModeToggle.addEventListener('change', async () => {
+  settings.dark = darkModeToggle.checked;
+  applySettings();
+  await saveSettings();
+  haptic(8);
+});
+focusModeToggle.addEventListener('change', async () => {
+  settings.focus = focusModeToggle.checked;
+  applySettings();
+  await saveSettings();
+  haptic(8);
+});
+secondPillToggle.addEventListener('change', async () => {
+  settings.secondPill = secondPillToggle.checked;
+  applySettings();
+  await saveSettings();
+  haptic(8);
+});
+fontSizeSlider.addEventListener('input', async () => {
+  settings.fontScale = parseFloat(fontSizeSlider.value);
+  applySettings();
+});
+fontSizeSlider.addEventListener('change', async () => {
+  await saveSettings();
+  haptic(5);
+});
+
+// Archive search
+archiveSearch.addEventListener('input', () => {
+  archiveSearchTerm = archiveSearch.value;
+  renderArchive();
+});
+
+// Undo toast
+undoBtn.addEventListener('click', undoLastAdd);
+
+// Pill menu actions
+favoriteAction.addEventListener('click', () => {
+  toggleFavoriteCurrent();
+  hidePillMenu();
+});
+banishAction.addEventListener('click', () => {
+  banishCurrent();
+  hidePillMenu();
+});
+
+// — Touch interactions —
+// Tap pill = new phrase. Swipe right = back. Swipe left = forward. Swipe up = add to sheet.
+function attachSwipe(el, handlers, tapHandler) {
+  let startX = 0, startY = 0, startT = 0;
+  let moved = false;
+  let swiped = false;
+  let horizontal = false;
+  const MOVE_THRESHOLD = 8;     // px of finger movement to count as moving
+  const SWIPE_THRESHOLD = 42;   // px of total displacement to register a swipe
+  const TIME_LIMIT = 800;       // ms max for a swipe
+  const DRAG_DAMP = 0.55;        // how much of the finger movement the pill follows
+
+  function setDrag(dx) {
+    el.style.transition = 'none';
+    el.style.transform = `translateX(${dx * DRAG_DAMP}px)`;
+  }
+  function snapBack() {
+    el.style.transition = 'transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1)';
+    el.style.transform = '';
+  }
+
+  el.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    // Don't engage swipe if touch began on the + button (it's the drag-to-place gesture)
+    if (e.target.closest('#addBtn')) return;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    startT = Date.now();
+    moved = false;
+    swiped = false;
+    horizontal = false;
+  }, { passive: true });
+
+  el.addEventListener('touchmove', (e) => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    if (absX > MOVE_THRESHOLD || absY > MOVE_THRESHOLD) moved = true;
+    if (!moved) return;
+
+    if (!horizontal && absY > absX && dy < -MOVE_THRESHOLD) {
+      // Up swipe (for add)
+      el.classList.add('swipe-up');
+      el.style.transform = '';
+    } else {
+      // Horizontal drag — phrase follows the finger
+      horizontal = true;
+      el.classList.remove('swipe-up');
+      setDrag(dx);
+    }
+  }, { passive: true });
+
+  el.addEventListener('touchend', (e) => {
+    el.classList.remove('swipe-up');
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    const dt = Date.now() - startT;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+
+    if (!moved || dt > TIME_LIMIT) {
+      snapBack();
+      return;
+    }
+
+    if (absX > absY && absX > SWIPE_THRESHOLD) {
+      swiped = true;
+      e.preventDefault();
+      snapBack();
+      if (dx > 0) handlers.right && handlers.right();
+      else handlers.left && handlers.left();
+      haptic(8);
+    } else if (absY > absX && absY > SWIPE_THRESHOLD) {
+      snapBack();
+      if (dy < 0 && handlers.up) {
+        swiped = true;
+        e.preventDefault();
+        handlers.up();
+        haptic(15);
+      }
+    } else {
+      snapBack();
+    }
+  });
+
+  el.addEventListener('touchcancel', () => {
+    el.classList.remove('swipe-up');
+    snapBack();
+  });
+
+  // Click only fires if it wasn't a swipe.
+  el.addEventListener('click', (e) => {
+    if (swiped) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      swiped = false;
+      return;
+    }
+    if (e.target.closest('#addBtn')) return;
+    tapHandler && tapHandler(e);
+  });
+
+  // Wheel / trackpad for desktop — one notch per scroll, rate-limited
+  let wheelLock = false;
+  el.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (wheelLock) return;
+    const horiz = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+    const delta = horiz ? e.deltaX : e.deltaY;
+    if (Math.abs(delta) < 6) return;
+    wheelLock = true;
+    setTimeout(() => { wheelLock = false; }, 220);
+    if (delta > 0) handlers.left && handlers.left();   // scroll down/right → forward
+    else handlers.right && handlers.right();           // scroll up/left → back
+  }, { passive: false });
+}
+
+// — iOS keyboard handling —
+// When the iOS keyboard appears, the viewport shrinks. Use visualViewport
+// to keep the lyric pad and copy button visible.
+function adjustForKeyboard() {
+  if (!window.visualViewport) return;
+  const vh = window.visualViewport.height;
+  document.documentElement.style.setProperty('--app-h', vh + 'px');
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', adjustForKeyboard);
+  window.visualViewport.addEventListener('scroll', adjustForKeyboard);
+  adjustForKeyboard();
+}
+
+// Events
+attachSwipe(phrasePill, {
+  right: goBack,    // swipe right = back through history
+  left: goForward,  // swipe left = forward through history
+  up: addCurrent    // swipe up = add to sheet
+}, rollNew);
+
+// Pill 2 (optional): swipe left/right navigates pill 2's history, tap rolls, swipe up adds
+attachSwipe(phrasePill2, {
+  right: goBack2,
+  left: goForward2,
+  up: addSecondCurrent
+}, rollSecondPill);
+
+prevBtn2.addEventListener('click', goBack2);
+nextBtn2.addEventListener('click', goForward2);
+
+addBtn2.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (addBtn2._wasDragging) {
+    addBtn2._wasDragging = false;
+    return;
+  }
+  addSecondCurrent();
+});
+
+prevBtn.addEventListener('click', goBack);
+nextBtn.addEventListener('click', goForward);
+addBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (addBtn._wasDragging) {
+    addBtn._wasDragging = false;
+    return;
+  }
+  addCurrent();
+});
+copyBtn.addEventListener('click', copyAll);
+
+pad.addEventListener('input', () => {
+  clearTimeout(window._padSaveTimer);
+  window._padSaveTimer = setTimeout(savePad, 400);
+  updatePadMeta();
+  autoSaveLinked();
+});
+
+pad.addEventListener('keydown', (e) => {
+  maybeStanzaSeparator(e);
+});
+
+document.addEventListener('keydown', (e) => {
+  // Close menus/panels on Escape regardless of focus
+  if (e.key === 'Escape') {
+    if (searchPanel.classList.contains('open')) {
+      e.preventDefault();
+      closeSearch();
+      return;
+    }
+    if (document.getElementById('settings').classList.contains('open')) {
+      e.preventDefault();
+      closeSettings();
+      return;
+    }
+    if (archive.classList.contains('open')) {
+      e.preventDefault();
+      closeArchive();
+      return;
+    }
+    if (document.getElementById('pillMenu').classList.contains('open')) {
+      e.preventDefault();
+      hidePillMenu();
+      return;
+    }
+  }
+  if (document.activeElement === pad) return;
+  if (document.activeElement === archiveSearch) return;
+  if (document.activeElement === searchInput) return;
+  // Don't trigger phrase shortcuts while panels are open
+  if (archive.classList.contains('open')) return;
+  if (searchPanel.classList.contains('open')) return;
+  if (document.getElementById('settings').classList.contains('open')) return;
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    rollNew();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    addCurrent();
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    goBack();
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    goForward();
+  }
+});
+</script>
+</body>
+</html>

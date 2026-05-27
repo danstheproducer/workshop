@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Apps">
+<meta name="theme-color" content="#ebe1c8">
+<title>Apps</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23ebe1c8'/><text x='32' y='44' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='32' font-style='italic' fill='%239c2918'>D</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ebe1c8;
+    --ink: #1c1410;
+    --ink-soft: #4a3a2a;
+    --ink-faint: #8a7660;
+    --accent: #9c2918;
+    --line: rgba(28, 20, 16, 0.18);
+    --card-bg: rgba(28, 20, 16, 0.025);
+  }
+  body.dark {
+    --bg: #1a1410;
+    --ink: #ebe1c8;
+    --ink-soft: #c5b598;
+    --ink-faint: #8a7660;
+    --accent: #d96a52;
+    --line: rgba(235, 225, 200, 0.18);
+    --card-bg: rgba(235, 225, 200, 0.035);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    transition: background 0.3s ease, color 0.3s ease;
+    position: relative;
+  }
+
+  /* Subtle paper grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 20% 30%, rgba(28,20,16,0.025) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 70%, rgba(28,20,16,0.02) 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: max(2.5rem, env(safe-area-inset-top) + 2rem) 1.5rem max(2.5rem, env(safe-area-inset-bottom) + 1.5rem);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    gap: 1rem;
+  }
+
+  .brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.005em;
+    line-height: 1;
+  }
+  .brand-mark {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .dark-toggle {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+  }
+  .dark-toggle:hover { color: var(--ink); border-color: var(--ink-soft); }
+  .dark-toggle:active { transform: scale(0.92); }
+
+  .intro {
+    margin-bottom: 2.25rem;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2.2rem, 7vw, 3.4rem);
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+  }
+  .tagline {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.05rem, 3vw, 1.3rem);
+    color: var(--ink-soft);
+    max-width: 38ch;
+    line-height: 1.45;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    flex: 1;
+  }
+  @media (min-width: 560px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.35rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.08s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 130px;
+  }
+  .card:hover {
+    border-color: var(--ink-soft);
+    background: rgba(28, 20, 16, 0.04);
+  }
+  body.dark .card:hover {
+    background: rgba(235, 225, 200, 0.05);
+  }
+  .card:active { transform: scale(0.985); }
+
+  .card-name {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: 1.55rem;
+    letter-spacing: -0.005em;
+    line-height: 1.1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+  }
+  .card-name-accent {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 600;
+  }
+  .card-desc {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    font-style: italic;
+  }
+  .card-meta {
+    margin-top: auto;
+    padding-top: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--ink-faint);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .card:hover .card-arrow {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  /* Placeholder cards for future apps */
+  .card-placeholder {
+    border-style: dashed;
+    opacity: 0.55;
+    pointer-events: none;
+    cursor: default;
+  }
+  .card-placeholder .card-name { color: var(--ink-faint); }
+  .card-placeholder .card-name-accent { color: var(--ink-faint); font-style: normal; }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <div class="brand">
+      <span class="brand-mark">D</span>ead Zero Records
+    </div>
+    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="intro">
+    <h1>Workshop</h1>
+    <div class="tagline">A collection of tools, instruments, and experiments — built by hand.</div>
+  </div>
+
+  <div class="section-label">Apps</div>
+
+  <div class="grid">
+
+    <a href="lyric.html" class="card">
+      <div class="card-name">
+        <span class="card-name-accent">L</span><span>yric</span>
+      </div>
+      <div class="card-desc">Phrase generator and lyric sheet for writing songs in English and Spanish.</div>
+      <div class="card-meta">
+        <span>v1 · songwriting</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Add new apps by copying the <a> block above and changing href, name, description -->
+
+    <div class="card card-placeholder">
+      <div class="card-name">More soon</div>
+      <div class="card-desc">New tools land here as they're built.</div>
+      <div class="card-meta">
+        <span>—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Built in Guadalajara · Ciudad de México</footer>
+</div>
+
+<script>
+  // Dark mode persistence
+  const KEY = 'dzr-workshop-dark';
+  const darkToggle = document.getElementById('darkToggle');
+
+  function apply(dark) {
+    document.body.classList.toggle('dark', dark);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', dark ? '#1a1410' : '#ebe1c8');
+  }
+
+  // Initial: saved preference, or follow system
+  let saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+  if (saved === '1') apply(true);
+  else if (saved === '0') apply(false);
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) apply(true);
+
+  darkToggle.addEventListener('click', () => {
+    const next = !document.body.classList.contains('dark');
+    apply(next);
+    try { localStorage.setItem(KEY, next ? '1' : '0'); } catch(e) {}
+  });
+</script>
+</body>
+</html>
