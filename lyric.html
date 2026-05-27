@@ -4454,6 +4454,112 @@ document.addEventListener('keydown', (e) => {
     goForward();
   }
 });
+
+// — Pull-to-refresh —
+// In standalone PWA mode, the browser's pull-to-refresh is gone, so we
+// implement our own. Pulling down from anywhere outside the editable pad
+// reveals an indicator; releasing past the threshold reloads the page.
+(function setupPullToRefresh() {
+  const indicator = document.getElementById('pullRefresh');
+  if (!indicator) return;
+  const icon = indicator.querySelector('.pull-refresh-icon');
+
+  const THRESHOLD = 70;     // px of effective pull required to trigger
+  const MAX_PULL = 140;     // visual cap
+  const MIN_START = 6;      // ignore tiny jitters so horizontal swipes don't trigger
+  const RESISTANCE = 2.2;   // higher = stiffer pull
+
+  let startY = null;
+  let startX = null;
+  let pulled = 0;
+  let isPulling = false;
+  let cancelled = false;
+
+  function panelOpen() {
+    return document.body.classList.contains('archive-open')
+        || document.body.classList.contains('search-open')
+        || document.body.classList.contains('settings-open');
+  }
+
+  function setVisual(delta) {
+    const d = Math.min(delta, MAX_PULL);
+    const progress = d / THRESHOLD;
+    const yPct = -160 + Math.min(progress * 170, 200);
+    const opacity = Math.min(d / 28, 1);
+    indicator.style.transform = `translateX(-50%) translateY(${yPct}%)`;
+    indicator.style.opacity = opacity;
+    if (icon) icon.style.transform = `rotate(${Math.min(d * 2.4, 360)}deg)`;
+    indicator.classList.toggle('ready', d >= THRESHOLD);
+  }
+
+  function reset() {
+    indicator.classList.remove('pulling', 'ready');
+    indicator.style.transform = '';
+    indicator.style.opacity = '';
+    if (icon) icon.style.transform = '';
+  }
+
+  function trigger() {
+    indicator.classList.remove('pulling', 'ready');
+    indicator.classList.add('refreshing');
+    indicator.style.transform = 'translateX(-50%) translateY(20%)';
+    indicator.style.opacity = '1';
+    if (icon) icon.style.transform = '';
+    setTimeout(() => location.reload(), 280);
+  }
+
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    if (panelOpen()) return;
+    // Don't start a pull from inside the editable pad — it's used for typing
+    if (e.target.closest && e.target.closest('.pad')) return;
+    startY = e.touches[0].clientY;
+    startX = e.touches[0].clientX;
+    pulled = 0;
+    isPulling = false;
+    cancelled = false;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (startY === null || cancelled) return;
+    const t = e.touches[0];
+    const dy = t.clientY - startY;
+    const dx = t.clientX - startX;
+    // If the gesture is clearly horizontal, hand it off (let phrase-pill swipes win)
+    if (!isPulling && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > MIN_START) {
+      cancelled = true;
+      reset();
+      return;
+    }
+    if (dy <= MIN_START) {
+      if (isPulling) { reset(); isPulling = false; }
+      return;
+    }
+    pulled = (dy - MIN_START) / RESISTANCE;
+    if (!isPulling) {
+      isPulling = true;
+      indicator.classList.add('pulling');
+    }
+    setVisual(pulled);
+  }, { passive: true });
+
+  function endPull() {
+    if (startY === null) return;
+    if (!cancelled && pulled >= THRESHOLD) {
+      trigger();
+    } else {
+      reset();
+    }
+    startY = null;
+    startX = null;
+    pulled = 0;
+    isPulling = false;
+    cancelled = false;
+  }
+
+  document.addEventListener('touchend', endPull, { passive: true });
+  document.addEventListener('touchcancel', endPull, { passive: true });
+})();
 </script>
 </body>
 </html>
