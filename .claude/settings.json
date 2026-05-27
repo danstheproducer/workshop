@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git add -A && (git diff --cached --quiet || (git commit -m \"auto: update via Claude Code\" && git push))",
+            "statusMessage": "Auto-committing and pushing…"
+          }
+        ]
+      }
+    ]
+  }
+}
