@@ -102,6 +102,7 @@
   html, body {
     height: 100%;
     overscroll-behavior: none;
+    overflow: hidden;
   }
 
   body {
@@ -149,8 +150,10 @@
     height: 100vh;
     height: 100dvh;
     height: var(--app-h, 100dvh);
+    max-height: var(--app-h, 100dvh);
     gap: 1.25rem;
     min-width: 0;
+    overflow: hidden;
   }
 
   .phrase-section {
@@ -1472,11 +1475,11 @@
 
     /* Constrain the corner-icon frame to the phone shape on desktop so the buttons sit at the frame's edges, not the whole viewport's edges */
     .frame-overlay {
+      inset: auto;
       top: 50%;
       left: 50%;
       right: auto;
       bottom: auto;
-      inset: auto;
       width: 100%;
       max-width: 430px;
       height: calc(100vh - 3rem);
