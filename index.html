@@ -112,41 +112,82 @@
     margin-bottom: 0.65rem;
   }
 
-  /* — Project list — */
+  /* — Project list (app-card rows) — */
   .projects {
     display: flex;
     flex-direction: column;
   }
   .row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: 1rem;
-    padding: 0.85rem 0.65rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 0.95rem 0.65rem;
     border-top: 1px solid var(--line);
     color: inherit;
     text-decoration: none;
-    transition: background 0.12s ease, color 0.12s ease;
+    transition: background 0.15s ease;
   }
   .row:last-child { border-bottom: 1px solid var(--line); }
-  a.row:hover { background: var(--ink); color: var(--bg); }
-  a.row:hover .row-meta { color: var(--bg); opacity: 0.7; }
+  a.row:hover { background: rgba(12, 10, 9, 0.035); }
+  body.dark a.row:hover { background: rgba(245, 245, 244, 0.05); }
 
+  .row-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .row-icon svg, .row-icon img { width: 100%; height: 100%; display: block; }
+  .row-icon-empty {
+    border: 1px dashed var(--line);
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+  }
+
+  .row-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
   .row-name {
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
-  .row-name::before { content: '['; opacity: 0.4; margin-right: 0.6ch; }
-  .row-name::after { content: ']'; opacity: 0.4; margin-left: 0.6ch; }
   .row-meta {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--ink-soft);
-    text-align: right;
-    transition: color 0.12s ease, opacity 0.12s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .row-placeholder { opacity: 0.5; pointer-events: none; }
+  .row-arrow {
+    color: var(--ink-faint);
+    font-size: 1.05rem;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+  a.row:hover .row-arrow {
+    color: var(--ink);
+    transform: translateX(3px);
+  }
+
+  .row-placeholder { opacity: 0.55; pointer-events: none; }
   .row-placeholder .row-name { color: var(--ink-faint); }
+
+  @media (max-width: 480px) {
+    .row { gap: 0.9rem; padding: 0.85rem 0.5rem; }
+    .row-icon { width: 44px; height: 44px; }
+    .row-name { font-size: 0.98rem; }
+    .row-meta { font-size: 0.7rem; }
+  }
 
   /* — Footer — */
   footer {
