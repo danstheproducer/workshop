@@ -109,12 +109,14 @@
     background: var(--bg);
     color: var(--ink);
     font-family: 'EB Garamond', Georgia, serif;
-    position: relative;
+    /* Anchored to the viewport so the on-screen keyboard simply OVERLAYS the
+       layout (footer stays put, covered by the keyboard) instead of lifting or
+       reflowing the page. iOS cannot scroll a fixed body, which kills the
+       old "stuck lifted" bug without moving the buttons. */
+    position: fixed;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: var(--app-h, 100dvh);
-    max-height: var(--app-h, 100dvh);
   }
 
   body::after {
