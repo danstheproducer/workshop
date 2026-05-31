@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf6e3"/>
+      <stop offset="1" stop-color="#f3e6c4"/>
+    </linearGradient>
+    <linearGradient id="barrel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0d9488"/>
+    </linearGradient>
+    <linearGradient id="grip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#334155"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#94a3b8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="250" r="180" fill="#ffffff" opacity="0.08"/>
+
+  <!-- lyric sheet -->
+  <g>
+    <rect x="84" y="318" width="376" height="100" rx="16" fill="url(#paper)"/>
+    <!-- text/staff lines -->
+    <line x1="120" y1="346" x2="372" y2="346" stroke="#c4a86a" stroke-width="6" stroke-linecap="round"/>
+    <line x1="120" y1="372" x2="408" y2="372" stroke="#c4a86a" stroke-width="6" stroke-linecap="round"/>
+    <line x1="120" y1="398" x2="320" y2="398" stroke="#c4a86a" stroke-width="6" stroke-linecap="round"/>
+    <!-- a little quarter note on the sheet -->
+    <g fill="#9333ea">
+      <ellipse cx="372" cy="398" rx="15" ry="11" transform="rotate(-20 372 398)"/>
+      <rect x="384" y="350" width="6" height="50"/>
+      <path d="M384 350 q26 6 22 34 q-6 -22 -22 -22 z"/>
+    </g>
+  </g>
+
+  <!-- flying accents: a note + ink flecks -->
+  <g fill="#fde68a">
+    <ellipse cx="150" cy="268" rx="13" ry="9" transform="rotate(-20 150 268)"/>
+    <rect x="161" y="228" width="5" height="42"/>
+    <path d="M161 228 q22 5 18 28 q-5 -18 -18 -18 z"/>
+  </g>
+  <circle cx="392" cy="276" r="9" fill="#fbcfe8"/>
+  <circle cx="338" cy="244" r="6" fill="#fef3c7"/>
+
+  <!-- fountain pen -->
+  <g transform="translate(256,300) rotate(20)">
+    <rect x="-15" y="-250" width="30" height="184" rx="15" fill="url(#barrel)"/>
+    <rect x="-15" y="-250" width="10" height="184" rx="5" fill="#ffffff" opacity="0.18"/>
+    <!-- cap band -->
+    <rect x="-15" y="-168" width="30" height="14" fill="#fcd34d"/>
+    <!-- clip -->
+    <rect x="7" y="-246" width="7" height="58" rx="3.5" fill="#fcd34d"/>
+    <!-- grip cone -->
+    <path d="M-15 -70 L15 -70 L10 -42 L-10 -42 Z" fill="url(#grip)"/>
+    <!-- nib -->
+    <path d="M-13 -44 L13 -44 L5 26 Q0 36 -5 26 Z" fill="url(#steel)" stroke="#64748b" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="0" y1="-18" x2="0" y2="20" stroke="#64748b" stroke-width="3"/>
+    <circle cx="0" cy="-18" r="4.5" fill="#64748b"/>
+  </g>
+</svg>
