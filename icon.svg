@@ -38,11 +38,15 @@
   <path d="M318 244 l20 6 -12 16 z" fill="#fef3c7"/>
 
   <!-- axe -->
-  <g transform="translate(264,300) rotate(26)">
-    <rect x="-14" y="-256" width="28" height="240" rx="14" fill="url(#handle)"/>
-    <rect x="-14" y="-256" width="10" height="240" rx="5" fill="#ffffff" opacity="0.18"/>
-    <path d="M-24 -64 L26 -76 C72 -60 80 6 40 48 L-24 32 Z" fill="url(#steel)" stroke="#64748b" stroke-width="3"/>
-    <rect x="-24" y="-62" width="20" height="92" rx="9" fill="#64748b" opacity="0.32"/>
-    <path d="M30 -62 C72 -50 80 8 40 46" fill="none" stroke="#f8fafc" stroke-width="6" opacity="0.7"/>
+  <g transform="translate(252,300) rotate(24)">
+    <rect x="-13" y="-258" width="26" height="232" rx="13" fill="url(#handle)"/>
+    <rect x="-13" y="-258" width="9" height="232" rx="5" fill="#ffffff" opacity="0.18"/>
+    <!-- hatchet head: cutting bit flares to one side -->
+    <path d="M-30 -54 L10 -62 C68 -50 88 10 48 56 L2 66 C-16 50 -30 24 -32 -10 Z"
+          fill="url(#steel)" stroke="#64748b" stroke-width="3" stroke-linejoin="round"/>
+    <!-- poll / eye near the handle -->
+    <path d="M-30 -54 L10 -62 10 -34 -28 -26 Z" fill="#64748b" opacity="0.28"/>
+    <!-- bright cutting edge -->
+    <path d="M42 -42 C74 -22 80 24 46 54" fill="none" stroke="#f8fafc" stroke-width="7" opacity="0.8" stroke-linecap="round"/>
   </g>
 </svg>
