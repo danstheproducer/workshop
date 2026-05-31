@@ -315,6 +315,62 @@
     apply(next);
     try { localStorage.setItem(KEY, next ? '1' : '0'); } catch(e) {}
   });
+
+  // Pull-to-refresh — reload when installed to the Home Screen (a standalone
+  // app has no browser refresh button). Pull down from the top and release.
+  (function () {
+    const THRESHOLD = 70;
+    const ptr = document.createElement('div');
+    ptr.className = 'ptr';
+    ptr.innerHTML = '<svg class="ptr-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>';
+    document.body.appendChild(ptr);
+
+    const scroller = document.scrollingElement || document.documentElement;
+    const EXCLUDE = 'textarea, input, select, [contenteditable="true"]';
+    let startY = 0, pulling = false, ready = false;
+
+    function reset() {
+      ptr.classList.add('animate');
+      ptr.classList.remove('ready');
+      ptr.style.opacity = '';
+      ptr.style.transform = '';
+      ready = false;
+      setTimeout(() => ptr.classList.remove('animate'), 260);
+    }
+
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      if ((scroller.scrollTop || window.scrollY || 0) > 0) return;     // only from the very top
+      if (e.target.closest && e.target.closest(EXCLUDE)) return;
+      startY = e.touches[0].clientY;
+      pulling = true;
+      ptr.classList.remove('animate');
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!pulling) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy <= 0) { pulling = false; reset(); return; }              // moving up → let it scroll
+      e.preventDefault();                                              // suppress native bounce
+      ptr.style.opacity = String(Math.min(1, dy / 45));
+      ptr.style.transform = 'translateY(' + (-60 + Math.min(74, dy * 0.6)) + 'px)';
+      ready = dy >= THRESHOLD;
+      ptr.classList.toggle('ready', ready);
+    }, { passive: false });
+
+    function end() {
+      if (!pulling) return;
+      pulling = false;
+      if (ready) {
+        ptr.classList.add('animate', 'spin');
+        setTimeout(() => location.reload(), 150);
+      } else {
+        reset();
+      }
+    }
+    document.addEventListener('touchend', end, { passive: true });
+    document.addEventListener('touchcancel', end, { passive: true });
+  })();
 </script>
 </body>
 </html>
