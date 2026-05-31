@@ -4355,23 +4355,10 @@ function attachSwipe(el, handlers, tapHandler) {
   }, { passive: false });
 }
 
-// Keyboard handling: fit the app to the visible viewport via --app-h so the
-// virtual keyboard shrinks the layout (footer sits just above the keyboard)
-// instead of lifting the whole document up. Because the body is also capped at
-// --app-h, there's nothing taller than the visible area for iOS to scroll —
-// so the app can't get "stuck lifted." We only listen to resize (keyboard
-// open/close), NOT scroll, so the user's own scrolling/the textarea's internal
-// scroll stays free and smooth while the keyboard is open.
-(function () {
-  const vv = window.visualViewport;
-  if (!vv) return; // older browsers fall back to the 100dvh default
-  const root = document.documentElement;
-  function fit() {
-    root.style.setProperty('--app-h', vv.height + 'px');
-  }
-  vv.addEventListener('resize', fit);
-  fit();
-})();
+// Keyboard handling: none needed in JS. The body is position:fixed/inset:0, so
+// the virtual keyboard overlays the layout without lifting or reflowing it —
+// the footer buttons stay anchored at the bottom (covered by the keyboard) and
+// the textarea scrolls internally so you can read what you type.
 
 // Events
 attachSwipe(phrasePill, {
