@@ -198,6 +198,38 @@
     .topbar { font-size: 0.66rem; letter-spacing: 0.14em; }
     .brand { gap: 0.5rem; }
   }
+
+  /* — Pull-to-refresh (for Home Screen / standalone app) — */
+  .ptr {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    margin-left: -18px;
+    z-index: 9999;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 14px rgba(12, 10, 9, 0.14);
+    opacity: 0;
+    transform: translateY(-60px);
+    pointer-events: none;
+  }
+  body.dark .ptr { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); }
+  .ptr.animate { transition: transform 0.25s ease, opacity 0.25s ease; }
+  .ptr-arrow {
+    width: 16px;
+    height: 16px;
+    color: var(--ink-soft);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .ptr.ready .ptr-arrow { transform: rotate(180deg); color: var(--ink); }
+  .ptr.spin .ptr-arrow { animation: ptr-spin 0.6s linear infinite; color: var(--ink); }
+  @keyframes ptr-spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
