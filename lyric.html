@@ -4477,9 +4477,10 @@ document.addEventListener('keydown', (e) => {
   let cancelled = false;
 
   function panelOpen() {
-    return document.body.classList.contains('archive-open')
-        || document.body.classList.contains('search-open')
-        || document.body.classList.contains('settings-open');
+    // Panels toggle `.open` on their own elements (not on <body>), so query them directly.
+    return !!document.querySelector(
+      '.search-panel.open, .archive.open, .settings-pop.open, #settings.open, .pill-menu.open'
+    );
   }
 
   function setVisual(delta) {
