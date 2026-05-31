@@ -4353,11 +4353,25 @@ function attachSwipe(el, handlers, tapHandler) {
   }, { passive: false });
 }
 
-// Keyboard handling: intentionally none. We use 100dvh for the container
-// (via --app-h fallback) which stays stable when the virtual keyboard opens,
-// so the phrase pills, sheet outline, and footer buttons don't shift. The
-// keyboard simply overlays the bottom of the layout; the textarea's own
-// internal scroll keeps the caret visible while typing.
+// Keyboard handling: fit the app to the visible viewport via --app-h so the
+// virtual keyboard shrinks the layout (footer sits just above the keyboard)
+// instead of scrolling the whole document up — which on iOS would otherwise
+// stay lifted after the keyboard closes. The textarea's own internal scroll
+// keeps the caret visible while typing.
+(function () {
+  const vv = window.visualViewport;
+  if (!vv) return; // older browsers fall back to the 100dvh default
+  const root = document.documentElement;
+  function fit() {
+    root.style.setProperty('--app-h', vv.height + 'px');
+    // iOS scrolls the document to reveal the focused field and doesn't
+    // restore it; keep the page pinned so the app can't stay lifted.
+    if (window.scrollY !== 0) window.scrollTo(0, 0);
+  }
+  vv.addEventListener('resize', fit);
+  vv.addEventListener('scroll', fit);
+  fit();
+})();
 
 // Events
 attachSwipe(phrasePill, {
