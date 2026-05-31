@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8782c"/>
+      <stop offset="1" stop-color="#965118"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b45309"/>
+      <stop offset="1" stop-color="#7c3a0a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="250" r="180" fill="#ffffff" opacity="0.08"/>
+
+  <!-- log -->
+  <g>
+    <rect x="86" y="320" width="372" height="96" rx="48" fill="url(#wood)"/>
+    <ellipse cx="92" cy="368" rx="30" ry="48" fill="#e0a45c"/>
+    <ellipse cx="92" cy="368" rx="18" ry="30" fill="none" stroke="#a86a22" stroke-width="6"/>
+    <ellipse cx="92" cy="368" rx="8" ry="14" fill="none" stroke="#a86a22" stroke-width="5"/>
+    <!-- chopped V notch -->
+    <path d="M214 320 L300 320 L257 374 Z" fill="#6b3d12"/>
+  </g>
+
+  <!-- chips -->
+  <path d="M150 262 l28 -6 -8 28 z" fill="#fde68a"/>
+  <path d="M398 288 l-26 -14 -2 28 z" fill="#fcd34d"/>
+  <path d="M318 244 l20 6 -12 16 z" fill="#fef3c7"/>
+
+  <!-- axe -->
+  <g transform="translate(264,300) rotate(26)">
+    <rect x="-14" y="-256" width="28" height="240" rx="14" fill="url(#handle)"/>
+    <rect x="-14" y="-256" width="10" height="240" rx="5" fill="#ffffff" opacity="0.18"/>
+    <path d="M-24 -64 L26 -76 C72 -60 80 6 40 48 L-24 32 Z" fill="url(#steel)" stroke="#64748b" stroke-width="3"/>
+    <rect x="-24" y="-62" width="20" height="92" rx="9" fill="#64748b" opacity="0.32"/>
+    <path d="M30 -62 C72 -50 80 8 40 46" fill="none" stroke="#f8fafc" stroke-width="6" opacity="0.7"/>
+  </g>
+</svg>
