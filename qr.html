@@ -332,6 +332,19 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
     });
     syncSwatches();
 
+    // Fit the code to the real leftover height so the input can never overlap it.
+    const stage = document.querySelector('.stage');
+    function fitCard() {
+      const gap = parseFloat(getComputedStyle(stage).rowGap) || 0;
+      const controls = swatchWrap.offsetHeight + save.offsetHeight + gap * 2;
+      const size = Math.max(150, Math.min(stage.clientWidth, stage.clientHeight - controls, 320));
+      document.documentElement.style.setProperty('--qr', size + 'px');
+    }
+    window.addEventListener('resize', fitCard);
+    window.addEventListener('orientationchange', fitCard);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCard);
+    fitCard();
+
     render();
   })();
 
