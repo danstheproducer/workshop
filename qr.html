@@ -128,7 +128,14 @@
     box-shadow: 0 6px 30px rgba(12, 10, 9, 0.10);
   }
   body.dark .card { box-shadow: 0 6px 30px rgba(0, 0, 0, 0.45); }
-  canvas#qr { width: 100%; height: 100%; image-rendering: pixelated; display: none; }
+  canvas#qr { display: none; }
+  img#qrimg {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    display: none;
+    -webkit-touch-callout: default;   /* allow the iOS "Save to Photos" long-press menu */
+  }
 
   /* — Color swatches — */
   .swatches { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
