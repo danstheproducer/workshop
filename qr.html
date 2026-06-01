@@ -273,7 +273,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       canvas.height = px;
       ctx.fillStyle = LIGHT;
       ctx.fillRect(0, 0, px, px);
-      ctx.fillStyle = DARK;
+      ctx.fillStyle = fg;
       for (let r = 0; r < n; r++) {
         for (let c = 0; c < n; c++) {
           if (qr.isDark(r, c)) {
@@ -281,8 +281,10 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
           }
         }
       }
+      // Hand the pixels to a real <img> so a long-press offers "Save to Photos".
+      img.src = canvas.toDataURL('image/png');
       hint.style.display = 'none';
-      canvas.style.display = 'block';
+      img.style.display = 'block';
       save.disabled = false;
     }
 
