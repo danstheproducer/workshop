@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="promo">
+<meta name="theme-color" content="#f5f5f4">
+<title>promo</title>
+<link rel="icon" type="image/svg+xml" href="promo-icon.svg">
+<link rel="apple-touch-icon" href="promo-apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f5f4; --ink: #0c0a09; --ink-soft: #57534e; --ink-faint: #a8a29e;
+    --line: rgba(12, 10, 9, 0.14);
+  }
+  body.dark {
+    --bg: #0c0a09; --ink: #f5f5f4; --ink-soft: #a8a29e; --ink-faint: #57534e;
+    --line: rgba(245, 245, 244, 0.16);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overscroll-behavior-y: contain; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .wrap {
+    max-width: 520px; margin: 0 auto; position: relative;
+    padding: max(1.5rem, env(safe-area-inset-top) + 1rem) 1.25rem max(2rem, env(safe-area-inset-bottom) + 1.5rem);
+    display: flex; flex-direction: column; gap: 1.1rem;
+  }
+  .dark-toggle {
+    position: absolute; top: max(1rem, env(safe-area-inset-top) + 0.5rem); right: 1.25rem; z-index: 5;
+    background: transparent; border: 1px solid var(--line); color: var(--ink);
+    width: 30px; height: 30px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  .dark-toggle:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+  h1 { font-weight: 700; font-size: clamp(1.8rem, 5.5vw, 2.4rem); letter-spacing: 0.04em; line-height: 1; }
+
+  /* — Preview — */
+  .stage { display: flex; justify-content: center; }
+  .cardbox { position: relative; display: inline-block; line-height: 0; }
+  #card {
+    display: block; max-width: 100%; max-height: 48vh;
+    border-radius: 6px; box-shadow: 0 8px 34px rgba(12,10,9,0.18);
+    cursor: pointer; background: #111;
+  }
+  body.dark #card { box-shadow: 0 8px 34px rgba(0,0,0,0.5); }
+  /* safe-zone guides (9:16 preview only) */
+  .guides { position: absolute; inset: 0; pointer-events: none; display: none; border-radius: 6px; overflow: hidden; }
+  .guides.on { display: block; }
+  .gband { position: absolute; left: 0; right: 0; box-sizing: border-box; }
+  .gband span {
+    position: absolute; left: 8px; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #fff; background: rgba(0,0,0,0.45); padding: 2px 5px; border-radius: 3px;
+  }
+  .gtop { top: 0; height: 13.5%; background: rgba(228,0,124,0.16); border-bottom: 1.5px dashed rgba(255,255,255,0.85); }
+  .gtop span { bottom: 4px; }
+  .gbot { bottom: 0; height: 20.3%; background: rgba(228,0,124,0.16); border-top: 1.5px dashed rgba(255,255,255,0.85); }
+  .gbot span { top: 4px; }
+
+  .status { min-height: 1em; font-size: 0.72rem; color: var(--ink-soft); text-align: center; letter-spacing: 0.02em; }
+
+  /* — Controls — */
+  .controls { display: flex; flex-direction: column; gap: 0.7rem; }
+  .field, .linkrow input {
+    width: 100%; background: transparent; color: var(--ink); font-family: inherit; font-size: 0.95rem;
+    border: 1px solid var(--line); border-radius: 2px; padding: 0.7rem 0.8rem; outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .field:focus, .linkrow input:focus { border-color: var(--ink-soft); }
+  .field::placeholder, .linkrow input::placeholder { color: var(--ink-faint); }
+  .linkrow { display: flex; gap: 0.5rem; }
+  .linkrow input { flex: 1; }
+  .ghost {
+    background: transparent; border: 1px solid var(--ink); color: var(--ink); font-family: inherit;
+    font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; padding: 0 1rem; border-radius: 2px;
+    cursor: pointer; flex-shrink: 0; transition: background 0.15s ease, color 0.15s ease;
+  }
+  .ghost:hover, .ghost:active { background: var(--ink); color: var(--bg); }
+
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .seg button {
+    flex: 1; background: transparent; border: none; color: var(--ink-soft); font-family: inherit;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.55rem 0.3rem;
+    cursor: pointer; transition: background 0.15s ease, color 0.15s ease;
+  }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .seglabel { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.3rem; }
+  .group { display: flex; flex-direction: column; }
+  .grow { display: flex; gap: 0.8rem; }
+  .grow .group { flex: 1; }
+
+  .swatches { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+  .swatch {
+    width: 26px; height: 26px; padding: 0; border-radius: 50%; border: none; cursor: pointer; outline: none;
+    box-shadow: 0 0 0 1px rgba(120,120,120,0.55); transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .swatch:hover { transform: scale(1.14); }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ink); }
+
+  .toggle-line { display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: var(--ink-soft); }
+  .toggle-line button { background: transparent; border: 1px solid var(--line); color: var(--ink); font-family: inherit; font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.7rem; border-radius: 2px; cursor: pointer; }
+  .toggle-line button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  .save {
+    width: 100%; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); font-family: inherit;
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.85rem; border-radius: 4px;
+    cursor: pointer; transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease; margin-top: 0.2rem;
+  }
+  .save:hover, .save:active { background: var(--ink); color: var(--bg); }
+
+  /* pull-to-refresh */
+  .ptr { position: fixed; top: 0; left: 50%; margin-left: -18px; z-index: 9999; width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--bg);
+    border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(12,10,9,0.14); opacity: 0; transform: translateY(-60px); pointer-events: none; }
+  body.dark .ptr { box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
+  .ptr.animate { transition: transform 0.25s ease, opacity 0.25s ease; }
+  .ptr-arrow { width: 16px; height: 16px; color: var(--ink-soft); transition: transform 0.2s ease, color 0.2s ease; }
+  .ptr.ready .ptr-arrow { transform: rotate(180deg); color: var(--ink); }
+  .ptr.spin .ptr-arrow { animation: ptr-spin 0.6s linear infinite; color: var(--ink); }
+  @keyframes ptr-spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+
+  <h1>promo</h1>
+
+  <div class="stage">
+    <div class="cardbox" id="cardbox">
+      <img id="card" alt="promo card — tap to add cover art; press and hold to save">
+      <div class="guides" id="guides">
+        <div class="gband gtop"><span>avoid · profile</span></div>
+        <div class="gband gbot"><span>avoid · reply bar</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="status" id="status">tap the card to add cover art, or paste a link below</div>
+
+  <div class="controls">
+    <div class="linkrow">
+      <input id="link" type="url" placeholder="paste apple / spotify link" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="ghost" id="importBtn">import</button>
+    </div>
+
+    <input class="field" id="title" placeholder="title" autocomplete="off">
+    <input class="field" id="artist" placeholder="artist" autocomplete="off">
+    <input class="field" id="tagline" placeholder="tagline (optional) — e.g. out now" autocomplete="off">
+    <input class="field" id="label" value="dead zero records" autocomplete="off">
+
+    <div class="grow">
+      <div class="group">
+        <div class="seglabel">style</div>
+        <div class="seg" id="styleSeg">
+          <button data-v="bleed" aria-pressed="true">bleed</button>
+          <button data-v="frame" aria-pressed="false">frame</button>
+          <button data-v="press" aria-pressed="false">press</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grow">
+      <div class="group">
+        <div class="seglabel">format</div>
+        <div class="seg" id="formatSeg">
+          <button data-v="1x1" aria-pressed="true">1:1</button>
+          <button data-v="4x5" aria-pressed="false">4:5</button>
+          <button data-v="9x16" aria-pressed="false">9:16</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="seglabel">accent</div>
+      <div class="swatches" id="swatches"></div>
+    </div>
+
+    <div class="toggle-line" id="guidesLine" style="display:none">
+      <span>show IG safe-zone guides</span>
+      <button id="guidesToggle" aria-pressed="true">guides</button>
+    </div>
+
+    <input type="file" id="file" accept="image/*" hidden>
+    <button class="save" id="save">save to photos</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---- state ----
+  const PALETTE = [
+    { n: 'rosa',    h: '#e4007c' },
+    { n: 'morado',  h: '#8a2a6b' },
+    { n: 'jade',    h: '#0e7c66' },
+    { n: 'cobalto', h: '#1f3aa6' },
+    { n: 'tierra',  h: '#b8430c' },
+    { n: 'hueso',   h: '#f5f5f4' },
+  ];
+  const FORMATS = { '1x1': { w: 1080, h: 1080 }, '4x5': { w: 1080, h: 1350 }, '9x16': { w: 1080, h: 1920 } };
+  const state = {
+    cover: null, title: '', artist: '', label: 'dead zero records', tagline: '',
+    accent: PALETTE[0].h, style: 'bleed', format: '1x1',
+  };
+
+  const base = document.createElement('canvas');   // full-res offscreen render target
+  const card = document.getElementById('card');
+  const guides = document.getElementById('guides');
+  const guidesLine = document.getElementById('guidesLine');
+  const guidesToggle = document.getElementById('guidesToggle');
+  const statusEl = document.getElementById('status');
+  let guidesOn = true;
+
+  const FONT = (w, px) => w + ' ' + px + 'px "JetBrains Mono", ui-monospace, monospace';
+  function status(msg) { statusEl.textContent = msg; }
+
+  // ---- drawing helpers ----
+  function coverDraw(ctx, img, x, y, w, h) {
+    const ir = img.width / img.height, tr = w / h;
+    let sw, sh, sx, sy;
+    if (ir > tr) { sh = img.height; sw = sh * tr; sx = (img.width - sw) / 2; sy = 0; }
+    else { sw = img.width; sh = sw / tr; sx = 0; sy = (img.height - sh) / 2; }
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+  }
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function setLS(ctx, v) { try { ctx.letterSpacing = v + 'px'; } catch (e) {} }
+  function wrapTitle(ctx, text, maxW, maxLines, px) {
+    ctx.font = FONT(700, px);
+    const words = (text || '').split(/\s+/).filter(Boolean);
+    const lines = []; let cur = '';
+    for (const word of words) {
+      const t = cur ? cur + ' ' + word : word;
+      if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = word; }
+      else cur = t;
+      if (lines.length === maxLines - 1 && ctx.measureText(cur).width > maxW) break;
+    }
+    if (cur) lines.push(cur);
+    if (lines.length > maxLines) lines.length = maxLines;
+    // ellipsis if truncated
+    if (words.join(' ') !== lines.join(' ') && lines.length) {
+      let last = lines[maxLines - 1] || lines[lines.length - 1];
+      while (ctx.measureText(last + '…').width > maxW && last.length > 1) last = last.slice(0, -1);
+      lines[lines.length - 1] = last + '…';
+    }
+    return lines;
+  }
+  function insets(fmt) {
+    if (fmt.h / fmt.w > 1.5) return { top: Math.round(fmt.h * 0.135), bottom: Math.round(fmt.h * 0.203), side: 80 };
+    return { top: 76, bottom: 76, side: 76 };
+  }
+  function noCover(ctx, x, y, w, h) {
+    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = FONT(500, 30); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    setLS(ctx, 1);
+    ctx.fillText('add cover art', x + w / 2, y + h / 2);
+    setLS(ctx, 0); ctx.textAlign = 'left';
+  }
+
+  // ---- styles ----
+  function drawEyebrow(ctx, x, y, text, color) {
+    if (!text) return;
+    ctx.font = FONT(700, 26); ctx.fillStyle = color; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+    setLS(ctx, 3);
+    ctx.fillText(text.toUpperCase(), x, y);
+    setLS(ctx, 0);
+  }
+  function drawBottomBlock(ctx, ins, fmt, opts) {
+    // bottom-anchored, left-aligned block: rule, title, artist, tagline
+    const { w, h } = fmt;
+    const x = ins.side, maxW = w - ins.side * 2, by = h - ins.bottom;
+    const titlePx = fmt.w >= 1080 ? 88 : 88;
+    const lines = wrapTitle(ctx, state.title || 'Title', maxW, 2, titlePx);
+    const titleH = lines.length * titlePx * 1.06;
+    const artistPx = 40, tagPx = 30;
+    let blockH = 0;
+    blockH += 3 + 26;                       // rule + gap
+    blockH += titleH + 14;
+    if (state.artist) blockH += artistPx + 16;
+    if (state.tagline) blockH += tagPx;
+    let y = by - blockH;
+    // rule
+    ctx.fillStyle = opts.fg; ctx.globalAlpha = 0.85; ctx.fillRect(x, y, Math.min(120, maxW), 3); ctx.globalAlpha = 1;
+    y += 3 + 26;
+    // title
+    ctx.fillStyle = opts.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = FONT(700, titlePx);
+    for (const ln of lines) { ctx.fillText(ln, x, y); y += titlePx * 1.06; }
+    y += 14;
+    // artist
+    if (state.artist) {
+      ctx.font = FONT(500, artistPx); ctx.fillStyle = opts.soft;
+      ctx.fillText(state.artist, x, y); y += artistPx + 16;
+    }
+    // tagline + accent dot
+    if (state.tagline) {
+      ctx.font = FONT(700, tagPx); ctx.fillStyle = opts.fg; setLS(ctx, 2);
+      const t = state.tagline.toUpperCase();
+      ctx.fillText(t, x, y);
+      const tw = ctx.measureText(t).width; setLS(ctx, 0);
+      ctx.fillStyle = state.accent;
+      ctx.beginPath(); ctx.arc(x + tw + 22, y + tagPx / 2, 9, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function styleBleed(ctx, fmt) {
+    const { w, h } = fmt;
+    if (state.cover) coverDraw(ctx, state.cover, 0, 0, w, h); else noCover(ctx, 0, 0, w, h);
+    const top = h * 0.42;
+    const g = ctx.createLinearGradient(0, top, 0, h);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(0.55, 'rgba(0,0,0,0.55)'); g.addColorStop(1, 'rgba(0,0,0,0.93)');
+    ctx.fillStyle = g; ctx.fillRect(0, top, w, h - top);
+    const ins = insets(fmt);
+    drawEyebrow(ctx, ins.side, ins.top, state.label, 'rgba(255,255,255,0.92)');
+    drawBottomBlock(ctx, ins, fmt, { fg: '#ffffff', soft: 'rgba(255,255,255,0.78)' });
+  }
+
+  function styleFrame(ctx, fmt) {
+    const { w, h } = fmt;
+    // blurred background from the cover (or dark)
+    if (state.cover) {
+      ctx.save(); try { ctx.filter = 'blur(46px) brightness(0.55)'; } catch (e) {}
+      coverDraw(ctx, state.cover, -60, -60, w + 120, h + 120); ctx.restore();
+    } else { ctx.fillStyle = '#181818'; ctx.fillRect(0, 0, w, h); }
+    ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fillRect(0, 0, w, h);
+    const ins = insets(fmt);
+    // sharp square cover, centered horizontally, in the upper part of the safe area
+    const cw = Math.min(w - ins.side * 2, (h - ins.top - ins.bottom) * 0.62);
+    const cx = (w - cw) / 2, cy = ins.top + (fmt.h / fmt.w > 1.5 ? 40 : 24);
+    if (state.cover) {
+      ctx.save(); roundRect(ctx, cx, cy, cw, cw, 14); ctx.clip();
+      coverDraw(ctx, state.cover, cx, cy, cw, cw); ctx.restore();
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 2; roundRect(ctx, cx, cy, cw, cw, 14); ctx.stroke();
+    } else { roundRect(ctx, cx, cy, cw, cw, 14); ctx.fillStyle = '#222'; ctx.fill(); noCover(ctx, cx, cy, cw, cw); }
+    // centered text below
+    let y = cy + cw + 56;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const maxW = w - ins.side * 2;
+    const titlePx = 76;
+    const lines = wrapTitle(ctx, state.title || 'Title', maxW, 2, titlePx);
+    ctx.font = FONT(700, titlePx); ctx.fillStyle = '#fff';
+    for (const ln of lines) { ctx.fillText(ln, w / 2, y); y += titlePx * 1.06; }
+    y += 10;
+    if (state.artist) { ctx.font = FONT(500, 38); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fillText(state.artist, w / 2, y); y += 54; }
+    // rule
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fillRect(w / 2 - 50, y + 6, 100, 2); y += 30;
+    // label · tagline
+    const bits = [state.label, state.tagline].filter(Boolean).join('  ·  ');
+    if (bits) { ctx.font = FONT(700, 26); setLS(ctx, 2); ctx.fillStyle = state.accent; ctx.fillText(bits.toUpperCase(), w / 2, y); setLS(ctx, 0); }
+    ctx.textAlign = 'left';
+  }
+
+  function stylePress(ctx, fmt) {
+    const { w, h } = fmt;
+    ctx.fillStyle = '#0c0a09'; ctx.fillRect(0, 0, w, h);
+    const ins = insets(fmt);
+    let y = ins.top;
+    drawEyebrow(ctx, ins.side, y, state.label || 'dead zero records', state.accent); y += 60;
+    // cover square (contained, full content width)
+    const cw = w - ins.side * 2;
+    const ch = Math.min(cw, (h - ins.top - ins.bottom) * 0.5);
+    if (state.cover) {
+      ctx.save(); roundRect(ctx, ins.side, y, cw, ch, 8); ctx.clip();
+      coverDraw(ctx, state.cover, ins.side, y, cw, ch); ctx.restore();
+    } else { roundRect(ctx, ins.side, y, cw, ch, 8); ctx.fillStyle = '#1a1a1a'; ctx.fill(); noCover(ctx, ins.side, y, cw, ch); }
+    y += ch + 50;
+    // big title (left)
+    const maxW = w - ins.side * 2, titlePx = 84;
+    const lines = wrapTitle(ctx, state.title || 'Title', maxW, 2, titlePx);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = FONT(700, titlePx); ctx.fillStyle = '#f5f5f4';
+    for (const ln of lines) { ctx.fillText(ln, ins.side, y); y += titlePx * 1.06; }
+    y += 10;
+    if (state.artist) { ctx.font = FONT(500, 40); ctx.fillStyle = '#a8a29e'; ctx.fillText(state.artist, ins.side, y); y += 56; }
+    // bottom row: rule + tagline tag
+    const by = h - ins.bottom;
+    ctx.fillStyle = 'rgba(245,245,244,0.2)'; ctx.fillRect(ins.side, by - 44, maxW, 2);
+    if (state.tagline) {
+      ctx.font = FONT(700, 30); setLS(ctx, 2); ctx.fillStyle = '#f5f5f4'; ctx.textBaseline = 'top';
+      const t = state.tagline.toUpperCase(); ctx.fillText(t, ins.side, by - 32);
+      const tw = ctx.measureText(t).width; setLS(ctx, 0);
+      ctx.fillStyle = state.accent; ctx.beginPath(); ctx.arc(ins.side + tw + 20, by - 32 + 15, 9, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  const STYLES = { bleed: styleBleed, frame: styleFrame, press: stylePress };
+
+  function render() {
+    const fmt = FORMATS[state.format];
+    base.width = fmt.w; base.height = fmt.h;
+    const ctx = base.getContext('2d');
+    ctx.clearRect(0, 0, fmt.w, fmt.h);
+    STYLES[state.style](ctx, fmt);
+    card.src = base.toDataURL('image/png');
+    // guides only for 9:16
+    const tall = state.format === '9x16';
+    guidesLine.style.display = tall ? 'flex' : 'none';
+    guides.classList.toggle('on', tall && guidesOn);
+  }
+
+  // ---- cover loading ----
+  function loadCoverURL(url) {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = () => { state.cover = im; render(); };
+    im.onerror = () => status('couldn’t load that cover image');
+    im.src = url;
+  }
+  const fileInput = document.getElementById('file');
+  card.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files && fileInput.files[0]; if (!f) return;
+    const im = new Image();
+    im.onload = () => { state.cover = im; status('cover added'); render(); };
+    im.src = URL.createObjectURL(f);
+  });
+
+  // ---- link import ----
+  let cbN = 0;
+  function appleLookup(id) {
+    return new Promise((res, rej) => {
+      const cb = '__ap' + (++cbN);
+      const s = document.createElement('script');
+      const to = setTimeout(() => { cleanup(); rej(new Error('timeout')); }, 8000);
+      function cleanup() { clearTimeout(to); delete window[cb]; if (s.parentNode) s.remove(); }
+      window[cb] = (data) => { cleanup(); res(data); };
+      s.onerror = () => { cleanup(); rej(new Error('script')); };
+      s.src = 'https://itunes.apple.com/lookup?id=' + encodeURIComponent(id) + '&callback=' + cb;
+      document.body.appendChild(s);
+    });
+  }
+  async function spotifyOEmbed(url) {
+    const r = await fetch('https://open.spotify.com/oembed?url=' + encodeURIComponent(url));
+    if (!r.ok) throw new Error('oembed'); return r.json();
+  }
+  const titleEl = document.getElementById('title');
+  const artistEl = document.getElementById('artist');
+  async function doImport() {
+    const url = document.getElementById('link').value.trim();
+    if (!url) { status('paste an apple music or spotify link first'); return; }
+    status('importing…');
+    try {
+      if (/music\.apple\.com|itunes\.apple\.com/.test(url)) {
+        const m = url.match(/[?&]i=(\d+)/) || url.match(/\/(\d+)(?:[/?#]|$)/);
+        if (!m) throw new Error('no id');
+        const data = await appleLookup(m[1]);
+        const r = data && data.results && data.results[0];
+        if (!r) throw new Error('not found');
+        state.title = r.trackName || r.collectionName || state.title;
+        state.artist = r.artistName || state.artist;
+        titleEl.value = state.title; artistEl.value = state.artist;
+        const art = (r.artworkUrl100 || '').replace('100x100bb', '2000x2000bb');
+        if (art) loadCoverURL(art);
+        status('imported from apple ✓');
+      } else if (/spotify\.com|spotify:/.test(url)) {
+        const d = await spotifyOEmbed(url);
+        if (d.title) { state.title = d.title; titleEl.value = d.title; }
+        if (d.thumbnail_url) loadCoverURL(d.thumbnail_url);
+        status('imported from spotify ✓ — add the artist');
+      } else {
+        status('that’s not an apple or spotify link');
+      }
+    } catch (e) {
+      status('couldn’t import — check the link, or add cover + text manually');
+    }
+    render();
+  }
+  document.getElementById('importBtn').addEventListener('click', doImport);
+  document.getElementById('link').addEventListener('keydown', (e) => { if (e.key === 'Enter') doImport(); });
+
+  // ---- field bindings ----
+  function bind(id, key, transform) {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => { state[key] = transform ? transform(el.value) : el.value; render(); });
+  }
+  bind('title', 'title'); bind('artist', 'artist'); bind('tagline', 'tagline'); bind('label', 'label');
+
+  // ---- segmented controls ----
+  function seg(id, key) {
+    const wrap = document.getElementById(id);
+    wrap.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      state[key] = b.dataset.v;
+      wrap.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      render();
+    });
+  }
+  seg('styleSeg', 'style'); seg('formatSeg', 'format');
+
+  // ---- accent swatches ----
+  const sw = document.getElementById('swatches');
+  function syncSw() { sw.querySelectorAll('.swatch').forEach((b) => b.setAttribute('aria-pressed', b.dataset.h === state.accent ? 'true' : 'false')); }
+  PALETTE.forEach((c) => {
+    const b = document.createElement('button');
+    b.className = 'swatch'; b.dataset.h = c.h; b.style.background = c.h; b.title = c.n; b.setAttribute('aria-label', c.n);
+    b.addEventListener('click', () => { state.accent = c.h; syncSw(); render(); });
+    sw.appendChild(b);
+  });
+  syncSw();
+
+  // ---- guides toggle ----
+  guidesToggle.addEventListener('click', () => {
+    guidesOn = !guidesOn;
+    guidesToggle.setAttribute('aria-pressed', guidesOn ? 'true' : 'false');
+    render();
+  });
+
+  // ---- save ----
+  document.getElementById('save').addEventListener('click', () => {
+    base.toBlob((blob) => {
+      if (!blob) return;
+      const name = ((state.title || 'promo').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'promo') + '.png';
+      const file = new File([blob], name, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file] }).catch(() => {}); return; }
+      const a = document.createElement('a'); a.download = name; a.href = URL.createObjectURL(blob); a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }, 'image/png');
+  });
+
+  // first render (after fonts so canvas text isn't fallback)
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+  render();
+})();
+
+// dark mode
+(function () {
+  const KEY = 'dzr-promo-dark';
+  const toggle = document.getElementById('darkToggle');
+  function apply(d) { document.body.classList.toggle('dark', d); const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', d ? '#0c0a09' : '#f5f5f4'); }
+  let s = null; try { s = localStorage.getItem(KEY); } catch (e) {}
+  if (s === '1') apply(true); else if (s === '0') apply(false);
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) apply(true);
+  toggle.addEventListener('click', () => { const n = !document.body.classList.contains('dark'); apply(n); try { localStorage.setItem(KEY, n ? '1' : '0'); } catch (e) {} });
+})();
+
+// pull-to-refresh (top of page)
+(function () {
+  const THRESHOLD = 70;
+  const ptr = document.createElement('div'); ptr.className = 'ptr';
+  ptr.innerHTML = '<svg class="ptr-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>';
+  document.body.appendChild(ptr);
+  const scroller = document.scrollingElement || document.documentElement;
+  const EXCLUDE = 'textarea, input, select, button, [contenteditable="true"]';
+  let startY = 0, pulling = false, ready = false;
+  function reset() { ptr.classList.add('animate'); ptr.classList.remove('ready'); ptr.style.opacity = ''; ptr.style.transform = ''; ready = false; setTimeout(() => ptr.classList.remove('animate'), 260); }
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    if ((scroller.scrollTop || window.scrollY || 0) > 0) return;
+    if (e.target.closest && e.target.closest(EXCLUDE)) return;
+    startY = e.touches[0].clientY; pulling = true; ptr.classList.remove('animate');
+  }, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { pulling = false; reset(); return; }
+    e.preventDefault();
+    ptr.style.opacity = String(Math.min(1, dy / 45));
+    ptr.style.transform = 'translateY(' + (-60 + Math.min(74, dy * 0.6)) + 'px)';
+    ready = dy >= THRESHOLD; ptr.classList.toggle('ready', ready);
+  }, { passive: false });
+  function end() { if (!pulling) return; pulling = false; if (ready) { ptr.classList.add('animate', 'spin'); setTimeout(() => location.reload(), 150); } else { reset(); } }
+  document.addEventListener('touchend', end, { passive: true });
+  document.addEventListener('touchcancel', end, { passive: true });
+})();
+</script>
+</body>
+</html>
