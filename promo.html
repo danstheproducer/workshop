@@ -464,22 +464,41 @@
     status('importing…');
     try {
       if (/music\.apple\.com|itunes\.apple\.com/.test(url)) {
-        const m = url.match(/[?&]i=(\d+)/) || url.match(/\/(\d+)(?:[/?#]|$)/);
+        const m = url.match(/[?&]i=(\d+)/) || url.match(/\/(?:id)?(\d+)(?:[/?#]|$)/);
         if (!m) throw new Error('no id');
         const data = await appleLookup(m[1]);
         const r = data && data.results && data.results[0];
         if (!r) throw new Error('not found');
-        state.title = r.trackName || r.collectionName || state.title;
-        state.artist = r.artistName || state.artist;
+        let art = '';
+        if (r.wrapperType === 'artist') {
+          state.kind = 'artist'; state.title = r.artistName || state.title; state.artist = '';
+          try { // artists carry no artwork — borrow their most recent release
+            const al = await appleLookup(m[1], '&entity=album&limit=12');
+            const albums = (al.results || []).filter((x) => x.wrapperType === 'collection');
+            albums.sort((a, b) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
+            if (albums[0]) art = albums[0].artworkUrl100 || '';
+          } catch (e) {}
+          status('imported artist from apple ✓');
+        } else if (r.wrapperType === 'track' || r.kind === 'song') {
+          state.kind = 'song'; state.title = r.trackName || state.title; state.artist = r.artistName || '';
+          art = r.artworkUrl100 || ''; status('imported song from apple ✓');
+        } else {
+          state.kind = 'album'; state.title = r.collectionName || r.trackName || state.title; state.artist = r.artistName || '';
+          art = r.artworkUrl100 || ''; status('imported album from apple ✓');
+        }
         titleEl.value = state.title; artistEl.value = state.artist;
-        const art = (r.artworkUrl100 || '').replace('100x100bb', '2000x2000bb');
-        if (art) loadCoverURL(art);
-        status('imported from apple ✓');
+        if (art) loadCoverURL(art.replace('100x100bb', '2000x2000bb'));
+        applyKindDefaults();
       } else if (/spotify\.com|spotify:/.test(url)) {
+        const kind = /[/:]artist[/:]/.test(url) ? 'artist' : /[/:]album[/:]/.test(url) ? 'album' : 'song';
         const d = await spotifyOEmbed(url);
+        state.kind = kind;
         if (d.title) { state.title = d.title; titleEl.value = d.title; }
+        if (kind === 'artist') { state.artist = ''; artistEl.value = ''; }
         if (d.thumbnail_url) loadCoverURL(d.thumbnail_url);
-        status('imported from spotify ✓ — add the artist');
+        status(kind === 'artist' ? 'imported artist from spotify ✓'
+          : 'imported ' + kind + ' from spotify ✓ — add the artist');
+        applyKindDefaults();
       } else {
         status('that’s not an apple or spotify link');
       }
