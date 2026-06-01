@@ -159,20 +159,22 @@
   .card .hint { max-width: 80%; }
 
   .save {
+    width: min(72vw, 300px, 36vh);   /* matches the code width for a tidy column */
+    max-width: 100%;
     background: transparent;
-    border: 1px solid var(--line);
+    border: 1.5px solid var(--ink);
     color: var(--ink);
     font-family: inherit;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    padding: 0.6rem 1.4rem;
-    border-radius: 2px;
+    padding: 0.8rem 1.4rem;
+    border-radius: 4px;
     cursor: pointer;
-    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
   }
-  .save:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
-  .save[disabled] { opacity: 0.35; pointer-events: none; }
+  .save:hover, .save:active { background: var(--ink); color: var(--bg); }
+  .save[disabled] { opacity: 0.3; pointer-events: none; }
 
   footer {
     margin-top: auto;
