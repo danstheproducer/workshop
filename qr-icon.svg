@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#ea580c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="250" r="180" fill="#ffffff" opacity="0.08"/>
+
+  <g fill="#fffaf0">
+    <!-- finder patterns: ring + center dot (top-left, top-right, bottom-left) -->
+    <g>
+      <rect x="116" y="116" width="104" height="104" rx="22" fill="none" stroke="#fffaf0" stroke-width="17"/>
+      <rect x="150" y="150" width="36" height="36" rx="9"/>
+    </g>
+    <g>
+      <rect x="292" y="116" width="104" height="104" rx="22" fill="none" stroke="#fffaf0" stroke-width="17"/>
+      <rect x="326" y="150" width="36" height="36" rx="9"/>
+    </g>
+    <g>
+      <rect x="116" y="292" width="104" height="104" rx="22" fill="none" stroke="#fffaf0" stroke-width="17"/>
+      <rect x="150" y="326" width="36" height="36" rx="9"/>
+    </g>
+
+    <!-- alignment pattern (bottom-right) -->
+    <rect x="300" y="300" width="64" height="64" rx="14" fill="none" stroke="#fffaf0" stroke-width="14"/>
+    <rect x="322" y="322" width="20" height="20" rx="5"/>
+
+    <!-- scattered data modules -->
+    <rect x="251" y="121" width="30" height="30" rx="7"/>
+    <rect x="251" y="191" width="30" height="30" rx="7"/>
+    <rect x="121" y="251" width="30" height="30" rx="7"/>
+    <rect x="191" y="251" width="30" height="30" rx="7"/>
+    <rect x="251" y="251" width="30" height="30" rx="7"/>
+    <rect x="361" y="251" width="30" height="30" rx="7"/>
+    <rect x="251" y="361" width="30" height="30" rx="7"/>
+  </g>
+
+  <!-- one colorful accent module -->
+  <rect x="361" y="191" width="30" height="30" rx="7" fill="#38bdf8"/>
+</svg>
