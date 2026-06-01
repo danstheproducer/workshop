@@ -57,17 +57,11 @@
     overflow: hidden;
   }
 
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
   .dark-toggle {
+    position: absolute;
+    top: max(1rem, env(safe-area-inset-top) + 0.5rem);
+    right: 1.5rem;
+    z-index: 5;
     background: transparent;
     border: 1px solid var(--line);
     color: var(--ink);
