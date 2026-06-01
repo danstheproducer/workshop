@@ -224,7 +224,8 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
   // on-device. No server, no expiry, works offline. Type text → code → save.
   (function () {
     const input  = document.getElementById('input');
-    const canvas = document.getElementById('qr');
+    const canvas = document.getElementById('qr');         // offscreen renderer
+    const img    = document.getElementById('qrimg');      // what's shown + long-press saved
     const hint   = document.getElementById('hint');
     const save   = document.getElementById('save');
     const ctx    = canvas.getContext('2d');
