@@ -296,13 +296,48 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 
     input.addEventListener('input', render);
 
+    // Save → on phones, the native share sheet has "Save Image" (camera roll);
+    // on desktop/Android it falls back to a normal file download.
     save.addEventListener('click', () => {
       if (save.disabled) return;
-      const a = document.createElement('a');
-      a.download = 'qr.png';
-      a.href = canvas.toDataURL('image/png');
-      a.click();
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const file = new File([blob], 'qr.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file] }).catch(() => {});
+          return;
+        }
+        const a = document.createElement('a');
+        a.download = 'qr.png';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }, 'image/png');
     });
+
+    // — color swatches —
+    const swatchWrap = document.getElementById('swatches');
+    function syncSwatches() {
+      swatchWrap.querySelectorAll('.swatch').forEach((b) => {
+        b.setAttribute('aria-pressed', b.dataset.hex === fg ? 'true' : 'false');
+      });
+    }
+    COLORS.forEach((col) => {
+      const b = document.createElement('button');
+      b.className = 'swatch';
+      b.dataset.hex = col.hex;
+      b.style.background = col.hex;
+      b.title = col.name;
+      b.setAttribute('aria-label', col.name);
+      b.addEventListener('click', () => {
+        fg = col.hex;
+        try { localStorage.setItem(CKEY, fg); } catch (e) {}
+        syncSwatches();
+        render();
+      });
+      swatchWrap.appendChild(b);
+    });
+    syncSwatches();
 
     render();
   })();
