@@ -159,7 +159,7 @@
   .card .hint { max-width: 80%; }
 
   .save {
-    width: min(72vw, 300px, 36vh);   /* matches the code width for a tidy column */
+    width: var(--qr, min(72vw, 300px));   /* matches the code width for a tidy column */
     max-width: 100%;
     background: transparent;
     border: 1.5px solid var(--ink);
