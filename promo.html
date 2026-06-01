@@ -435,7 +435,7 @@
 
   // ---- link import ----
   let cbN = 0;
-  function appleLookup(id) {
+  function appleLookup(id, extra) {
     return new Promise((res, rej) => {
       const cb = '__ap' + (++cbN);
       const s = document.createElement('script');
@@ -443,9 +443,14 @@
       function cleanup() { clearTimeout(to); delete window[cb]; if (s.parentNode) s.remove(); }
       window[cb] = (data) => { cleanup(); res(data); };
       s.onerror = () => { cleanup(); rej(new Error('script')); };
-      s.src = 'https://itunes.apple.com/lookup?id=' + encodeURIComponent(id) + '&callback=' + cb;
+      s.src = 'https://itunes.apple.com/lookup?id=' + encodeURIComponent(id) + (extra || '') + '&callback=' + cb;
       document.body.appendChild(s);
     });
+  }
+  function applyKindDefaults() {
+    // sensible promo default the user can override; not for artist pages
+    const tagEl = document.getElementById('tagline');
+    if (state.kind !== 'artist' && !state.tagline) { state.tagline = 'out now'; tagEl.value = 'out now'; }
   }
   async function spotifyOEmbed(url) {
     const r = await fetch('https://open.spotify.com/oembed?url=' + encodeURIComponent(url));
