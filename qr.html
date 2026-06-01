@@ -228,9 +228,21 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
     const hint   = document.getElementById('hint');
     const save   = document.getElementById('save');
     const ctx    = canvas.getContext('2d');
-    const QUIET  = 4;            // quiet-zone modules (required for reliable scanning)
-    const DARK   = '#0c0a09';
+    const QUIET  = 2;            // quiet-zone modules (smaller margin; the white card adds more)
     const LIGHT  = '#ffffff';
+
+    // Original, lively palette — all dark/saturated enough to scan on white.
+    const COLORS = [
+      { name: 'ink',           hex: '#0c0a09' },
+      { name: 'rosa mexicano', hex: '#e4007c' },
+      { name: 'morado',        hex: '#8a2a6b' },
+      { name: 'jade',          hex: '#0e7c66' },
+      { name: 'cobalto',       hex: '#1f3aa6' },
+      { name: 'tierra',        hex: '#b8430c' },
+    ];
+    const CKEY = 'dzr-qr-color';
+    let fg = COLORS[0].hex;
+    try { const s = localStorage.getItem(CKEY); if (s) fg = s; } catch (e) {}
 
     function showHint(msg) {
       hint.textContent = msg;
