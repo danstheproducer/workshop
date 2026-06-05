@@ -515,6 +515,44 @@
     return assemble(form, 0);                            // end on root
   }
 
+  // ─── sections: each swipe builds the next part from the previous motif ──────
+  // roles cycle after the opening verse; each derives a related-but-contrasting idea
+  const SECTION_ROLES = ['response', 'lift', 'chorus', 'bridge'];
+  const ROLE_CADENCE = { verse: 'tonic', response: 'tonic', lift: 'open', chorus: 'tonic', bridge: 'open' };
+
+  function firstBar(mel) {
+    const a = mel.filter(n => n.step < PER_BAR)
+                 .map(n => ({ step: n.step, deg: n.deg, dur: Math.min(n.dur, PER_BAR - n.step) }));
+    return a.length ? a : [{ step: 0, deg: scaleArr.length, dur: 1 }];
+  }
+  function invertPh(ph) { const p = ph[0].deg; return ph.map(n => ({ step: n.step, deg: 2 * p - n.deg, dur: n.dur })); }
+  function transposePh(ph, d) { return ph.map(n => ({ step: n.step, deg: n.deg + d, dur: n.dur })); }
+  function clampPh(ph) {
+    const mx = rows() - 1;
+    const o = ph.map(n => ({ step: n.step, deg: clamp(n.deg, 0, mx), dur: n.dur }));
+    if (o.length && !o.some(n => n.step === 0)) o.unshift({ step: 0, deg: o[0].deg, dur: 1 });
+    return o;
+  }
+  // turn the previous part's motif into a seed for this part's role
+  function seedFor(role, prevMel) {
+    const A = firstBar(prevMel);
+    switch (role) {
+      case 'response': return clampPh(invertPh(A));                  // contrary-motion answer
+      case 'lift':     return clampPh(transposePh(A, 2));            // a third up, opens out
+      case 'chorus':   return clampPh(transposePh(invertPh(A), 1));  // inverted + lifted hook
+      case 'bridge':   return clampPh(transposePh(A, -3));           // drops away, contrasts
+      default:         return melPhrase();
+    }
+  }
+  function makeSection(i, prev) {
+    if (i === 0 || !prev || !prev.melody.length) {
+      return { melody: genMelody(), counter: [], hasCounter: false, formName, role: 'verse' };
+    }
+    const r = SECTION_ROLES[(i - 1) % SECTION_ROLES.length];
+    const mel = genMelodyFrom(seedFor(r, prev.melody), ROLE_CADENCE[r]);
+    return { melody: mel, counter: [], hasCounter: false, formName, role: r };
+  }
+
   // ─── audio ───────────────────────────────────────────────────────────────
   let ctx = null, voiceBus = null, master = null;
 
