@@ -450,8 +450,12 @@
         used.add(s);
       });
     });
-    if (notes.length) notes[notes.length - 1].deg =
-      (endDeg != null) ? endDeg : nearestTonic(notes[notes.length - 1].deg);
+    if (notes.length) {
+      const last = notes[notes.length - 1];
+      if (typeof endDeg === 'number') last.deg = endDeg;              // literal degree
+      else if (endDeg === 'open') last.deg = nearestClass(last.deg, fifthIndex());  // half cadence
+      else last.deg = nearestTonic(last.deg);                         // resolved
+    }
     return notes;
   }
 
