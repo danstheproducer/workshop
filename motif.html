@@ -366,41 +366,107 @@
     return (deg - below) <= (above - deg) ? below : above;
   }
 
-  function genMelody() {
+  // melodies are built from one-bar phrases so longer forms repeat with variation
+  function melPhrase(startDeg) {
     const len = scaleArr.length;
     const lo = len - 1, hi = len * 2;        // upper register window
     const notes = [];
-    let deg = lo + Math.floor(Math.random() * (hi - lo));
-    for (let s = 0; s < STEPS; s++) {
+    let deg = (startDeg == null) ? lo + Math.floor(Math.random() * (hi - lo)) : startDeg;
+    for (let s = 0; s < PER_BAR; s++) {
       const downbeat = (s % 4 === 0);
-      if (s > 0 && !downbeat && Math.random() < 0.32) continue;   // rests for groove
+      if (s > 0 && !downbeat && Math.random() < 0.35) continue;     // rests for groove
       const r = Math.random();
       let mv = r < 0.50 ? (Math.random() < 0.5 ? 1 : -1)
              : r < 0.78 ? (Math.random() < 0.5 ? 2 : -2)
              : r < 0.90 ? 0
              :            (Math.random() < 0.5 ? 3 : -3);
       deg = clamp(deg + mv, lo - 1, hi);
-      const dur = (Math.random() < 0.25) ? 2 : 1;
-      notes.push({ step: s, deg, dur: Math.min(dur, STEPS - s) });
+      const dur = (Math.random() < 0.22) ? 2 : 1;
+      notes.push({ step: s, deg, dur: Math.min(dur, PER_BAR - s) });
     }
     if (!notes.some(n => n.step === 0)) notes.unshift({ step: 0, deg, dur: 1 });
-    notes[notes.length - 1].deg = nearestTonic(notes[notes.length - 1].deg);
     return notes;
   }
 
-  function genCounter() {
+  // a variation of a phrase: same skeleton, small re-pitch / timing / density tweaks
+  function varyMel(ph) {
+    const len = scaleArr.length, lo = len - 2, hi = len * 2;
+    const out = [];
+    for (const n of ph) {
+      if (n.step !== 0 && Math.random() < 0.15) continue;            // drop a note
+      let deg = n.deg, step = n.step;
+      if (n.step !== 0 && Math.random() < 0.4)                       // re-pitch (stays in scale)
+        deg = clamp(deg + (Math.random() < 0.5 ? 1 : -1), lo, hi);
+      if (n.step !== 0 && Math.random() < 0.2)                       // nudge timing
+        step = clamp(step + (Math.random() < 0.5 ? 1 : -1), 1, PER_BAR - 1);
+      out.push({ step, deg, dur: n.dur });
+    }
+    if (Math.random() < 0.45) {                                      // add a passing note
+      const s = 1 + Math.floor(Math.random() * (PER_BAR - 1));
+      out.push({ step: s, deg: clamp(ph[0].deg + (Math.random() < 0.5 ? 2 : -2), lo, hi), dur: 1 });
+    }
+    if (!out.some(n => n.step === 0)) out.unshift({ step: 0, deg: ph[0].deg, dur: 1 });
+    return out;
+  }
+
+  // lay phrases into bars, one note per step (monophonic), resolve the ending
+  function assemble(form, endDeg) {
+    const notes = [], used = new Set();
+    form.forEach((ph, b) => {
+      const off = b * PER_BAR;
+      ph.slice().sort((a, c) => a.step - c.step).forEach(n => {
+        const s = off + n.step;
+        if (s >= STEPS || used.has(s)) return;
+        notes.push({ step: s, deg: n.deg, dur: Math.min(n.dur, STEPS - s) });
+        used.add(s);
+      });
+    });
+    if (notes.length) notes[notes.length - 1].deg =
+      (endDeg != null) ? endDeg : nearestTonic(notes[notes.length - 1].deg);
+    return notes;
+  }
+
+  // form per length: 1=A · 2=A A' · 4=A A' B A'' (repetition + variation)
+  function genMelody() {
+    const A = melPhrase();
+    let form;
+    if (bars <= 1) form = [A];
+    else if (bars === 2) form = [A, varyMel(A)];
+    else form = [A, varyMel(A), melPhrase(), varyMel(A)];
+    return assemble(form);
+  }
+
+  function ctrPhrase() {
     const len = scaleArr.length;
     const chord = [0, 2, 4].filter(x => x < len);       // root / third / fifth
     const notes = [];
-    for (let s = 0; s < STEPS; s += 2) {                // half the rate
+    for (let s = 0; s < PER_BAR; s += 2) {              // half the rate
       if (s > 0 && Math.random() < 0.2) continue;
       const ct = chord[Math.floor(Math.random() * chord.length)];
-      let deg = ct + (Math.random() < 0.6 ? 0 : len);   // low / mid octave
-      deg = clamp(deg, 0, len + 2);
-      notes.push({ step: s, deg, dur: Math.min(2, STEPS - s) });
+      let deg = clamp(ct + (Math.random() < 0.6 ? 0 : len), 0, len + 2);
+      notes.push({ step: s, deg, dur: 2 });
     }
-    if (notes.length) { notes[0].deg = 0; notes[notes.length - 1].deg = 0; }  // anchor on root
+    if (notes.length) notes[0].deg = 0;
     return notes;
+  }
+  function varyCtr(ph) {
+    const len = scaleArr.length;
+    return ph
+      .map(n => {
+        let deg = n.deg;
+        if (n.step !== 0 && Math.random() < 0.3) deg = clamp(deg + (Math.random() < 0.5 ? len : -len), 0, len + 2);
+        return { step: n.step, deg, dur: n.dur };
+      })
+      .filter(n => n.step === 0 || Math.random() > 0.12);
+  }
+  // counter leans on repetition (bass-like): 1=A · 2=A A' · 4=A A A' A
+  function genCounter() {
+    const A = ctrPhrase();
+    let form;
+    if (bars <= 1) form = [A];
+    else if (bars === 2) form = [A, varyCtr(A)];
+    else form = [A, A, varyCtr(A), A];
+    return assemble(form, 0);                            // end on root
   }
 
   // ─── audio ───────────────────────────────────────────────────────────────
