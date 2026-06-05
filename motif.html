@@ -368,12 +368,31 @@
   let counter = [];           // empty until "counter" pressed
   let hasCounter = false;
   let active = 'mel';         // which line tap-to-add targets
+  let role = 'verse';         // current section's musical role
+  let sections = [];          // each: { melody, counter, hasCounter, formName, role }
+  let cur = 0;                // index of the visible pad / section
 
   function nearestTonic(deg) {
     const len = scaleArr.length;
     const below = Math.floor(deg / len) * len;
     const above = below + len;
     return (deg - below) <= (above - deg) ? below : above;
+  }
+  // the scale degree nearest `deg` whose scale-class is `cls` (0 = root)
+  function nearestClass(deg, cls) {
+    const len = scaleArr.length, base = Math.floor(deg / len) * len;
+    let best = base + cls, bd = Math.abs(best - deg);
+    for (const c of [base + cls - len, base + cls + len]) {
+      const d = Math.abs(c - deg);
+      if (d < bd) { bd = d; best = c; }
+    }
+    return clamp(best, 0, rows() - 1);
+  }
+  // scale index closest to a perfect fifth (7 semitones) — for open/half cadences
+  function fifthIndex() {
+    let best = 0, bd = 99;
+    scaleArr.forEach((st, i) => { const d = Math.abs(st - 7); if (d < bd) { bd = d; best = i; } });
+    return best;
   }
 
   // melodies are built from one-bar phrases so longer forms repeat with variation
