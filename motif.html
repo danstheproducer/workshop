@@ -115,7 +115,17 @@
   .tab.ctr .dot { background: hsl(190, 80%, 50%); }
   .tab.active { border-color: var(--ink); color: var(--ink); }
   .tab.disabled { opacity: 0.4; cursor: default; }
-  .rollbar .tip { margin-left: auto; color: var(--ink-faint); letter-spacing: 0.1em; }
+  .rollbar .tip {
+    margin-left: auto;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
 
   /* — piano-roll stage — */
   .stage {
