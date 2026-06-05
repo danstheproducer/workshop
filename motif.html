@@ -426,13 +426,27 @@
     return notes;
   }
 
-  // form per length: 1=A · 2=A A' · 4=A A' B A'' (repetition + variation)
+  // four-bar song forms — repetition + variation, picked at random each generate
+  const FORMS4 = [
+    { label: 'AABA', build: (A, B, C) => [A, varyMel(A), B, A] },
+    { label: 'ABAB', build: (A, B, C) => [A, B, varyMel(A), varyMel(B)] },
+    { label: 'AAAB', build: (A, B, C) => [A, varyMel(A), varyMel(A), B] },
+    { label: 'ABAC', build: (A, B, C) => [A, B, varyMel(A), C] },
+  ];
+  let formName = 'A';
+
   function genMelody() {
     const A = melPhrase();
     let form;
-    if (bars <= 1) form = [A];
-    else if (bars === 2) form = [A, varyMel(A)];
-    else form = [A, varyMel(A), melPhrase(), A];   // A A' B A — return home
+    if (bars <= 1) { formName = 'A'; form = [A]; }
+    else if (bars === 2) { formName = 'AA′'; form = [A, varyMel(A)]; }
+    else {
+      const f = FORMS4[Math.floor(Math.random() * FORMS4.length)];
+      formName = f.label;
+      form = f.build(A, melPhrase(), melPhrase());
+    }
+    const el = document.getElementById('formChip');
+    if (el) el.textContent = formName;
     return assemble(form);
   }
 
