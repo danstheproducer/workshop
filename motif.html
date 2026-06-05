@@ -844,14 +844,69 @@
   tabMel.addEventListener('click', () => { active = 'mel'; syncTabs(); });
   tabCtr.addEventListener('click', () => { if (hasCounter) { active = 'ctr'; syncTabs(); } });
 
+  // ── section navigation ──
+  function syncChips() {
+    const fc = document.getElementById('formChip'); if (fc) fc.textContent = formName;
+    const pr = document.getElementById('padRole');  if (pr) pr.textContent = role + ' · ' + (cur + 1) + '/' + sections.length;
+  }
+  function renderPager() {
+    const dots = document.getElementById('dots'); if (!dots) return;
+    dots.innerHTML = '';
+    sections.forEach((s, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === cur ? ' on' : '');
+      d.title = (i + 1) + ' · ' + s.role;
+      d.addEventListener('click', () => go(i));
+      dots.appendChild(d);
+    });
+  }
+  function loadCur() {
+    const s = sections[cur];
+    melody = s.melody; counter = s.counter; hasCounter = s.hasCounter;
+    formName = s.formName; role = s.role; active = 'mel';
+    syncTabs(); renderPager(); syncChips(); resize();
+  }
+  function go(i) {
+    if (i < 0) return;
+    if (i >= sections.length) sections.push(makeSection(sections.length, sections[sections.length - 1]));
+    if (playing) stop();
+    cur = clamp(i, 0, sections.length - 1);
+    loadCur();
+  }
+  // rebuild every section (preserving roles + counters) — used when bar count changes
+  function regenAll() {
+    const meta = sections.map(s => ({ role: s.role, hasCounter: s.hasCounter }));
+    const rebuilt = [];
+    for (let i = 0; i < meta.length; i++) {
+      const prev = rebuilt[i - 1] || null;
+      let s;
+      if (i === 0) s = { melody: genMelody(), counter: [], hasCounter: meta[i].hasCounter, formName, role: 'verse' };
+      else {
+        const r = meta[i].role;
+        s = { melody: genMelodyFrom(seedFor(r, prev.melody), ROLE_CADENCE[r]), counter: [], hasCounter: meta[i].hasCounter, formName, role: r };
+      }
+      if (s.hasCounter) s.counter = genCounter();
+      rebuilt.push(s);
+    }
+    sections = rebuilt;
+    cur = clamp(cur, 0, sections.length - 1);
+    loadCur();
+  }
+
   document.getElementById('gen').addEventListener('click', () => {
-    melody = genMelody();
-    if (hasCounter) counter = genCounter();
-    active = 'mel'; syncTabs();
+    const keep = hasCounter;
+    const ns = makeSection(cur, cur > 0 ? sections[cur - 1] : null);
+    ns.hasCounter = keep;
+    if (keep) ns.counter = genCounter();
+    sections[cur] = ns;
+    loadCur();
   });
   document.getElementById('counter').addEventListener('click', () => {
-    counter = genCounter(); hasCounter = true; active = 'ctr'; syncTabs();
+    counter = genCounter(); hasCounter = true;
+    sections[cur].counter = counter; sections[cur].hasCounter = true;
+    active = 'ctr'; syncTabs();
   });
+  document.getElementById('addPad').addEventListener('click', () => go(sections.length));
   document.getElementById('play').addEventListener('click', () => { playing ? stop() : play(); });
 
   const keySel = document.getElementById('key');
