@@ -812,7 +812,8 @@
     return URL.createObjectURL(blob);
   }
   function fileName(kind) {
-    return 'motif-' + kind + '-' + KEYS[keyOffset].replace('#','s') + '-' + scaleName.replace(/\s+/g,'') + '-' + bpm + 'bpm.mid';
+    const part = (cur + 1) + '-' + (sections[cur] ? sections[cur].role : 'part');
+    return 'motif-' + part + '-' + kind + '-' + KEYS[keyOffset].replace('#','s') + '-' + scaleName.replace(/\s+/g,'') + '-' + bpm + 'bpm.mid';
   }
   function wireDownload(btn, getNotes, vel, kind) {
     btn.addEventListener('click', () => {
