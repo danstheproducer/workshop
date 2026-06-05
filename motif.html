@@ -788,7 +788,7 @@
   });
 
   const barsSel = document.getElementById('bars');
-  [1, 2].forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b + (b === 1 ? ' bar' : ' bars'); barsSel.appendChild(o); });
+  [1, 2, 4].forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b + (b === 1 ? ' bar' : ' bars'); barsSel.appendChild(o); });
   barsSel.value = 2;
   barsSel.addEventListener('change', () => {
     bars = +barsSel.value; STEPS = bars * PER_BAR;
