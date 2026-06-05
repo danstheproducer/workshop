@@ -153,6 +153,28 @@
     text-align: right;
   }
 
+  /* — section pager — */
+  .pager { display: flex; align-items: center; gap: 0.6rem; }
+  .pg-role {
+    font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft); flex-shrink: 0;
+  }
+  .dots { display: flex; gap: 0.34rem; align-items: center; flex: 1; flex-wrap: wrap; min-width: 0; }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; padding: 0; cursor: pointer;
+    border: 1px solid var(--ink-faint); background: transparent;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .dot.on { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .pg-add {
+    flex-shrink: 0;
+    background: transparent; border: 1px solid var(--line); color: var(--ink-soft);
+    font-family: inherit; font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase;
+    border-radius: 2px; padding: 0.26rem 0.5rem; cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .pg-add:hover { border-color: var(--ink); color: var(--ink); }
+
   /* — piano-roll stage — */
   .stage {
     flex: 1;
