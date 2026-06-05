@@ -919,10 +919,12 @@
   scaleSel.value = scaleName;
   scaleSel.addEventListener('change', () => {
     scaleName = scaleSel.value; scaleArr = SCALES[scaleName];
-    // clamp existing degrees into the new range
+    // re-pitch (clamp) every section's notes into the new range — edits are kept
     const maxDeg = rows() - 1;
-    for (const n of melody) n.deg = clamp(n.deg, 0, maxDeg);
-    for (const n of counter) n.deg = clamp(n.deg, 0, maxDeg);
+    sections.forEach(s => {
+      s.melody.forEach(n => n.deg = clamp(n.deg, 0, maxDeg));
+      s.counter.forEach(n => n.deg = clamp(n.deg, 0, maxDeg));
+    });
     resize();
   });
 
@@ -931,9 +933,8 @@
   barsSel.value = 2;
   barsSel.addEventListener('change', () => {
     bars = +barsSel.value; STEPS = bars * PER_BAR;
-    melody = genMelody(); if (hasCounter) counter = genCounter();
-    if (playing) { stop(); }
-    resize();
+    if (playing) stop();
+    regenAll();                       // bar count changes note positions — rebuild the song
   });
 
   const tempo = document.getElementById('tempo');
