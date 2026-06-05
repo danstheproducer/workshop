@@ -747,11 +747,25 @@
       active = hit.line; syncTabs();
       drag = { note: hit.note, arr: hit.arr, line: hit.line, grab: c.step - hit.note.step, moved: false, start: c };
     } else {
-      drag = { note: null, start: c, moved: false };
+      // empty space → could be a tap-to-add, or a sideways swipe to another part
+      drag = { note: null, start: c, moved: false, sx: e.clientX, sy: e.clientY, decided: false, swiping: false, dx: 0 };
     }
   });
   stage.addEventListener('pointermove', (e) => {
     if (!drag) return;
+    if (!drag.note) {
+      const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+      if (!drag.decided && (Math.abs(dx) > 12 || Math.abs(dy) > 12)) {
+        drag.decided = true;
+        drag.swiping = Math.abs(dx) > Math.abs(dy) * 1.2;   // mostly-horizontal → page
+      }
+      if (drag.swiping) {
+        drag.moved = true; drag.dx = dx;
+        canvas.style.transform = 'translateX(' + clamp(dx, -90, 90) + 'px)';
+        canvas.style.opacity = String(1 - Math.min(0.4, Math.abs(dx) / 500));
+        return;
+      }
+    }
     const c = cellFromEvent(e);
     if (c.step !== drag.start.step || c.deg !== drag.start.deg) drag.moved = true;
     if (drag.note) {
@@ -764,6 +778,15 @@
   });
   function endDrag() {
     if (!drag) return;
+    if (drag.swiping) {                                     // settle the swipe
+      canvas.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
+      canvas.style.transform = ''; canvas.style.opacity = '';
+      setTimeout(() => { canvas.style.transition = ''; }, 200);
+      if (drag.dx <= -45) go(cur + 1);                      // swipe left → next part (creates one)
+      else if (drag.dx >= 45) go(cur - 1);                  // swipe right → previous part
+      drag = null;
+      return;
+    }
     if (drag.note) {
       if (!drag.moved) {                                   // tap a note → remove it
         const i = drag.arr.indexOf(drag.note);
