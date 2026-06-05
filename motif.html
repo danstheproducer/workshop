@@ -468,20 +468,19 @@
   ];
   let formName = 'A';
 
-  function genMelody() {
-    const A = melPhrase();
-    let form;
-    if (bars <= 1) { formName = 'A'; form = [A]; }
-    else if (bars === 2) { formName = 'AA′'; form = [A, varyMel(A)]; }
-    else {
-      const f = FORMS4[Math.floor(Math.random() * FORMS4.length)];
-      formName = f.label;
-      form = f.build(A, melPhrase(), melPhrase());
-    }
-    const el = document.getElementById('formChip');
-    if (el) el.textContent = formName;
-    return assemble(form);
+  // build the bar-form around a given A phrase (repetition + variation)
+  function formFromA(A) {
+    if (bars <= 1) return { form: [A], label: 'A' };
+    if (bars === 2) return { form: [A, varyMel(A)], label: 'AA′' };
+    const f = FORMS4[Math.floor(Math.random() * FORMS4.length)];
+    return { form: f.build(A, melPhrase(), melPhrase()), label: f.label };
   }
+  function genMelodyFrom(A, cadence) {
+    const { form, label } = formFromA(A);
+    formName = label;
+    return assemble(form, cadence);
+  }
+  function genMelody() { return genMelodyFrom(melPhrase(), 'tonic'); }
 
   function ctrPhrase() {
     const len = scaleArr.length;
