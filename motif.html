@@ -432,7 +432,7 @@
     let form;
     if (bars <= 1) form = [A];
     else if (bars === 2) form = [A, varyMel(A)];
-    else form = [A, varyMel(A), melPhrase(), varyMel(A)];
+    else form = [A, varyMel(A), melPhrase(), A];   // A A' B A — return home
     return assemble(form);
   }
 
