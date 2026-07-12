@@ -844,10 +844,10 @@ function renderMapPanel(){
   if(TAB!=='itin'){ wrap.style.display='none'; return; }
   wrap.style.display='block';
   document.getElementById('mapChev').textContent = mapOpen?'▾':'▸';
-  const fb=document.getElementById('mapFullBtn');
-  fb.style.display = mapOpen?'inline-flex':'none';
-  fb.innerHTML = mapFullView?'📍 Enfocar día':'🌍 Viaje completo';
-  document.getElementById('mapLegend').innerHTML = mapLegendHTML();
+  document.getElementById('mapFullBtn').innerHTML = mapFullView?'Enfocar día':'Viaje completo';
+  const leg=document.getElementById('mapLegend');
+  leg.innerHTML = mapLegendHTML();
+  leg.style.display = mapOpen?'flex':'none';
   document.getElementById('mapbox').style.display = mapOpen?'block':'none';
   if(mapOpen){ ensureMap(); setTimeout(function(){ if(map){ map.invalidateSize(); focusMap(); } }, 50); }
 }
