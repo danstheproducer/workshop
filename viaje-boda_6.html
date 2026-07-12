@@ -923,7 +923,7 @@ function ensureMap(){
   route.forEach((c,i)=>{
     euroBounds.push(c.coords); mapNodes.push({id:c.id,coords:c.coords});
     const nm=({madrid:'Madrid',galicia:'Vigo',atenas:'Atenas',milos:'Mílos',mar:'Velero',estambul:'Estambul'})[c.id]||c.city.replace('✈️ ','').split(' · ')[0];
-    const dir=({madrid:'right',galicia:'left',atenas:'bottom',milos:'top',mar:'bottom',estambul:'top'})[c.id]||'left';
+    const dir=({madrid:'right',galicia:'left',atenas:'top',milos:'left',mar:'bottom',estambul:'top'})[c.id]||'left';
     const off=dir==='right'?[10,0]:dir==='left'?[-10,0]:dir==='top'?[0,-8]:[0,8];
     const mk=L.circleMarker(c.coords,{radius:6,color:'#fff',weight:2,fillColor:c.color,fillOpacity:1}).addTo(map);
     mk.bindTooltip(nm,{className:'city-tooltip',permanent:true,direction:dir,offset:off});
