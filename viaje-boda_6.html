@@ -816,32 +816,48 @@ function renderItin(){
 
 function renderMap(){
   setTimeout(initMap,60);
+  const modes=[['✈️ Vuelo','#F59E0B'],['🚆 Tren','#34D399'],['⛵ Velero','#22D3EE']];
+  const leg=modes.map(m=>'<span class="leg"><span class="legdot" style="background:'+m[1]+'"></span>'+m[0]+'</span>').join('');
   return '<div class="wrap"><div class="card"><div class="h3">La ruta completa</div>'
-    + '<p class="note" style="margin-top:6px">México → Madrid → Galicia → Atenas → Mílos → velero por las Cícladas del Oeste → Estambul → casa. Toca un punto para ir a ese tramo.</p></div>'
-    + '<div id="map"></div></div>';
+    + '<p class="note" style="margin-top:6px">Inicio en España (la boda) y cierre en Türkiye (las alfombras). Madrid → Vigo en tren de alta velocidad, luego vuelos cortos y el velero por las Cícladas del Oeste. Toca un punto para ir a ese tramo.</p>'
+    + '<div class="legendrow" style="padding:10px 0 2px">'+leg+'</div></div>'
+    + '<div id="map"></div>'
+    + '<p class="note" style="text-align:center;margin-top:4px;font-size:11px;color:var(--tx-dim)">Aleja el mapa para ver los vuelos trasatlánticos ↔ México</p></div>';
+}
+function arcPts(a,b,bend){
+  const clat=(a[0]+b[0])/2 + (b[1]-a[1])*bend, clng=(a[1]+b[1])/2 - (b[0]-a[0])*bend, p=[];
+  for(let t=0;t<=1.0001;t+=0.05){ const u=1-t; p.push([u*u*a[0]+2*u*t*clat+t*t*b[0], u*u*a[1]+2*u*t*clng+t*t*b[1]]); }
+  return p;
 }
 function initMap(){
   const el=document.getElementById('map'); if(!el) return;
   if(map){ map.remove(); map=null; }
-  const pts=CITIES.filter(c=>c.coords);
-  map=L.map('map',{ scrollWheelZoom:false, attributionControl:false }).setView([39.5,12],4);
   const dark=lsGet('vb_theme','dark')==='dark';
+  map=L.map('map',{ scrollWheelZoom:false, attributionControl:false });
   L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
-  const ll=[];
-  pts.forEach((c,i)=>{
-    ll.push(c.coords);
+  const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, train:{c:'#34D399',i:'🚆',dash:'7,6',bend:0.05}, boat:{c:'#22D3EE',i:'⛵',dash:'2,7',bend:0.14} };
+  const MX=[19.4326,-99.1332];
+  const route=['madrid','galicia','atenas','milos','mar','estambul'].map(id=>CITIES.find(c=>c.id===id));
+  const legs=[ {mode:'train',dur:'~4h'}, {mode:'flight',dur:'~6h vía MAD'}, {mode:'flight',dur:'40m'}, {mode:'boat',dur:'3 noches'}, {mode:'flight',dur:'~5h'} ];
+  // transatlantic legs (faded), not counted in the fit-bounds so Europa keeps el foco
+  L.polyline(arcPts(MX,route[0].coords,0.18),{color:'#F59E0B',weight:1.4,opacity:.35,dashArray:'3,9'}).addTo(map);
+  L.polyline(arcPts(route[route.length-1].coords,MX,0.20),{color:'#F59E0B',weight:1.4,opacity:.35,dashArray:'3,9'}).addTo(map);
+  L.circleMarker(MX,{radius:7,color:'#fff',weight:2,fillColor:'#EF4444',fillOpacity:1}).addTo(map).bindTooltip('México · inicio y fin',{className:'city-tooltip',direction:'top'});
+  // European legs, multimodal
+  for(let i=0;i<route.length-1;i++){
+    const m=MODE[legs[i].mode], pts=arcPts(route[i].coords,route[i+1].coords,m.bend);
+    L.polyline(pts,{color:m.c,weight:2.2,opacity:.9,dashArray:m.dash}).addTo(map);
+    const mid=pts[Math.floor(pts.length/2)];
+    L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab" style="background:'+m.c+'">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
+  }
+  const euro=[];
+  route.forEach((c,i)=>{
+    euro.push(c.coords);
     const mk=L.circleMarker(c.coords,{radius:9,color:'#fff',weight:2,fillColor:c.color,fillOpacity:1}).addTo(map);
     mk.bindTooltip((i+1)+'. '+c.city.replace('✈️ ','').split(' · ')[0],{className:'city-tooltip',direction:'top'});
     mk.on('click',function(){ const fd=AGENDA.find(a=>a.cityId===c.id); if(fd) setDay(fd.day); setTab('itin'); });
   });
-  for(let i=0;i<pts.length-1;i++){
-    const a=pts[i].coords,b=pts[i+1].coords,seg=SEGMENTS[i]||{mode:'flight',dur:''};
-    const boat=seg.mode==='boat';
-    L.polyline([a,b],{color:boat?'#22D3EE':'#F59E0B',weight:1.6,opacity:.6,dashArray:boat?'2,6':'5,7'}).addTo(map);
-    const mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];
-    L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab" style="background:'+(boat?'#22D3EE':'#F59E0B')+'">'+(boat?'⛴️':'✈️')+' '+seg.dur+'</span>',iconSize:[0,0]})}).addTo(map);
-  }
-  map.fitBounds(ll,{padding:[44,44]});
+  map.fitBounds(euro,{padding:[46,46]});
 }
 
 function renderResv(){
