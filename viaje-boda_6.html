@@ -985,10 +985,9 @@ function answerQ(i){
 }
 
 function render(){
-  renderTabs(); renderDaybar();
+  renderTabs(); renderDaybar(); renderMapPanel();
   let h='';
   if(TAB==='itin') h=renderItin();
-  else if(TAB==='map') h=renderMap();
   else if(TAB==='resv') h=renderResv();
   else if(TAB==='budget') h=renderBudget();
   else if(TAB==='pack') h=renderPack();
@@ -998,7 +997,7 @@ function render(){
   window.scrollTo(0,0);
 }
 
-setTheme(lsGet('vb_theme','dark'));
+setTheme(lsGet('vb_theme','light'));
 render();
 </script>
 </body>
