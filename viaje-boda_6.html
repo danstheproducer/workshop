@@ -746,9 +746,12 @@ function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 let TAB = lsGet('vb_tab','itin');
+if(!['itin','resv','budget','pack','words','fun'].includes(TAB)) TAB='itin';
 let DAY = lsGet('vb_day',1);
 if(typeof DAY!=='number'||DAY<1||DAY>AGENDA.length) DAY=1;
 let map=null;
+let mapOpen = lsGet('vb_mapopen', true);
+let mapFullView = lsGet('vb_mapfull', false);
 (function(){ const sr=lsGet('vb_resv',{}); RESERVATIONS.forEach(r=>{ if(sr[r.id]!==undefined) r.done=sr[r.id]; }); })();
 
 function setTheme(t){ document.documentElement.setAttribute('data-theme',t); lsSet('vb_theme',t); document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙'; }
