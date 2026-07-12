@@ -963,14 +963,13 @@ function answerQ(i){
 }
 
 function render(){
-  renderTabs(); renderDaybar(); renderMapPanel();
+  renderMenu(); renderDaybar(); renderMapPanel();
   let h='';
   if(TAB==='itin') h=renderItin();
   else if(TAB==='resv') h=renderResv();
   else if(TAB==='budget') h=renderBudget();
   else if(TAB==='pack') h=renderPack();
   else if(TAB==='words') h=renderWords();
-  else if(TAB==='fun') h=renderFun();
   document.getElementById('content').innerHTML=h;
   window.scrollTo(0,0);
 }
