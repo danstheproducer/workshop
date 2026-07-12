@@ -751,12 +751,19 @@ function renderDaybar(){
   const el=document.getElementById('daybar');
   if(TAB!=='itin'){ el.style.display='none'; return; }
   el.style.display='block'; el.className='daybar';
+  // ends[i] = color de la región donde se DUERME esa noche
+  const ends = AGENDA.map((d,i)=>{
+    if(d.cityId==='vuelo-ida') return ACC.madrid;                                             // vuelo desde México → se duerme en Madrid
+    if(d.cityId==='galicia' && AGENDA[i+1] && AGENDA[i+1].cityId!=='galicia') return ACC.madrid; // último día de Galicia → tren de vuelta a Madrid
+    return d.color;
+  });
   el.innerHTML = '<div class="daybar-inner">'+AGENDA.map((d,i)=>{
     const on=d.day===DAY; const p=d.date.split(' ');
-    const prev = i>0 ? AGENDA[i-1] : null;
-    const split = prev && prev.cityId!==d.cityId;
-    const bg = split ? 'linear-gradient(90deg,'+prev.color+' 0 50%,'+d.color+' 50% 100%)' : d.color;
-    return '<button id="dp-'+d.day+'" class="daypill'+(on?' on':'')+'" style="background:'+bg+';border-color:'+d.color+'" onclick="setDay('+d.day+')"><span class="dow">'+esc(p[0])+' '+esc(p[2]||'')+'</span><span class="dnum">'+esc(p[1])+'</span></button>';
+    const startC = i>0 ? ends[i-1] : ACC['vuelo-ida'];   // arranca donde despertaste (o el vuelo desde México el día 1)
+    const endC = ends[i];
+    const split = startC!==endC;
+    const bg = split ? 'linear-gradient(90deg,'+startC+' 0 50%,'+endC+' 50% 100%)' : endC;
+    return '<button id="dp-'+d.day+'" class="daypill'+(on?' on':'')+'" style="background:'+bg+';border-color:'+endC+'" onclick="setDay('+d.day+')"><span class="dow">'+esc(p[0])+' '+esc(p[2]||'')+'</span><span class="dnum">'+esc(p[1])+'</span></button>';
   }).join('')+'</div>';
 }
 
