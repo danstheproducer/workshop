@@ -939,27 +939,23 @@ function renderWords(){
 }
 
 let quizState=null;
-function renderFun(){
-  return '<div class="wrap"><div class="seclbl">Quiz del viaje</div><div class="card">'
-    + '<button class="gbtn" onclick="startQuiz(\'galicia\')">🦪 Galicia</button>'
-    + '<button class="gbtn" onclick="startQuiz(\'milos\')">🌋 Mílos</button>'
-    + '<button class="gbtn" onclick="startQuiz(\'estambul\')">🕌 Estambul</button>'
-    + '<div id="quizHost"></div></div>'
-    + '<div class="seclbl">Sabiduría viajera</div><div class="card">'
-    + '<p id="wisdom" class="note" style="font-style:italic;font-size:13px;color:var(--tx2)">'+esc(WISDOM[Math.floor(Math.random()*WISDOM.length)])+'</p>'
-    + '<button class="gbtn" onclick="document.getElementById(\'wisdom\').textContent=WISDOM[Math.floor(Math.random()*WISDOM.length)]">↻ Otra</button></div></div>';
-}
-function startQuiz(k){ quizState={key:k,i:0,score:0}; showQuestion(); }
+function fillModal(html){ document.getElementById('modalCard').innerHTML='<span class="modal-close" onclick="closeModal()">✕</span>'+html; }
+function closeModal(){ document.getElementById('modal').classList.remove('on'); }
+function openQuiz(k){ if(!QUIZ[k]) return; quizState={key:k,i:0,score:0}; showQuestion(); document.getElementById('modal').classList.add('on'); }
 function showQuestion(){
-  const host=document.getElementById('quizHost'); if(!host) return;
-  const qs=QUIZ[quizState.key];
-  if(quizState.i>=qs.length){ host.innerHTML='<div style="margin-top:14px;text-align:center"><div style="font-size:30px">🎉</div><p class="note" style="font-size:14px;color:var(--tx1);font-weight:700">'+quizState.score+'/'+qs.length+'</p><button class="gbtn" onclick="startQuiz(\''+quizState.key+'\')">↻ Repetir</button></div>'; return; }
-  const q=qs[quizState.i];
-  host.innerHTML='<div style="margin-top:14px"><p class="note" style="font-size:13px;color:var(--tx1);font-weight:700;margin-bottom:10px">'+esc(q.q)+'</p>'+q.opts.map((o,i)=>'<button class="qopt" onclick="answerQ('+i+')">'+esc(o)+'</button>').join('')+'<div id="qfeed"></div></div>';
+  const qs=QUIZ[quizState.key]; let html;
+  if(quizState.i>=qs.length){ html='<div class="seclbl">Quiz</div><div style="text-align:center;margin-top:12px"><div style="font-size:34px">🎉</div><p class="note" style="font-size:16px;color:var(--tx1);font-weight:800;margin-top:6px">'+quizState.score+' / '+qs.length+'</p><button class="gbtn" onclick="openQuiz(\''+quizState.key+'\')">↻ Repetir</button></div>'; }
+  else { const q=qs[quizState.i]; html='<div class="seclbl">Quiz · '+(quizState.i+1)+'/'+qs.length+'</div><p class="note" style="font-size:15px;color:var(--tx1);font-weight:700;margin:10px 0 12px">'+esc(q.q)+'</p>'+q.opts.map((o,i)=>'<button class="qopt" onclick="answerQ('+i+')">'+esc(o)+'</button>').join('')+'<div id="qfeed"></div>'; }
+  fillModal(html);
 }
 function answerQ(i){
   const q=QUIZ[quizState.key][quizState.i], ok=i===q.a; if(ok) quizState.score++;
-  document.getElementById('qfeed').innerHTML='<div class="note" style="padding:10px;border-radius:10px;background:'+(ok?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)')+';color:'+(ok?'#10b981':'#ef4444')+';font-weight:700">'+(ok?'✅ ¡Correcto!':'❌ No era')+'</div><p class="note" style="margin-top:6px">'+esc(q.fact)+'</p><button class="gbtn" onclick="quizState.i++;showQuestion()">Siguiente →</button>';
+  document.getElementById('qfeed').innerHTML='<div class="note" style="padding:10px;border-radius:10px;margin-top:4px;background:'+(ok?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)')+';color:'+(ok?'#10b981':'#ef4444')+';font-weight:700">'+(ok?'✅ ¡Correcto!':'❌ No era')+'</div><p class="note" style="margin-top:8px">'+esc(q.fact)+'</p><button class="gbtn" onclick="quizState.i++;showQuestion()">Siguiente →</button>';
+}
+function showWisdom(){
+  const w=WISDOM[Math.floor(Math.random()*WISDOM.length)];
+  fillModal('<div class="seclbl">Sabiduría del viaje</div><p class="note" style="font-style:italic;font-size:15px;line-height:1.75;color:var(--tx2);margin-top:12px">'+esc(w)+'</p><button class="gbtn" onclick="showWisdom()">↻ Otra</button>');
+  document.getElementById('modal').classList.add('on');
 }
 
 function render(){
