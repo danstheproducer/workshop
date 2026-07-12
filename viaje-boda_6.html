@@ -823,7 +823,7 @@ function renderDaybar(){
     .map(function(l){ return '<span class="leg"><span class="legdot" style="background:'+l[1]+'"></span>'+l[0]+'</span>'; }).join('');
   el.innerHTML = '<div class="legendrow">'+legend+'</div><div class="daybar-inner">'+AGENDA.map(d=>{
     const on=d.day===DAY; const p=d.date.split(' ');
-    return '<button id="dp-'+d.day+'" class="daypill '+(on?'on':'')+'" style="background:'+d.color+';border-color:'+d.color+(on?';outline:2px solid var(--tx1);outline-offset:1px':'')+'" onclick="setDay('+d.day+')"><span class="dow" style="color:rgba(255,255,255,.85)">'+esc(p[0])+' '+esc(p[2]||'')+'</span><span class="dnum" style="color:#fff">'+esc(p[1])+'</span></button>';
+    return '<button id="dp-'+d.day+'" class="daypill'+(on?' on':'')+'" onclick="setDay('+d.day+')"><span class="dow">'+esc(p[0])+' '+esc(p[2]||'')+'</span><span class="dnum">'+esc(p[1])+'</span><span class="ddot" style="background:'+d.color+'"></span></button>';
   }).join('')+'</div>';
 }
 
