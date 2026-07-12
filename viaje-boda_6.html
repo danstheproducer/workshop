@@ -187,11 +187,13 @@
   <div id="mapwrap">
     <div class="maphead">
       <button class="maptgl" onclick="toggleMap()"><span class="chev" id="mapChev">▾</span> Mapa del viaje</button>
-      <button class="mapfull" id="mapFullBtn" onclick="toggleMapFull()">🌍 Viaje completo</button>
+      <span id="mapLegend"></span>
     </div>
     <div id="mapbox">
-      <div id="mapLegend" class="legendrow"></div>
-      <div id="map"></div>
+      <div id="mapholder">
+        <div id="map"></div>
+        <button class="mapfull" id="mapFullBtn" onclick="toggleMapFull()">Viaje completo</button>
+      </div>
     </div>
   </div>
   <div id="content"></div>
