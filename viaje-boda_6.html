@@ -881,7 +881,7 @@ function togglePlate(uid){
   if(!m) return;
   const open=m.classList.toggle('open');
   if(p) p.classList.toggle('open',open);
-  if(b) b.textContent = open?'—':'＋';
+  if(b) b.textContent = open?'×':'+';
 }
 function arcPts(a,b,bend){
   const clat=(a[0]+b[0])/2 + (b[1]-a[1])*bend, clng=(a[1]+b[1])/2 - (b[0]-a[0])*bend, p=[];
