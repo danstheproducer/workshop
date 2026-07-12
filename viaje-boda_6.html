@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f1629">
+<title>Boda + Viaje · Madrid · Galicia · Grecia · Türkiye · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230E7C7B'/><text x='32' y='46' text-anchor='middle' font-family='Playfair Display,serif' font-size='36' font-style='italic' fill='%23f1f5f9'>α</text></svg>">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overscroll-behavior-y: contain; }
+  body { font-family: 'Playfair Display', Georgia, serif; background: var(--bg); min-height: 100vh; color: var(--tx3); transition: background .25s; }
+  ::-webkit-scrollbar { height: 2px; width: 2px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px);} to {opacity:1; transform:translateY(0);} }
+  :root {
+    --bg:#0f1629; --bg-bar:#141c2e; --bg-card:#1e2538;
+    --bd:rgba(255,255,255,0.08); --divider:rgba(255,255,255,0.07);
+    --tx1:#f1f5f9; --tx2:#cbd5e1; --tx3:#94a3b8; --tx-dim:#64748b;
+  }
+  [data-theme="light"] {
+    --bg:#f1f5f9; --bg-bar:#ffffff; --bg-card:#ffffff;
+    --bd:rgba(0,0,0,0.08); --divider:rgba(0,0,0,0.07);
+    --tx1:#0f172a; --tx2:#1e293b; --tx3:#475569; --tx-dim:#94a3b8;
+  }
+  #app { max-width: 620px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 72px; }
+  .topbar { background: var(--bg-bar); border-bottom: 1px solid var(--bd); position: sticky; top: 0; z-index: 100; padding-top: env(safe-area-inset-top); }
+  .topbar-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; gap: 8px; }
+  .brand { display: flex; align-items: center; gap: 8px; }
+  .brand .em { font-size: 18px; }
+  .brand .t1 { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 800; color: var(--tx1); line-height: 1.2; }
+  .brand .t2 { font-family: 'DM Sans', sans-serif; font-size: 9px; color: var(--tx-dim); }
+  .iconbtn { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid var(--bd); color: var(--tx2); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  [data-theme="light"] .iconbtn { background: rgba(0,0,0,0.05); }
+  .daybar { background: var(--bg-bar); border-bottom: 1px solid var(--bd); overflow-x: auto; scrollbar-width: none; }
+  .daybar::-webkit-scrollbar { display: none; }
+  .daybar-inner { display: flex; gap: 4px; padding: 9px 14px; width: max-content; }
+  .legendrow { display: flex; gap: 14px; padding: 8px 14px 0; }
+  .leg { display: flex; align-items: center; gap: 5px; font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 700; color: var(--tx3); letter-spacing: .3px; }
+  .legdot { width: 7px; height: 7px; border-radius: 50%; }
+  .daypill { display: flex; flex-direction: column; align-items: center; padding: 6px 11px; border-radius: 8px; border: 1px solid var(--bd); cursor: pointer; min-width: 50px; transition: all .15s; }
+  .daypill .dow { font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 600; line-height: 1.3; text-transform: uppercase; }
+  .daypill .dnum { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 800; line-height: 1.2; }
+  .wrap { padding: 14px 16px 24px; animation: fadeIn .25s; max-width: 620px; margin: 0 auto; }
+  .dayhead { border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
+  .dayhead .row { display: flex; align-items: center; gap: 11px; }
+  .dayhead .em { font-size: 27px; }
+  .dayhead .title { font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 800; color: var(--tx1); letter-spacing: -0.3px; line-height: 1.2; }
+  .dayhead .sub { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; margin-top: 3px; }
+  .dayhead .desc { font-family: 'DM Sans', sans-serif; font-size: 11px; line-height: 1.65; color: var(--tx3); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--bd); }
+  .hotelchip { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px; padding:9px 11px; border-radius:10px; border:1px solid var(--bd); background:rgba(255,255,255,0.03); text-decoration:none; }
+  [data-theme="light"] .hotelchip { background:rgba(0,0,0,0.02); }
+  .hotelchip .hl { font-family:'DM Sans',sans-serif; font-size:8px; font-weight:700; letter-spacing:1.2px; color:var(--tx-dim); }
+  .hotelchip .hn { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; color:var(--tx1); line-height:1.3; }
+  .hotelchip .hs { font-family:'DM Sans',sans-serif; font-size:10px; color:var(--tx3); line-height:1.35; }
+  .timehead { display: flex; align-items: center; gap: 10px; margin: 4px 0 8px; }
+  .timehead .t { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 800; color: var(--tx1); white-space: nowrap; min-width: 52px; }
+  .timehead .line { flex: 1; height: 1px; background: var(--divider); }
+  .timehead .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .ev { background: var(--bg-card); border: 1px solid var(--bd); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .ev .body { padding: 13px 14px; display: flex; align-items: flex-start; gap: 10px; }
+  .ev .ico { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .ev .main { flex: 1; min-width: 0; }
+  .ev .ttl { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: var(--tx1); line-height: 1.35; }
+  .ev .pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .ev .tag { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
+  .ev .dur { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--tx-dim); background: rgba(255,255,255,0.06); padding: 2px 9px; border-radius: 20px; }
+  [data-theme="light"] .ev .dur { background: rgba(0,0,0,0.05); }
+  .evx { border-top: 1px solid var(--divider); }
+  .evx-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; font-family: 'DM Sans', sans-serif; text-align: left; }
+  .evx-btn .l { font-size: 11px; font-weight: 600; color: var(--tx-dim); }
+  .evx-btn .a { font-size: 9px; color: var(--tx-dim); }
+  .evx-body { display: none; padding: 2px 14px 12px; }
+  .evx-body .d { font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.65; color: var(--tx3); }
+  .evx-body .tip { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--tx3); line-height: 1.6; margin-bottom: 6px; }
+  .daynav { display: flex; gap: 8px; margin-top: 4px; }
+  .navbtn { flex: 1; text-align: center; padding: 11px; border-radius: 10px; border: 1px solid var(--bd); background: var(--bg-card); color: var(--tx2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .card { background: var(--bg-card); border: 1px solid var(--bd); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .h3 { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 800; color: var(--tx1); }
+  .seclbl { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--tx-dim); margin: 16px 2px 8px; }
+  .note { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--tx3); line-height: 1.6; }
+  .lnk { display: inline-flex; align-items: center; gap: 4px; padding: 6px 11px; border-radius: 8px; border: 1px solid var(--bd); background: rgba(255,255,255,0.025); color: var(--tx2); font-size: 11px; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; }
+  [data-theme="light"] .lnk { background: rgba(0,0,0,0.02); }
+  .lnkrow { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 620px; display: flex; background: var(--bg-bar); border-top: 1px solid var(--bd); z-index: 1000; padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
+  .tab { flex: 1; background: none; border: none; cursor: pointer; padding: 5px 2px; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--tx-dim); font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 700; }
+  .tab .ic { font-size: 17px; line-height: 1; }
+  .tab.on { color: var(--tx1); }
+  #map { height: 320px; border-radius: 12px; border: 1px solid var(--bd); margin-bottom: 12px; }
+  .leaflet-container { background: #0f1629 !important; font-family: 'DM Sans', sans-serif !important; }
+  [data-theme="light"] .leaflet-container { background: #dde6ee !important; }
+  .city-tooltip { background: rgba(15,22,41,0.92) !important; color: var(--tx2) !important; border: 1px solid var(--bd) !important; border-radius: 6px !important; font-family: 'DM Sans', sans-serif !important; font-size: 10px !important; padding: 3px 8px !important; }
+  .seg-label { background: none !important; border: none !important; }
+  .seglab { display: inline-block; transform: translate(-50%,-50%); white-space: nowrap; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; color: #0f1629; padding: 2px 7px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .resv { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--bd); background: var(--bg-card); margin-bottom: 8px; }
+  .resv .em { font-size: 18px; flex-shrink: 0; }
+  .resv .b { flex: 1; min-width: 0; }
+  .resv .nm { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--tx1); }
+  .resv .meta { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--tx3); margin-top: 2px; line-height: 1.45; }
+  .resv .chk { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--bd); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
+  .resv.done .chk { background: #10b981; border-color: #10b981; color: #fff; }
+  .resv.done .nm { text-decoration: line-through; opacity: .55; }
+  .brow { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--divider); font-family: 'DM Sans', sans-serif; font-size: 12px; gap: 10px; }
+  .brow .l { color: var(--tx2); line-height: 1.4; flex: 1; }
+  .brow .v { color: var(--tx1); font-weight: 700; white-space: nowrap; }
+  .bsub { display: flex; justify-content: space-between; padding: 9px 2px 2px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 800; color: var(--tx2); }
+  .btotal { display: flex; justify-content: space-between; padding: 13px 14px; margin-top: 12px; border-radius: 12px; background: #0E7C7B; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 15px; }
+  .ph { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 11px; border: 1px solid var(--bd); background: var(--bg-card); margin-bottom: 6px; cursor: pointer; }
+  .ph .nat { font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--tx1); font-weight: 700; min-width: 96px; }
+  .ph .py { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: #2A9D9C; }
+  .ph .es { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--tx3); }
+  .gbtn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--bd); background: var(--bg-card); color: var(--tx1); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+  .qopt { width: 100%; text-align: left; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--bd); background: var(--bg-card); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--tx2); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <span class="em">💍</span>
+        <div>
+          <div class="t1">Boda + Viaje · 20 días</div>
+          <div class="t2">Madrid · Galicia · Grecia · Türkiye · 5 viajeros · Ago 24 – Sep 12</div>
+        </div>
+      </div>
+      <button class="iconbtn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+    </div>
+  </div>
+  <div id="daybar"></div>
+  <div id="content"></div>
+</div>
+<div class="tabbar" id="tabbar"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const TAG = { transporte:'#60A5FA', hotel:'#F97316', atracción:'#8B5CF6', comida:'#34D399', compras:'#F59E0B', espectáculo:'#EC4899', logística:'#94a3b8', descanso:'#818CF8', mar:'#22D3EE' };
+const ACC = { 'vuelo-ida':'#94A3B8', madrid:'#F59E0B', galicia:'#F97316', atenas:'#3B82F6', milos:'#0EA5E9', mar:'#06B6D4', estambul:'#EF4444', 'vuelo-vuelta':'#94A3B8' };
+
+const HOTELS = {
+  madrid:   { name:'Hotel Urban 5★ GL', sub:'Carrera de San Jerónimo 34 · azotea con alberca · arte de Papúa en el lobby', alt:'Alt: Palacio de los Duques Gran Meliá — más palaciego, junto al Palacio Real (~€380/n)', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-24&checkout=2026-08-27&group_adults=5&no_rooms=3&group_children=0' },
+  galicia:  { name:'Gran Hotel Nagari 5★', sub:'Plaza de Compostela 21, Vigo · spa + alberca en azotea · Guía Michelin · a 25 min del Pazo de Cea', alt:'Alt: Parador de Baiona — fortaleza del s.XII sobre el mar a 10 min del pazo (más romántico, menos vida y restaurantes; el ferry a Cíes también sale de Baiona)', link:'https://www.booking.com/searchresults.html?ss=Gran+Hotel+Nagari+Vigo&checkin=2026-08-27&checkout=2026-08-31&group_adults=5&no_rooms=3&group_children=0' },
+  atenas:   { name:'Electra Palace 5★', sub:'Plaka · alberca en azotea frente a la Acrópolis · desayuno incl.', alt:'Alt: Herodion 4★ — junto al Museo de la Acrópolis, terraza con vista (~€180/n)', link:'https://www.booking.com/hotel/gr/electrapalacehotelathens.html?checkin=2026-08-31&checkout=2026-09-02&group_adults=5&no_rooms=3&group_children=0' },
+  milos:    { name:'Milos Breeze Boutique', sub:'Pollonia · vistas al mar, alberca · el pueblo elegante y tranquilo de la isla', alt:'Alt: Santa Maria Village (Adamas) — más práctico para el barco y O! Hamos!, menos encanto · o Melian Boutique & Spa (Pollonia)', link:'https://www.booking.com/searchresults.html?ss=Milos+Breeze+Boutique+Hotel+Pollonia&checkin=2026-09-02&checkout=2026-09-06&group_adults=5&no_rooms=3&group_children=0' },
+  mar:      { name:'Catamarán privado con tripulación', sub:'DORMIMOS A BORDO las 3 noches (camarotes con baño) · capitán + cocinera · embarque y desembarque en Adamas', link:'https://www.viravira.co/yacht-charter/milos/crewed' },
+  estambul: { name:'Pera Palace 1892', sub:'Mesrutiyet Cd. 52, Pera · el hotel-museo del Orient Express · alberca interior + hammam', alt:'Alt: 10 Karaköy — diseño contemporáneo junto al agua (~€200/n). Pera > Sultanahmet como base: de noche Sultanahmet muere y se come mal', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-09&checkout=2026-09-12&group_adults=5&no_rooms=3&group_children=0' },
+};
+
+const CITIES = [
+  { id:'vuelo-ida', city:'México → Madrid', region:'Vuelo', emoji:'✈️', color:ACC['vuelo-ida'], coords:[40.4168,-3.7038],
+    desc:'Vuelo nocturno directo (Iberia o Aeroméxico, ~10h35m): sale la noche del 23 y aterriza el 24 después de mediodía. La estrategia: dormir en el avión, llegar, caminar suave y aguantar despiertos hasta la noche — así el jet lag se rompe en un día.',
+    days:[{ events:[
+      { time:'13:55', title:'Aterrizaje en Madrid-Barajas T4S', icon:'🛬', tag:'transporte', dur:'migración ~40m',
+        desc:'El vuelo salió de CDMX la noche anterior (~19:45). T4S es el satélite: tren interno a T4, migración y maletas.',
+        tips:['🚕 Taxi al centro: tarifa fija ~33-35 EUR · ~30 min','🚇 Alternativa: Metro L8 + transbordo · 5 EUR · ~50 min','📱 eSIM Europa (Holafly/Airalo) activada antes de aterrizar'] },
+      { time:'15:30', title:'Check-in Hotel Urban', icon:'🏨', tag:'hotel',
+        desc:'5★ Gran Lujo en plena Carrera de San Jerónimo, entre Sol y el Paseo del Prado. Azotea con alberca y coctelería, colección de arte oceánico en el lobby.',
+        tips:['🛁 Ducha y ropa fresca — no dormir siesta larga (máx 30-45 min)','📍 Todo el centro queda a pie desde aquí'] },
+      { time:'18:00', title:'Paseo suave: Barrio de las Letras', icon:'🚶', tag:'atracción', dur:'1.5h',
+        desc:'El barrio de Cervantes y Lope de Vega: calles peatonales con versos incrustados en el suelo, terrazas, librerías. Perfecto para mover el cuerpo sin exigirle.',
+        tips:['☀️ A las 18h todavía hay sol pleno en agosto — el paseo bueno empieza ~19h','🍺 Caña + aceitunas en la Plaza de Santa Ana'] },
+      { time:'20:30', title:'Cena ligera y a dormir temprano', icon:'🌙', tag:'descanso',
+        desc:'Primera noche: algo sencillo cerca del hotel. La misión es llegar a las 22:30 con sueño y rendirse.',
+        tips:['🥘 Opción a 5 min: tapas en Casa Alberto (Huertas 18, de 1827)','😴 Mañana empieza el Madrid de verdad'] },
+    ]}],
+    links:[{label:'Vuelos MEX→MAD 23 ago',url:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-23'}] },
+
+  { id:'madrid', city:'Madrid', region:'España', emoji:'🇪🇸', color:ACC.madrid, coords:[40.4168,-3.7038],
+    desc:'Dos días completos para romper el jet lag con calma y comer espectacular. Madrid se camina: del Palacio Real al Prado todo queda en un radio de 25 minutos a pie desde el hotel. Agosto es caluroso (33-35°C) — la fórmula es mañanas activas, sobremesa larga, siesta o alberca, y la ciudad revive de noche.',
+    days:[
+      { events:[
+        { time:'9:00', title:'Churros con chocolate en San Ginés', icon:'☕', tag:'comida', dur:'45 min',
+          desc:'La chocolatería de 1894, institución absoluta. A 12 min a pie del hotel, junto a la Puerta del Sol.',
+          tips:['💰 ~6 EUR por ración de churros + chocolate','⏰ Antes de las 10 casi no hay fila'] },
+        { time:'10:30', title:'Palacio Real + Catedral de la Almudena', icon:'🏰', tag:'atracción', dur:'2h',
+          desc:'El palacio real más grande de Europa occidental (3,418 habitaciones). Las salas de gala, la armería y las vistas al Campo del Moro.',
+          tips:['🎟️ Entrada 14 EUR · comprar online para saltar fila (patrimonionacional.es)','📸 La foto clásica: desde la Plaza de la Almudena hacia la fachada sur'] },
+        { time:'13:30', title:'Mercado de San Miguel', icon:'🥘', tag:'comida', dur:'1h',
+          desc:'Mercado de hierro de 1916 convertido en templo del picoteo: ostras, jamón ibérico, croquetas, vermut. Turístico pero delicioso.',
+          tips:['💰 15-25 EUR pp picando bien','🥟 No perderse: croquetas de jamón y la barra de ostras'] },
+        { time:'16:00', title:'Siesta o alberca en la azotea del Urban', icon:'🏖️', tag:'descanso', dur:'2h',
+          desc:'La hora más caliente del día es para el hotel. La alberca de la azotea con vista a los tejados es el plan.',
+          tips:['😴 Día 2 del jet lag: 30-45 min de siesta máximo'] },
+        { time:'19:30', title:'Tapas por La Latina: la Cava Baja', icon:'🍷', tag:'comida', dur:'2.5h',
+          desc:'La calle de tapas más famosa de Madrid: 300 metros con 50 tabernas. Se va saltando de barra en barra: una tapa y una caña en cada una.',
+          tips:['🐙 Imperdibles: Txakolina (pintxos), Casa Lucas, La Perejila','🍳 El cierre: huevos rotos en Casa Lucio (Cava Baja 35) — reservar o llegar 20:30 en punto','💰 ~35-45 EUR pp toda la noche'] },
+      ]},
+      { events:[
+        { time:'9:30', title:'Museo del Prado', icon:'🖼️', tag:'atracción', dur:'2.5h',
+          desc:'Una de las tres pinacotecas más importantes del mundo: Velázquez (Las Meninas), Goya (las Pinturas Negras), El Bosco (El Jardín de las Delicias).',
+          tips:['🎟️ 15 EUR · reservar franja horaria online (museodelprado.es)','🗺️ Estrategia: planta 1 (Velázquez/Goya) primero, que es lo que se llena','🎧 La audioguía vale la pena (5 EUR)'] },
+        { time:'12:30', title:'Parque del Retiro + Palacio de Cristal', icon:'🌳', tag:'atracción', dur:'1.5h',
+          desc:'El jardín del Prado: 125 hectáreas, el estanque con barcas, y el Palacio de Cristal (1887), un invernadero de hierro y vidrio que hoy expone arte del Reina Sofía.',
+          tips:['🛶 Barca en el estanque: 6-8 EUR / 45 min','🆓 Palacio de Cristal gratis'] },
+        { time:'14:30', title:'Comida en el Barrio de las Letras', icon:'🍽️', tag:'comida', dur:'1.5h',
+          desc:'Comida tranquila de vuelta hacia el hotel. La sobremesa española es sagrada: nadie te trae la cuenta hasta que la pides.',
+          tips:['🥩 Opción: TriCiclo (Santa María 28) — bistró de producto, reservar','💰 Menú del día en muchos sitios: 15-20 EUR'] },
+        { time:'17:00', title:'Libre: compras o museo Reina Sofía', icon:'🛍️', tag:'compras', dur:'2h',
+          desc:'Tarde a elección: Gran Vía y Fuencarral para compras, o el Guernica de Picasso en el Reina Sofía (gratis 19-21h L-S).',
+          tips:['🎨 El Guernica solo: 30 min bien usados','👟 Fuencarral = la calle de las tiendas con onda'] },
+        { time:'20:15', title:'Atardecer en el Templo de Debod', icon:'🌇', tag:'atracción', dur:'1h',
+          desc:'Un templo egipcio auténtico del siglo II a.C., regalado a España en 1968, sobre una colina con el mejor atardecer de Madrid.',
+          tips:['🆓 Gratis · el sol cae ~21:00 a fines de agosto','🚕 Taxi desde el centro: 8-10 EUR'] },
+        { time:'21:45', title:'Cena en Botín, el restaurante más antiguo del mundo', icon:'🐖', tag:'comida', dur:'2h',
+          desc:'Fundado en 1725 (Récord Guinness). Cochinillo y cordero asados en el horno de leña original de hace 300 años. Goya trabajó aquí de lavaplatos.',
+          tips:['📞 RESERVAR con semanas de anticipación (botin.es)','💰 ~50-65 EUR pp con vino','🐖 El plato: cochinillo asado'] },
+      ]},
+    ],
+    restaurants:[
+      '🍳 Casa Lucio (Cava Baja 35) — los huevos rotos legendarios · reservar',
+      '🐖 Botín (1725) — el restaurante más antiguo del mundo · cochinillo · reservar',
+      '🥘 Mercado de San Miguel — picoteo de lujo en mercado histórico',
+      '🍷 Ruta de tapas por la Cava Baja — Txakolina, Casa Lucas, La Perejila',
+      '☕ Chocolatería San Ginés (1894) — churros con chocolate' ],
+    links:[{label:'Tickets Prado',url:'https://www.museodelprado.es'},{label:'Palacio Real',url:'https://www.patrimonionacional.es'},{label:'Reservar Botín',url:'https://botin.es'}] },
+
+  { id:'galicia', city:'Galicia · Rías Baixas', region:'España', emoji:'🦪', color:ACC.galicia, coords:[42.2406,-8.7207],
+    desc:'La esquina atlántica y verde de España, y la razón del viaje: la boda en el Pazo de Cea. Marisco que no existe igual en ningún otro lado (las rías son criaderos naturales), albariño frío, playas de agua turquesa y fría, y un ritmo donde la comida dura tres horas. Base: Gran Hotel Nagari, en el centro de Vigo, a 25 min del pazo.',
+    days:[
+      { events:[
+        { time:'9:50', title:'Vuelo Madrid → Vigo', icon:'✈️', tag:'transporte', dur:'1h15m',
+          desc:'Iberia o Air Europa, varias frecuencias diarias. Vigo (VGO) está a 15 min del centro.',
+          tips:['🚕 Taxi aeropuerto → Nagari: ~20 EUR · 15 min','🧳 Facturar maletas la noche anterior online'] },
+        { time:'12:00', title:'Check-in Gran Hotel Nagari', icon:'🏨', tag:'hotel',
+          desc:'5★ boutique en la Plaza de Compostela, pleno centro. Alberca termal en la azotea con vistas a la ría, spa de dos pisos. Si los cuartos no están listos, dejan maletas.',
+          tips:['♨️ Reservar circuito termal de la azotea para el domingo post-boda','🅿️ El parking del hotel es chico — no hace falta coche en Vigo'] },
+        { time:'14:00', title:'Ostras en la Rúa Pescadería (A Pedra)', icon:'🦪', tag:'comida', dur:'2h',
+          desc:'La calle de las ostreiras: mujeres que llevan generaciones abriendo ostras de la ría en plena calle. Se comen ahí, de pie o en las mesas de los mesones, con limón y albariño.',
+          tips:['💰 Docena de ostras: ~15-18 EUR','🍷 Pedir albariño de la casa — frío y joven','🐙 Seguir con pulpo á feira y empanada en cualquier mesón de la calle'] },
+        { time:'17:30', title:'Casco Vello + subida al Monte do Castro', icon:'🚶', tag:'atracción', dur:'2h',
+          desc:'El casco antiguo restaurado baja hacia el puerto. El Monte do Castro (fortaleza del s. XVII) tiene la mejor vista de la ría de Vigo y las Cíes al fondo.',
+          tips:['📸 Atardecer desde el mirador del Castro: la ría completa','🆓 Todo gratis y caminable desde el hotel'] },
+        { time:'21:30', title:'Cena en Maruja Limón (1★ Michelin)', icon:'⭐', tag:'comida', dur:'2.5h',
+          desc:'Rafa Centeno cocina el producto gallego en versión contemporánea: la gran cena gastronómica de Galicia sin salir de Vigo. Frente a la marina.',
+          tips:['📞 RESERVAR ya (marujalimon.es) — agosto se llena','💰 Menú degustación: ~95-120 EUR pp','👔 Elegante-casual'] },
+      ]},
+      { events:[
+        { time:'9:15', title:'Ferry a las Islas Cíes', icon:'⛴️', tag:'transporte', dur:'45 min',
+          desc:'Parque Nacional. Las Cíes son el paraíso atlántico: la playa de Rodas (elegida mejor playa del mundo por The Guardian), agua caribeña a 17 grados, gaviotas y pinos.',
+          tips:['🎟️ DOS pasos: permiso gratuito de la Xunta (autorizacionillasatlanticas.xunta.gal) Y boleto de ferry (~25-30 EUR ida/vuelta)','⚠️ Cupo diario limitado en verano — reservar en cuanto se confirme el día','🥪 Llevar agua y algo de comer: en la isla solo hay un par de chiringuitos'] },
+        { time:'11:00', title:'Playa de Rodas + caminata al faro', icon:'🏖️', tag:'atracción', dur:'5h',
+          desc:'La media luna de arena blanca entre dos islas. La ruta al Faro de Cíes (7 km ida y vuelta) sube entre pinos con vistas que no parecen de este planeta.',
+          tips:['🥾 La ruta del faro: 1h15 de subida suave — vale cada paso','🌊 El agua está a 16-18°C: entrar es un acto de fe y salir es gloria','🦪 Mejillones al vapor en el chiringuito de Rodas'] },
+        { time:'19:00', title:'Regreso a Vigo + noche tranquila', icon:'🌙', tag:'descanso',
+          desc:'Vuelta en ferry con el sol bajando sobre la ría. Cena ligera — mañana es el día grande.',
+          tips:['🍷 Una copa en la terraza del Nagari y a dormir','👗 Dejar listo el outfit de la boda esta noche'] },
+      ]},
+      { events:[
+        { time:'10:00', title:'Mañana libre: spa, alberca, calma', icon:'♨️', tag:'descanso', dur:'3h',
+          desc:'Día de la boda. Mañana sin planes: circuito termal del Nagari, desayuno largo, siesta preventiva.',
+          tips:['💇 Si alguien quiere peluquería/maquillaje: el hotel tiene barbería y hay salones en la Plaza de Compostela'] },
+        { time:'16:30', title:'Traslado al Pazo de Cea, Nigrán', icon:'🚐', tag:'transporte', dur:'25 min',
+          desc:'El pazo: casona señorial gallega del s. XVII entre viñedos de albariño y jardines, a 20 km al sur de Vigo. Piedra, camelias y eucaliptos.',
+          tips:['🚕 Coordinar taxis/vans entre los 5 — o ver si la boda tiene shuttle','📍 Pazo de Cea, Camiño Cea 36350 Nigrán'] },
+        { time:'18:00', title:'LA BODA 💍', icon:'💒', tag:'espectáculo',
+          desc:'Lo que nos trajo hasta aquí. Ceremonia en los jardines del pazo, banquete gallego (el marisco de boda gallega es otra categoría) y fiesta hasta que el cuerpo aguante.',
+          tips:['📷 La Nikon N90s con Ektar 100 va a amar la luz dorada del jardín','🥂 La queimada de madrugada: ritual gallego de aguardiente en llamas — no perdérselo'] },
+      ]},
+      { events:[
+        { time:'11:30', title:'Brunch tardío, cero prisa', icon:'🥐', tag:'descanso', dur:'2h',
+          desc:'Día libre post-boda, diseñado para no hacer nada. Despertar tarde es parte del plan.',
+          tips:['☕ El desayuno del Nagari sirve hasta tarde los domingos'] },
+        { time:'14:30', title:'Opción A: Playa América + arroz en Nigrán', icon:'🏖️', tag:'descanso', dur:'4h',
+          desc:'La playa grande de Nigrán, a 25 min: paseo marítimo, arena fina, arroces con bogavante en los restaurantes de la playa.',
+          tips:['🍚 Arroz con bogavante: ~35-45 EUR pp en los chiringuitos buenos'] },
+        { time:'14:30', title:'Opción B: Santiago de Compostela exprés', icon:'⛪', tag:'atracción', dur:'5h',
+          desc:'Para los que tengan cuerda: la catedral del fin del Camino, el botafumeiro, las plazas de piedra. 50 min en tren rápido desde Vigo-Urzáiz.',
+          tips:['🚄 Tren Vigo→Santiago: ~10-15 EUR · cada hora','🐙 Comer en la Rúa do Franco'] },
+        { time:'21:00', title:'Cena de grupo: pulpería tradicional', icon:'🐙', tag:'comida',
+          desc:'Última noche gallega: pulpo á feira, zorza, pimientos de Padrón, tarta de Santiago.',
+          tips:['💰 ~25-30 EUR pp — la gloria no siempre es cara'] },
+      ]},
+      { events:[
+        { time:'9:30', title:'Vuelo Vigo → Madrid → Atenas', icon:'✈️', tag:'transporte', dur:'~6h puerta a puerta',
+          desc:'No hay vuelo directo Galicia–Grecia: conexión en Madrid (Iberia + Aegean/Iberia). Saliendo en la mañana se llega a Atenas ~17:30 (hora local, +1h).',
+          tips:['🧳 Documentar maletas hasta ATH en un solo boleto','⏰ Atenas va 1 hora adelante de España'] },
+        { time:'19:00', title:'Check-in Electra Palace, Plaka', icon:'🏨', tag:'hotel',
+          desc:'5★ neoclásico en el corazón de Plaka, el barrio antiguo bajo la Acrópolis. Alberca en la azotea mirando al Partenón.',
+          tips:['🚕 Taxi ATH → Plaka: tarifa fija 40 EUR · 35-40 min','🌆 Subir directo a la azotea aunque sea 10 minutos: el Partenón iluminado de noche'] },
+        { time:'21:00', title:'Primera cena griega en Plaka', icon:'🍽️', tag:'comida',
+          desc:'Cena sencilla y perfecta: mezedes, ensalada griega de verdad, cordero, vino de la casa en jarra.',
+          tips:['🥗 Cerca del hotel: taberna Palia Athina o Scholarhio','💰 ~20-25 EUR pp'] },
+      ]},
+    ],
+    restaurants:[
+      '🦪 Ostreiras de la Rúa Pescadería — ostras vivas de la ría en plena calle',
+      '⭐ Maruja Limón — 1★ Michelin · el producto gallego en versión de autor · reservar',
+      '🐙 Pulpería tradicional del Casco Vello — pulpo á feira + Padrón',
+      '🍚 Arroces de Playa América — bogavante de la ría',
+      '🍷 Bodegas de albariño (Cambados, si sobra tiempo) — Pazo de Fefiñáns' ],
+    links:[{label:'Permiso Cíes (Xunta)',url:'https://autorizacionillasatlanticas.xunta.gal'},{label:'Pazo de Cea',url:'https://pazodecea.com/en/'},{label:'Maruja Limón',url:'https://marujalimon.es'}] },
+
+  { id:'atenas', city:'Atenas', region:'Grecia', emoji:'🏛️', color:ACC.atenas, coords:[37.9715,23.7257],
+    desc:'Dos noches para hacerla bien: la Acrópolis temprano y sin calor, el museo que la explica, los barrios antiguos, y dos cenas con el Partenón iluminado de fondo. Septiembre es el mes perfecto: 28°C, menos gente, luz dorada.',
+    days:[
+      { events:[
+        { time:'8:00', title:'Acrópolis al abrir (entrada reservada)', icon:'🏛️', tag:'atracción', dur:'2.5h',
+          desc:'El Partenón, el Erecteión con sus cariátides, los Propileos. A las 8 AM: luz lateral perfecta, 24 grados y los cruceros todavía no llegan. A las 11 ya es otro planeta.',
+          tips:['🎟️ ~30 EUR · reservar franja 8:00 en etickets.tap.gr con días de anticipación','👟 Suela con agarre: el mármol está pulido por 2,500 años de pasos','💧 Llevar agua — arriba no venden'] },
+        { time:'11:00', title:'Museo de la Acrópolis', icon:'🏺', tag:'atracción', dur:'2h',
+          desc:'El museo que le da sentido a lo que acabas de ver: las cariátides originales, los frisos, y un piso de vidrio sobre la excavación. Arquitectura espectacular.',
+          tips:['🎟️ 15 EUR','☕ El café del museo tiene terraza con vista directa a la Acrópolis'] },
+        { time:'13:30', title:'Comida en Karamanlidika tou Fani', icon:'🥓', tag:'comida', dur:'1.5h',
+          desc:'Deli-taberna dentro de una charcutería de 1930: pastourmas, quesos, embutidos griegos y mezedes que no salen en las guías de turistas.',
+          tips:['📍 Sokratous 1, junto al mercado central','💰 ~20-25 EUR pp'] },
+        { time:'17:00', title:'Plaka + Anafiotika', icon:'🏘️', tag:'atracción', dur:'2h',
+          desc:'Anafiotika: un micro-pueblo de casitas blancas estilo isla, construido en la ladera de la Acrópolis por obreros de Anafi en el s. XIX. Parece una Cíclada escondida en plena ciudad.',
+          tips:['📷 El rincón más fotogénico de Atenas y casi nadie lo encuentra','🛍️ Sandalias de cuero hechas a mano en Plaka: ~40 EUR'] },
+        { time:'19:45', title:'Atardecer desde el Licabeto', icon:'🌇', tag:'atracción', dur:'1.5h',
+          desc:'La colina más alta de Atenas (277 m): funicular o caminata, capilla blanca arriba, y la vista del atardecer cayendo detrás de la Acrópolis con el mar al fondo.',
+          tips:['🚡 Funicular: 10 EUR ida/vuelta · sale cada 30 min','🌅 El sol cae ~19:45 a inicios de septiembre — llegar 30 min antes'] },
+        { time:'21:30', title:'Cena en Strofi, terraza frente a la Acrópolis', icon:'🍽️', tag:'comida', dur:'2h',
+          desc:'Taberna elegante de 1975 con azotea que mira de frente al Partenón iluminado. Cocina griega clásica bien hecha: cordero al limón, musaca, pulpo.',
+          tips:['📞 RESERVAR mesa de azotea (strofi.gr)','💰 ~35-45 EUR pp','📍 Rovertou Galli 25, a 10 min a pie del hotel'] },
+      ]},
+      { events:[
+        { time:'9:30', title:'Desayuno en la azotea + mañana libre', icon:'☕', tag:'descanso', dur:'2h',
+          desc:'El desayuno griego del Electra con el Partenón enfrente. Mañana sin prisa: alberca, o un paseo por el mercado central (Varvakios).',
+          tips:['🐟 El mercado central es un espectáculo: pescado, carne, aceitunas, gritos — gratis y muy vivo'] },
+        { time:'12:00', title:'Ágora Antigua + Monastiraki', icon:'🏛️', tag:'atracción', dur:'2h',
+          desc:'El Ágora era el centro de la vida ateniense: el Templo de Hefesto (el mejor conservado de Grecia) y la Estoa reconstruida. Salida directa al mercadillo de Monastiraki.',
+          tips:['🎟️ 10 EUR (o incluida en el combo de la Acrópolis de 30 EUR si lo compraron)','🛍️ Monastiraki: antigüedades, vinilos, recuerdos no horribles'] },
+        { time:'14:30', title:'Souvlaki de despedida + maletas', icon:'🥙', tag:'comida', dur:'1h',
+          desc:'Último souvlaki en Atenas antes de volar a la isla.',
+          tips:['🥙 O Kostas (Pentelis 5): el souvlaki de culto, 3-4 EUR — llega temprano que se acaban'] },
+        { time:'17:25', title:'Vuelo Atenas → Mílos', icon:'✈️', tag:'transporte', dur:'40 min',
+          desc:'Sky Express u Olympic, avión pequeño, 40 minutos de Cícladas desde el aire.',
+          tips:['🎟️ ~60-110 EUR pp · 3-5 vuelos diarios en septiembre (Sky Express/Olympic) — si ese día no hay vespertino, tomar el de mediodía y ganar tarde de isla','⏰ Salir de Plaka al aeropuerto ~2h antes del vuelo (35-40 min de camino)','🪟 Ventanilla lado izquierdo: vista de las islas al atardecer'] },
+        { time:'18:30', title:'Recoger coches + check-in Milos Breeze', icon:'🚗', tag:'logística',
+          desc:'Dos coches de alquiler en el aeropuerto (la isla se explora en coche sí o sí). Pollonia está a 20 min: el pueblo pesquero elegante del noreste.',
+          tips:['🚗 2 coches × ~55-65 EUR/día en septiembre · reservar con semanas (Avance Rent a Car o similar)','🛻 Pedir al menos uno alto (SUV chico): los caminos a las playas del sur son de terracería'] },
+        { time:'21:00', title:'Cena en Pollonia junto al agua', icon:'🐟', tag:'comida',
+          desc:'Primera cena isleña: mesas a tres metros del mar, pescado del día a la parrilla.',
+          tips:['🐟 De Milos o Gialos en el puerto de Pollonia · ~25-30 EUR pp'] },
+      ]},
+    ],
+    restaurants:[
+      '🥓 Karamanlidika tou Fani — deli-taberna de 1930 · mezedes de otro nivel',
+      '🍽️ Strofi — azotea frente al Partenón iluminado · reservar',
+      '🥙 O Kostas — el souvlaki de culto de Atenas (3 EUR)',
+      '🍷 Azotea del Electra Palace — desayuno y copas con vista' ],
+    links:[{label:'Tickets Acrópolis',url:'https://etickets.tap.gr'},{label:'Reservar Strofi',url:'https://www.strofi.gr'},{label:'Vuelo ATH→Mílos 2 sep',url:'https://www.google.com/travel/flights?q=Flights%20from%20ATH%20to%20MLO%20on%202026-09-02'}] },
+
+  { id:'milos', city:'Mílos', region:'Grecia', emoji:'🌋', color:ACC.milos, coords:[36.7225,24.4289],
+    desc:'La isla volcánica de los colores: 70+ playas distintas, la costa lunar de Sarakíniko, pueblos pesqueros con puertas pintadas (los syrmata) y la mitad de turistas que Santorini. Aquí se encontró la Venus de Milo. Base en Pollonia: el pueblo tranquilo y bueno para comer del noreste. Tres días en coche + el velero después.',
+    days:[
+      { events:[
+        { time:'9:30', title:'Sarakíniko: la luna en la Tierra', icon:'🌕', tag:'atracción', dur:'2.5h',
+          desc:'Roca volcánica blanca pulida por el viento y el mar: un paisaje lunar que cae al agua turquesa. El lugar más fotografiado de las Cícladas — y aún así impresiona.',
+          tips:['⏰ Antes de las 10:30 o después de las 17:00 — al mediodía el blanco ciega y hay gente','🤿 Se puede nadar entre las formaciones · llevar escarpines','📷 Para la Ektar 100: el blanco + turquesa es SU paleta'] },
+        { time:'12:30', title:'Mandrakia + comida en Medusa', icon:'🐙', tag:'comida', dur:'2h',
+          desc:'Pueblito pesquero de syrmata (garajes de barcas pintados de colores). Medusa: pulpos secándose al sol en la cuerda, mesas sobre el agua, sin reservas y sin prisa.',
+          tips:['🐙 El pulpo a la parrilla aquí es el del viaje','💰 ~20-30 EUR pp · solo efectivo a veces'] },
+        { time:'16:00', title:'Plaka: el pueblo capital + kastro', icon:'🏘️', tag:'atracción', dur:'3h',
+          desc:'Callejones blancos con buganvilia que suben al kastro veneciano. Desde arriba, la bahía entera de Mílos. El pueblo se enciende dorado al atardecer.',
+          tips:['🌇 Subir al kastro ~18:45 para el atardecer (cae ~19:40)','🍦 Helado artesanal en Plaka antes de subir'] },
+        { time:'21:00', title:'Cena en Mavros Xoiros, Plaka', icon:'🍷', tag:'comida',
+          desc:'"Cerdo negro": cocina milesia moderna en un patio de Plaka. La versión refinada de la cocina de la isla.',
+          tips:['📞 Reservar — es chico','💰 ~30-35 EUR pp'] },
+      ]},
+      { events:[
+        { time:'10:00', title:'Playas del sur: Firiplaka', icon:'🏖️', tag:'atracción', dur:'2.5h',
+          desc:'Acantilados de colores (rosa, blanco, ocre) sobre arena clara y agua transparente. La playa grande y espectacular del sur.',
+          tips:['🚗 30 min desde Pollonia, último tramo de terracería suave','⛱️ Mitad organizada (camastros ~15 EUR), mitad libre — llevar sombrilla si van a la libre'] },
+        { time:'12:30', title:'Tsigrado (para los valientes)', icon:'🧗', tag:'atracción', dur:'1.5h',
+          desc:'La cala escondida a la que se baja por una grieta en la roca con escalera de cuerda y madera. Abajo: una piscina natural perfecta entre paredes.',
+          tips:['⚠️ La bajada es corta pero vertical — quien no quiera, la ve desde arriba que también vale','🎒 Bajar con poco: agua y celular en bolsa seca'] },
+        { time:'14:30', title:'Comida en Sirocco: cocina volcánica', icon:'🌋', tag:'comida', dur:'2h',
+          desc:'En Paliochori, donde la arena humea: cocinan el cordero y el pulpo ENTERRADOS en la arena volcánica a 100°C. Único en Grecia.',
+          tips:['🔥 Pedir el plato "volcánico" — lo desentierran frente a ti','💰 ~30-35 EUR pp','🏖️ Paliochori es playa de aguas termales: el mar sale tibio en algunos puntos'] },
+        { time:'17:30', title:'Tarde libre: alberca o playa de Pollonia', icon:'🏖️', tag:'descanso', dur:'2h',
+          desc:'Regreso tranquilo. La playa de Pollonia es mansa y de tarde dorada, o la alberca del hotel con vista.',
+          tips:['🍹 El bar del Milos Breeze al atardecer'] },
+        { time:'20:30', title:'Cena en O! Hamos! (llegar temprano)', icon:'🍶', tag:'comida', dur:'2h',
+          desc:'LA taberna de culto de Mílos: granja propia, recetas de la abuela escritas a mano, cabrito al horno de leña, quesos de la casa. No aceptan reservas y la fila es real.',
+          tips:['⏰ Llegar 19:45-20:00 en punto o esperar 45+ min','🐐 El cabrito al limón y los pastelitos de queso: obligatorios','💰 ~25-30 EUR pp · está frente a la playa de Adamas (20 min de Pollonia)'] },
+      ]},
+      { events:[
+        { time:'9:30', title:'Klima: el pueblo de los syrmata', icon:'🎨', tag:'atracción', dur:'1.5h',
+          desc:'La hilera de casas-garaje de pescadores con puertas de colores primarios, construidas al ras del agua. El sitio más pintado e instagrameado de Mílos, vacío en la mañana.',
+          tips:['📷 Luz buena en la mañana (el pueblo mira al oeste, pero el reflejo matutino es suave)','🚶 Combinar con las catacumbas y el teatro romano de Trypiti, a 5 min'] },
+        { time:'11:00', title:'Catacumbas de Mílos + teatro romano', icon:'🏛️', tag:'atracción', dur:'1.5h',
+          desc:'Las catacumbas cristianas más importantes de Grecia (s. I-V, 291 tumbas excavadas en la toba) y un teatro romano de mármol mirando al mar. Aquí cerca se encontró la Venus de Milo en 1820.',
+          tips:['🎟️ Catacumbas: 4 EUR · visita guiada corta','📍 El sitio del hallazgo de la Venus está señalado en el camino al teatro'] },
+        { time:'13:30', title:'Comida ligera + maletas para el barco', icon:'🧳', tag:'logística', dur:'2h',
+          desc:'Última comida en tierra y empacar EN BOLSA BLANDA para el catamarán (las maletas duras no caben en los camarotes — se pueden dejar en consigna o llevar solo lo esencial).',
+          tips:['🛍️ Comprar protector solar y snacks para el barco en Adamas','🥖 Pan, queso y fruta del minimarket: oro a bordo'] },
+        { time:'16:00', title:'Tarde final: Firopotamos o alberca', icon:'🏖️', tag:'descanso', dur:'3h',
+          desc:'Cala chica y perfecta con syrmata blancos, a 15 min. O simplemente la última tarde de alberca antes de tres noches a bordo.',
+          tips:['🌊 Firopotamos casi no sale en las guías: agua de vidrio'] },
+        { time:'21:00', title:'Cena de despedida de tierra en Pollonia', icon:'🦐', tag:'comida',
+          desc:'Última cena en tierra firme por tres días.',
+          tips:['🦐 Gialos: la pasta de langostino y el risotto de mariscos'] },
+      ]},
+    ],
+    restaurants:[
+      '🍶 O! Hamos! (Adamas) — taberna de granja legendaria · sin reservas, llegar 19:45',
+      '🐙 Medusa (Mandrakia) — pulpo a la parrilla sobre el agua',
+      '🌋 Sirocco (Paliochori) — cocina enterrada en arena volcánica',
+      '🍷 Mavros Xoiros (Plaka) — cocina milesia moderna · reservar',
+      '🦐 Gialos (Pollonia) — pastas de mariscos junto al puerto',
+      '🥐 Kivotos Ton Gefseon (Pollonia) — la panadería: pasteles de sandía milesios' ],
+    links:[{label:'Renta de coches',url:'https://www.avance.gr'},{label:'Hotel Milos Breeze',url:'https://www.milosbreeze.gr'}] },
+
+  { id:'mar', city:'Velero · Cícladas del Oeste', region:'Mar Egeo', emoji:'⛵', color:ACC.mar, coords:[36.75,24.55],
+    desc:'El corazón del viaje — y sí: DORMIMOS EN EL BARCO. El catamarán es el hotel flotante de estas 3 noches: camarotes privados con baño, cocinera a bordo, y cada mañana amaneces fondeado en una cala distinta. No es renta por día ni tour: es un charter privado completo con tripulación, en circuito por las Cícladas Occidentales — Kléftiko, Políegos (la isla deshabitada con el agua más azul de Grecia), Kímolos y Sifnos. Travesías cortas (1-3h), fondeos en calas vírgenes, y desembarque en Mílos mismo para volar. Septiembre = meltemi suave y mar de seda.',
+    days:[
+      { events:[
+        { time:'12:00', title:'Devolver coches + embarque en Adamas', icon:'⚓', tag:'transporte', dur:'1h',
+          desc:'Entrega de coches en el puerto, bienvenida de la tripulación, briefing de seguridad y camarotes. El capitán ajusta la ruta según el viento.',
+          tips:['🧳 Bolsa blanda, zapatos de suela clara o descalzos a bordo','💶 El APA (provisiones/combustible) suele pagarse al embarcar en efectivo o transferencia'] },
+        { time:'14:00', title:'Navegación a Kléftiko', icon:'⛵', tag:'mar', dur:'2.5h',
+          desc:'Bordeando la costa suroeste: acantilados, cuevas y la llegada a Kléftiko — la catedral de roca blanca con arcos y túneles donde se escondían los piratas. Solo se llega por mar.',
+          tips:['🤿 El capitán fondea y se nada entre los arcos: snorkel incluido a bordo','📷 La tarde es LA hora: los veleros de día ya se fueron y queda vacío'] },
+        { time:'19:00', title:'Fondeo nocturno + primera cena a bordo', icon:'🌟', tag:'mar',
+          desc:'Noche anclados en una cala protegida (Gerakas o Kléftiko según viento). La cocinera sirve en cubierta: pescado, ensaladas griegas, vino frío. Cielo sin luz artificial.',
+          tips:['🌌 La Vía Láctea a simple vista — llevar la cámara con trípode improvisado','🏊 Nado nocturno para los valientes: el plancton a veces brilla'] },
+      ]},
+      { events:[
+        { time:'9:00', title:'Políegos: el agua más azul de Grecia', icon:'💎', tag:'mar', dur:'4h',
+          desc:'Isla deshabitada (solo cabras y un faro). Las calas de Galazia Nera: agua de un azul eléctrico irreal sobre arena blanca a 8 metros visibles. El secreto mejor guardado del Egeo.',
+          tips:['🤿 El mejor snorkel del viaje: paredes de roca, pulpos, bancos de peces','🛥️ Llegando a las 9 la cala es solo nuestra — los barcos de día llegan a las 12'] },
+        { time:'14:00', title:'Comida a bordo navegando a Kímolos', icon:'🍤', tag:'comida', dur:'1h',
+          desc:'Travesía corta (45 min) a Kímolos, la hermana chica y sin turismo de Mílos.',
+          tips:[] },
+        { time:'16:30', title:'Kímolos: paseo por Chorio + helado en Psathi', icon:'🏘️', tag:'atracción', dur:'2.5h',
+          desc:'Bajar a tierra en el puertito de Psathi: el pueblo medieval de Chorio a 15 min a pie, blanco y sin coches, donde el tiempo no pasó.',
+          tips:['🍦 El heladero de Psathi es mítico entre los navegantes','🐐 El queso local (manoura) madurado en posos de vino: comprar para el barco'] },
+        { time:'20:30', title:'Cena a bordo fondeados frente a Políegos', icon:'🌙', tag:'mar',
+          desc:'Segunda noche: cala protegida, cena de la cocinera, silencio total.',
+          tips:[] },
+      ]},
+      { events:[
+        { time:'8:30', title:'Travesía a Sifnos (la isla gourmet)', icon:'⛵', tag:'mar', dur:'2.5h',
+          desc:'Navegación matinal a Sifnos, cuna de los grandes cocineros de Grecia (aquí nació Tselementes, el padre de la cocina griega moderna).',
+          tips:['🐬 Tramo con delfines frecuentes — ojos al agua'] },
+        { time:'12:00', title:'Bahía de Vathy: fondeo + comida en taberna', icon:'🍽️', tag:'comida', dur:'3h',
+          desc:'Vathy: bahía cerrada de agua quieta con un monasterio blanco a pie de playa y tabernas con mesas en la arena. Comida larga: garbanzos al horno de leña (revithada), cabrito, queso manoura.',
+          tips:['🥘 Pedir la revithada: el plato sagrado de Sifnos, cocido toda la noche en horno de leña','🏊 La bahía es una alberca: nado antes y después de comer'] },
+        { time:'16:30', title:'Navegación de regreso hacia Mílos', icon:'⛵', tag:'mar', dur:'2.5h',
+          desc:'Última travesía con el sol bajando. La tripulación fondea cerca de Adamas para el desembarque temprano de mañana.',
+          tips:['🥂 El atardecer desde cubierta con una copa: el momento del viaje'] },
+        { time:'20:30', title:'Última cena a bordo', icon:'🌟', tag:'mar',
+          desc:'Cierre del capítulo griego: cena de despedida de la tripulación.',
+          tips:['💶 Propina a la tripulación: 5-10% del charter es lo estándar, en efectivo al capitán'] },
+      ]},
+    ],
+    links:[{label:'Barcos con tripulación en Mílos (Viravira)',url:'https://www.viravira.co/yacht-charter/milos/crewed'},{label:'Catamaranes Mílos 6-9 sep (Boataround)',url:'https://www.boataround.com/us/search?destinations=milos&category=catamaran&checkIn=2026-09-06&checkOut=2026-09-09'}] },
+
+  { id:'estambul', city:'Estambul', region:'Türkiye', emoji:'🕌', color:ACC.estambul, coords:[41.0082,28.9784],
+    desc:'El gran final, hecho a fondo: la ciudad de dos continentes y tres imperios. Base en el Pera Palace (1892), el hotel construido para los pasajeros del Orient Express donde escribía Agatha Christie. Tres días: Sultanahmet imperial, bazares y hammam, y el Bósforo con el lado asiático. Septiembre: 26°C y luz perfecta.',
+    days:[
+      { events:[
+        { time:'8:30', title:'Desembarque en Adamas + vuelo Mílos → Atenas', icon:'✈️', tag:'transporte', dur:'40 min',
+          desc:'Despedida de la tripulación y vuelo matinal a Atenas.',
+          tips:['⏰ El vuelo MLO→ATH de la mañana (~10:40) conecta bien con el de Estambul de la tarde'] },
+        { time:'14:30', title:'Vuelo Atenas → Estambul', icon:'🛫', tag:'transporte', dur:'1h25m',
+          desc:'Aegean o Turkish Airlines, vuelo corto sobre el Egeo. Llegada al aeropuerto IST (el nuevo, lado europeo).',
+          tips:['🛂 La e-visa es OBLIGATORIA y gratuita para mexicanos: tramitarla en evisa.gov.tr antes del viaje (5 min) y llevarla impresa','💱 Sacar liras (TRY) del cajero en llegadas: mejor tasa que casas de cambio'] },
+        { time:'17:30', title:'Traslado a Pera + check-in Pera Palace', icon:'🏨', tag:'hotel', dur:'1h',
+          desc:'El hotel-museo de 1892: el cuarto 411 de Agatha Christie, el elevador de hierro original, el bar Orient. Mármol de hammam en los baños y vista al Cuerno de Oro.',
+          tips:['🚕 Taxi IST → Pera: ~45-60 min · ~25-35 EUR · o Havaist bus a Taksim','🍸 Coctel de llegada en el Orient Bar: obligatorio, es historia líquida'] },
+        { time:'20:30', title:'Cena en Karaköy Lokantası', icon:'🍽️', tag:'comida', dur:'2h',
+          desc:'El clásico moderno de Karaköy: azulejos turquesa, mezedes finos y cocina de Estambul de siempre. Bajando la colina desde el hotel.',
+          tips:['📞 Reservar · ~25-35 EUR pp','🚶 15 min a pie cuesta abajo, taxi de vuelta 5 min'] },
+      ]},
+      { events:[
+        { time:'8:45', title:'Santa Sofía al abrir', icon:'🕌', tag:'atracción', dur:'1.5h',
+          desc:'1,500 años: basílica bizantina, mezquita otomana, y hoy mezquita de nuevo. La cúpula que cambió la arquitectura para siempre y los mosaicos dorados de la galería.',
+          tips:['🎟️ Turistas entran por la galería superior: ~25 EUR · abre ~9:00, formarse antes para entrar de primeros','🧕 Código de vestimenta: hombros y rodillas cubiertos, pañuelo para mujeres (prestan)'] },
+        { time:'10:30', title:'Mezquita Azul + Hipódromo', icon:'🕌', tag:'atracción', dur:'1h',
+          desc:'Los seis minaretes y los 20,000 azulejos de Iznik azules. Enfrente, el Hipódromo bizantino con el obelisco egipcio de Teodosio.',
+          tips:['🆓 Gratis · cierra a turistas en horas de rezo (~20 min, 5 veces al día)','👞 Bolsa para los zapatos en la entrada'] },
+        { time:'12:00', title:'Cisterna Basílica', icon:'💧', tag:'atracción', dur:'45 min',
+          desc:'El palacio sumergido: 336 columnas romanas bajo tierra sosteniendo el techo sobre el agua, con las dos cabezas de Medusa invertidas. Fresco, oscuro, irreal.',
+          tips:['🎟️ ~25 EUR · la fila avanza rápido','📷 Trípodes no, pero el ISO alto de noche digital salva'] },
+        { time:'13:30', title:'Comida en Pandeli (Bazar de las Especias)', icon:'🥘', tag:'comida', dur:'1.5h',
+          desc:'Desde 1901, arriba de la puerta del Bazar Egipcio: comedores de azulejo turquesa donde comieron Atatürk y Audrey Hepburn. Solo abre a mediodía.',
+          tips:['🐟 El levrek en papel (lubina) es el plato histórico','💰 ~20-30 EUR pp · solo comida, cierra ~19h'] },
+        { time:'15:00', title:'Bazar de las Especias + Gran Bazar', icon:'🛍️', tag:'compras', dur:'3h',
+          desc:'El Bazar Egipcio: pirámides de especias, lokum, té. Después, el Gran Bazar: 4,000 tiendas en 61 calles techadas desde 1461. Perderse es el método.',
+          tips:['🤝 Regatear es el deporte: empezar al 50% del precio dicho, con sonrisa','🫖 Aceptar el té que ofrecen — es hospitalidad, no compromiso','💎 Bueno de verdad: lámparas, cerámica de Iznik, toallas peshtemal, lokum de pistache'] },
+        { time:'20:00', title:'Atardecer en el puente de Gálata + cena Hamdi', icon:'🌉', tag:'comida', dur:'2.5h',
+          desc:'El puente con los pescadores al atardecer, y Hamdi: el templo del kebab del sureste con terraza sobre el Cuerno de Oro.',
+          tips:['🥙 El pistachio kebab de Hamdi es patrimonio nacional no oficial','📞 Reservar mesa de terraza · ~20-30 EUR pp'] },
+      ]},
+      { events:[
+        { time:'10:00', title:'Hammam Hürrem Sultan (Ayasofya, 1556)', icon:'♨️', tag:'atracción', dur:'2h',
+          desc:'El baño de Sinan construido para la esposa de Solimán el Magnífico, entre Santa Sofía y la Mezquita Azul. Dos alas gemelas simultáneas (hombres y mujeres) — los 5 al mismo tiempo. Mármol caliente, espuma, exfoliación kese y té. Sales siendo otra persona.',
+          tips:['📞 RESERVAR online (ayasofyahamami.com) · rituales de 35-110 min · ~85-185 EUR pp','✅ A diferencia de Kılıç Ali Paşa (mujeres de día, hombres de noche), aquí van todos a la misma hora','🚋 Tranvía T1 desde Karaköy a Sultanahmet · 15 min'] },
+        { time:'13:00', title:'Ferry a Kadıköy (lado asiático)', icon:'⛴️', tag:'transporte', dur:'25 min',
+          desc:'El ferry público por el Bósforo: gaviotas, té en vaso de tulipán, y cruzar de Europa a Asia por 1 euro. El mejor "tour" de la ciudad es el transporte público.',
+          tips:['🚶 Del hammam a Eminönü son 12 min cuesta abajo — el ferry sale de ahí cada 15-20 min · pagar con Istanbulkart','☕ El té a bordo: 15 liras y panorámica incluida'] },
+        { time:'13:45', title:'Comida en Çiya Sofrası, Kadıköy', icon:'🥘', tag:'comida', dur:'1.5h',
+          desc:'El restaurante que rescató la cocina regional de Anatolia: cada día guisos distintos de pueblos que ya casi no existen. Peregrinaje gastronómico mundial (salió en Chef\u0027s Table).',
+          tips:['🍲 Ir a la barra de guisos y señalar: así se pide','💰 ~12-18 EUR pp — la mejor relación del viaje'] },
+        { time:'15:30', title:'Mercado de Kadıköy + barrio de Moda', icon:'🚶', tag:'atracción', dur:'2.5h',
+          desc:'El mercado de pescado y encurtidos de Kadıköy, las calles con murales, y Moda: el barrio frente al mar donde Estambul vive sin turistas.',
+          tips:['🍦 Helado de Moda caminando el malecón con vista a la ciudad vieja','📷 El contraste perfecto del viaje: la Estambul cotidiana'] },
+        { time:'19:00', title:'Regreso + Torre de Gálata de noche', icon:'🗼', tag:'atracción', dur:'1h',
+          desc:'Ferry de vuelta con la silueta de minaretes al atardecer y paseo por Galata iluminada.',
+          tips:['📷 La foto: desde el ferry, la ciudad vieja a contraluz ~19:15'] },
+        { time:'21:00', title:'Cena de despedida en Mikla', icon:'⭐', tag:'comida', dur:'2.5h',
+          desc:'La azotea del Marmara Pera: alta cocina turco-escandinava de Mehmet Gürs con vista de 360° a toda la ciudad. La cena que cierra el viaje.',
+          tips:['📞 RESERVAR con semanas (miklarestaurant.com) · mesa de terraza','💰 Menú degustación ~100-120 EUR pp · a la carta ~70-80','👔 Elegante-casual · a 5 min a pie del Pera Palace'] },
+      ]},
+    ],
+    restaurants:[
+      '⭐ Mikla — azotea 360° · turco-escandinavo · la cena final · reservar',
+      '🥘 Çiya Sofrası (Kadıköy) — cocina de Anatolia de culto mundial',
+      '🥙 Hamdi (Eminönü) — pistachio kebab con terraza al Cuerno de Oro',
+      '🐟 Pandeli (1901) — comedor de azulejos sobre el Bazar de Especias · solo comidas',
+      '🍽️ Karaköy Lokantası — el clásico moderno de mezedes',
+      '🍯 Karaköy Güllüoğlu — la baklava definitiva, de pie con café' ],
+    links:[{label:'Reservar Mikla',url:'https://www.miklarestaurant.com'},{label:'Hammam Hürrem Sultan',url:'https://ayasofyahamami.com'},{label:'E-visa Türkiye',url:'https://www.evisa.gov.tr'}] },
+
+  { id:'vuelo-vuelta', city:'Estambul → México', region:'Vuelo', emoji:'🏠', color:ACC['vuelo-vuelta'], coords:[41.26,28.74],
+    desc:'Regreso directo: Turkish Airlines IST → MEX, ~14h15m en 787, el único nonstop. Por el cambio de horario se llega a México el mismo día por la tarde.',
+    days:[{ events:[
+      { time:'9:30', title:'Desayuno final + checkout (maletas en consigna)', icon:'☕', tag:'logística',
+        desc:'Turkish sale de IST de madrugada (~01:50) o de noche (~20:30). Con la salida nocturna ganamos un día completo de regalo en Estambul: este plan asume esa.',
+        tips:['🧳 Dejar maletas en la consigna del Pera y exprimir el día','⚠️ Si el vuelo del día resulta ser el de la madrugada del 12, mover esta agenda al día 19 y cenar Mikla el día 18'] },
+      { time:'10:30', title:'Día de regalo: Palacio de Dolmabahçe', icon:'🏰', tag:'atracción', dur:'2.5h',
+        desc:'El Versalles otomano sobre el Bósforo: 285 habitaciones, el candil de cristal de 4.5 toneladas y la escalera de baccarat. Donde el imperio se despidió a lo grande.',
+        tips:['🎟️ ~20-25 EUR · cerrado lunes (hoy es sábado: abierto)','🚋 Tranvía/funicular desde Karaköy a Kabataş · 15 min'] },
+      { time:'13:30', title:'Última comida: balık ekmek + Güllüoğlu', icon:'🥖', tag:'comida', dur:'1.5h',
+        desc:'El sándwich de pescado a la parrilla de Eminönü, de pie frente al agua, y la baklava final de Karaköy Güllüoğlu con café turco.',
+        tips:['💰 Balık ekmek: ~3-4 EUR · la despedida más honesta de la ciudad'] },
+      { time:'16:30', title:'Recoger maletas + salida al aeropuerto IST', icon:'🚕', tag:'transporte', dur:'1h',
+        desc:'Salir con margen: el trayecto son 45-60 min y el aeropuerto exige caminata olímpica.',
+        tips:['🚕 Taxi ~25-35 EUR · o Havaist desde Taksim','⏰ Para un vuelo ~20:30, estar en IST a las 17:45'] },
+      { time:'20:30', title:'Vuelo Turkish Airlines IST → MEX (directo)', icon:'✈️', tag:'transporte', dur:'~14h40m',
+        desc:'El único directo Estambul–México: 787-9, ~14h40. Por el huso horario se aterriza en MEX en la madrugada del domingo 13.',
+        tips:['💺 Lado izquierdo: atardecer eterno volando al oeste','🛬 Llegada MEX ~02:00 del 13 sep — dejar el domingo para aterrizar en la vida'] },
+    ]}],
+    links:[{label:'Vuelo IST→MEX 12 sep',url:'https://www.google.com/travel/flights?q=Flights%20from%20IST%20to%20MEX%20on%202026-09-12'}] },
+];
+
+const SEGMENTS = [
+  { mode:'flight', dur:'10h35m' },
+  { mode:'flight', dur:'1h15m' },
+  { mode:'flight', dur:'~6h vía MAD' },
+  { mode:'flight', dur:'40m' },
+  { mode:'boat', dur:'3 noches' },
+  { mode:'flight', dur:'2 vuelos · ~5h' },
+  { mode:'flight', dur:'14h15m' },
+];
+
+const RESERVATIONS = [
+  { id:'flight-main', em:'✈️', city:'Vuelos', name:'Open-jaw: MEX→Madrid + Estambul→MEX', date:'23 Ago / 12 Sep', deadline:'🔴 Reservar YA (ahorro ~40% con 9+ semanas)', cat:'Transporte', done:false,
+    note:'Comprar como MULTIDESTINO en un solo boleto: tramo 1 MEX→MAD el 23 ago + tramo 2 IST→MEX el 12 sep. El link abre el primer tramo; agregar el segundo con el botón multidestino. ~22,000-26,000 MXN pp.', link:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-23' },
+  { id:'flight-vgo', em:'✈️', city:'España', name:'Madrid → Vigo · 27 Ago', date:'27 Ago ~9:50', deadline:'🟠 Con tiempo', cat:'Transporte', done:false,
+    note:'Iberia/Air Europa ~1h15m. ~1,800-2,400 MXN pp. Link con ruta y fecha precargadas.', link:'https://www.google.com/travel/flights?q=Flights%20from%20MAD%20to%20VGO%20on%202026-08-27' },
+  { id:'flight-ath', em:'✈️', city:'Grecia', name:'Vigo → Atenas (vía Madrid) · 31 Ago', date:'31 Ago mañana', deadline:'🟠 Con tiempo', cat:'Transporte', done:false,
+    note:'Un solo boleto con conexión en MAD para documentar maletas directo. ~4,000-5,500 MXN pp. Link con ruta y fecha precargadas.', link:'https://www.google.com/travel/flights?q=Flights%20from%20VGO%20to%20ATH%20on%202026-08-31' },
+  { id:'flight-milos', em:'✈️', city:'Grecia', name:'Atenas → Mílos · 2 Sep', date:'2 Sep ~17:25', deadline:'🟠 Se agotan en sept.', cat:'Transporte', done:false,
+    note:'Sky Express u Olympic, 40 min. ~1,400-2,400 MXN pp. Link con ruta y fecha precargadas.', link:'https://www.google.com/travel/flights?q=Flights%20from%20ATH%20to%20MLO%20on%202026-09-02' },
+  { id:'flight-ist', em:'✈️', city:'Türkiye', name:'Mílos → Atenas → Estambul · 9 Sep', date:'9 Sep (2 vuelos)', deadline:'🟠 Coordinar horarios', cat:'Transporte', done:false,
+    note:'MLO→ATH mañana (~10:40) + ATH→IST tarde (~14:30, Aegean/Turkish). ~3,500-5,000 MXN pp total. El link arma la ruta completa del día.', link:'https://www.google.com/travel/flights?q=Flights%20from%20MLO%20to%20IST%20on%202026-09-09' },
+  { id:'hotel-mad', em:'🏨', city:'Madrid', name:'Hotel Urban 5★ GL · 3 noches', date:'24–27 Ago (3 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
+    note:'3 habitaciones · ~6,000 MXN/hab/noche. Azotea con alberca, ubicación perfecta.', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-24&checkout=2026-08-27&group_adults=5&no_rooms=3&group_children=0' },
+  { id:'hotel-vigo', em:'🏨', city:'Galicia', name:'Gran Hotel Nagari 5★ · 4 noches', date:'27–31 Ago (4 noches)', deadline:'🔴 YA: agosto en Vigo se agota', cat:'Hoteles', done:false,
+    note:'3 habitaciones · ~4,800 MXN/hab/noche. Centro de Vigo, spa, a 25 min del Pazo de Cea.', link:'https://www.booking.com/searchresults.html?ss=Gran+Hotel+Nagari+Vigo&checkin=2026-08-27&checkout=2026-08-31&group_adults=5&no_rooms=3&group_children=0' },
+  { id:'hotel-ath', em:'🏨', city:'Atenas', name:'Electra Palace 5★ · 2 noches', date:'31 Ago – 2 Sep', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
+    note:'3 habitaciones · ~5,600 MXN/hab/noche con desayuno. Pedir habitación con vista a la Acrópolis (vale el extra).', link:'https://www.booking.com/hotel/gr/electrapalacehotelathens.html?checkin=2026-08-31&checkout=2026-09-02&group_adults=5&no_rooms=3&group_children=0' },
+  { id:'hotel-milos', em:'🏨', city:'Mílos', name:'Milos Breeze Boutique · 3 noches', date:'2–6 Sep (4 noches)', deadline:'🔴 Hotel chico: reservar con meses', cat:'Hoteles', done:false,
+    note:'Llegada 2 Sep en la noche, salida 6 Sep al barco. 3 habitaciones · ~6,900 MXN/hab/noche.', link:'https://www.booking.com/searchresults.html?ss=Milos+Breeze+Boutique+Hotel+Pollonia&checkin=2026-09-02&checkout=2026-09-06&group_adults=5&no_rooms=3&group_children=0' },
+  { id:'charter', em:'⛵', city:'Mar Egeo', name:'Catamarán con tripulación (dormimos a bordo) · 3 noches', date:'Embarque dom 6 Sep ~14:00 · desembarque mié 9 Sep ~8:30, ambos en Adamas', deadline:'🔴 Reservar con 3-6 meses', cat:'Experiencia', done:false,
+    note:'QUÉ RESERVAR EXACTO: charter PRIVADO de catamarán de vela 40-45 pies, 4 camarotes, CON tripulación ("crewed": capitán + cocinera/hostess) — NO renta por día, NO por cabina, NO bareboat. Ruta a pedir: Kléftiko–Políegos–Kímolos–Sifnos, regreso a Adamas. ~115,000-145,000 MXN + APA (comida/combustible ~25%) + propina 5-10%. El link abre directo los barcos con tripulación en Mílos.', link:'https://www.viravira.co/yacht-charter/milos/crewed' },
+  { id:'hotel-ist', em:'🏨', city:'Türkiye', name:'Pera Palace 1892 · 3 noches', date:'9–12 Sep', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
+    note:'3 habitaciones · ~6,400 MXN/hab/noche. Pedir cuarto con vista al Cuerno de Oro.', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-09&checkout=2026-09-12&group_adults=5&no_rooms=3&group_children=0' },
+  { id:'cies', em:'⛴️', city:'Galicia', name:'Permiso Xunta + ferry Islas Cíes · 28 Ago', date:'28 Ago 9:15', deadline:'🟠 Cupo diario limitado', cat:'Tickets', done:false,
+    note:'1) Permiso gratis en autorizacionillasatlanticas.xunta.gal · 2) Ferry ~550 MXN pp ida/vuelta.', link:'https://autorizacionillasatlanticas.xunta.gal' },
+  { id:'acropolis', em:'🏛️', city:'Atenas', name:'Acrópolis franja 8:00 · 1 Sep', date:'1 Sep 8:00', deadline:'🟠 Las franjas tempranas vuelan', cat:'Tickets', done:false,
+    note:'~650 MXN pp. El combo de sitios (Ágora incl.) conviene si visitan ambos.', link:'https://etickets.tap.gr' },
+  { id:'hammam', em:'♨️', city:'Türkiye', name:'Hammam Hürrem Sultan (Ayasofya) · 11 Sep', date:'11 Sep 10:00', deadline:'🟠 Reservar online', cat:'Tickets', done:false,
+    note:'Alas simultáneas hombres/mujeres: los 5 a la misma hora. Ritual ~2,500-3,200 MXN pp. (Kılıç Ali Paşa separa por horarios: mujeres de día, hombres de noche — por eso no.)', link:'https://ayasofyahamami.com' },
+  { id:'resto-maruja', em:'⭐', city:'Galicia', name:'Maruja Limón (1★) · cena 27 Ago', date:'27 Ago 21:30', deadline:'🟠 Agosto se llena', cat:'Restaurantes', done:false,
+    note:'Mesa para 5. Menú ~2,200 MXN pp.', link:'https://marujalimon.es' },
+  { id:'resto-botin', em:'🐖', city:'Madrid', name:'Botín (1725) · cena 26 Ago', date:'26 Ago 21:45', deadline:'🟠 Semanas de anticipación', cat:'Restaurantes', done:false,
+    note:'El restaurante más antiguo del mundo. Cochinillo. ~1,300 MXN pp.', link:'https://botin.es' },
+  { id:'resto-strofi', em:'🏛️', city:'Atenas', name:'Strofi azotea · cena 1 Sep', date:'1 Sep 21:30', deadline:'🟢 Con unos días basta', cat:'Restaurantes', done:false,
+    note:'Mesa de azotea con vista al Partenón.', link:'https://www.strofi.gr' },
+  { id:'resto-mikla', em:'🌃', city:'Türkiye', name:'Mikla · cena despedida 11 Sep', date:'11 Sep 21:00', deadline:'🟠 Semanas de anticipación', cat:'Restaurantes', done:false,
+    note:'Mesa de terraza. Degustación ~2,400 MXN pp.', link:'https://www.miklarestaurant.com' },
+  { id:'cars-milos', em:'🚗', city:'Mílos', name:'2 coches de alquiler · 3 Sep–6 Sep', date:'Recoger en aeropuerto MLO', deadline:'🟠 Pocos coches en la isla', cat:'Tickets', done:false,
+    note:'Uno tipo SUV chico para terracerías. ~1,300 MXN/coche/día. Avance es la agencia local buena de Mílos: cotizar por su formulario con recogida en aeropuerto 2 sep ~18:30 y entrega en puerto de Adamas 6 sep ~12:00.', link:'https://www.avance.gr' },
+  { id:'visa-tr', em:'🛂', city:'Türkiye', name:'E-visa Türkiye (obligatoria · gratuita) × 5', date:'Antes del viaje', deadline:'🔴 Obligatoria — 5 min en línea', cat:'Documentos', done:false,
+    note:'Los mexicanos SÍ requieren e-visa: gratis en evisa.gov.tr (sitio oficial), trámite de 5 min. Pasaporte con 6+ meses de vigencia. Solicitar mínimo 3 días hábiles antes y llevar el PDF impreso + en el celular. Válida 180 días, estancia hasta 30.', link:'https://www.evisa.gov.tr' },
+  { id:'seguro', em:'🏥', city:'General', name:'Seguro de viaje (5 personas, 20 días)', date:'Antes del viaje', deadline:'🟠 No negociable', cat:'Documentos', done:false,
+    note:'Cobertura médica + cancelación + el velero. ~800-1,200 MXN pp.', link:'' },
+];
+
+const BUDGET = [
+  { cat:'✈️ Vuelos', items:[
+    { k:'v_main', label:'MEX→MAD + IST→MEX open-jaw (5p)', def:118000 },
+    { k:'v_vgo', label:'Madrid → Vigo (5p)', def:10000 },
+    { k:'v_ath', label:'Vigo → Atenas vía MAD (5p)', def:23000 },
+    { k:'v_mlo', label:'Atenas → Mílos (5p)', def:10000 },
+    { k:'v_ist', label:'Mílos → Atenas → Estambul (5p)', def:21000 },
+    { k:'v_extra', label:'Equipaje documentado + asientos', def:8000 } ]},
+  { cat:'🏨 Hoteles (3 habitaciones)', items:[
+    { k:'h_mad', label:'Hotel Urban, Madrid · 3 noches', def:54000 },
+    { k:'h_vgo', label:'Gran Hotel Nagari, Vigo · 4 noches', def:58000 },
+    { k:'h_ath', label:'Electra Palace, Atenas · 2 noches', def:34000 },
+    { k:'h_mlo', label:'Milos Breeze, Pollonia · 4 noches', def:62000 },
+    { k:'h_ist', label:'Pera Palace, Estambul · 3 noches', def:58000 } ]},
+  { cat:'⛵ Velero privado (3 noches)', items:[
+    { k:'b_boat', label:'Catamarán + capitán + cocinera', def:118000 },
+    { k:'b_apa', label:'APA: comida a bordo, combustible, amarres', def:16000 },
+    { k:'b_tip', label:'Propina tripulación (~5-10%)', def:7000 } ]},
+  { cat:'🍽️ Comida (17 días en tierra)', items:[
+    { k:'c_diaria', label:'Comidas diarias (5p × ~1,050 MXN/día)', def:89000 },
+    { k:'c_esp', label:'Cenas especiales: Maruja Limón, Botín, Mikla, Strofi', def:24000 },
+    { k:'c_vino', label:'Vinos, cafés, helados, antojos', def:9000 } ]},
+  { cat:'🚕 Transporte local', items:[
+    { k:'t_cars', label:'2 coches en Mílos × 3 días', def:8000 },
+    { k:'t_taxi', label:'Taxis y traslados aeropuerto (todas las ciudades)', def:13000 },
+    { k:'t_cies', label:'Ferry Cíes + permisos (5p)', def:3000 },
+    { k:'t_pub', label:'Metro, tranvía, ferries del Bósforo', def:3000 } ]},
+  { cat:'🎁 Extras y experiencias', items:[
+    { k:'e_tickets', label:'Entradas: Acrópolis, Prado, Sta. Sofía, Cisterna, museos', def:9000 },
+    { k:'e_hammam', label:'Hammam Hürrem Sultan Ayasofya (5p)', def:15000 },
+    { k:'e_regalo', label:'Regalo de boda', def:10000 },
+    { k:'e_foto', label:'Rollos Ektar 100 + revelado', def:4000 },
+    { k:'e_seguro', label:'Seguro de viaje (5p)', def:5000 },
+    { k:'e_buffer', label:'Compras y colchón de imprevistos', def:12000 } ]},
+];
+
+const PACKING = [
+  { cat:'🎩 Boda', items:['Traje / vestido formal','Zapatos formales (césped del pazo: tacón ancho)','Segundo look por si hay pre-boda','Regalo o sobre para los novios'] },
+  { cat:'☀️ Verano de costa', items:['Trajes de baño (3+)','Escarpines para calas rocosas (Sarakíniko, Tsigrado)','Protector solar 50+ (caro en las islas)','Gorra y lentes de sol','Toalla de microfibra','Ropa de lino / ligera','Sombrilla o carpa ligera de playa'] },
+  { cat:'⛵ Velero', items:['BOLSA BLANDA (no maleta dura)','Zapatos de suela clara o ir descalzo','Rompevientos ligero para la noche','Pastillas anti-mareo (por si acaso)','Bolsa seca para celular y cámara'] },
+  { cat:'📷 Foto', items:['Nikon N90s + 8-10 rollos Ektar 100','Bolsa seca para el barco','Power bank grande','Adaptador EU tipo C/F (sirve en los 3 países)'] },
+  { cat:'📄 Documentos', items:['Pasaporte (>6 meses de vigencia)','E-visa Türkiye (gratis en evisa.gov.tr) impresa × 5','Seguro de viaje (póliza descargada)','Tarjetas sin comisión internacional + EUR y TRY en efectivo','Reservas del charter y hoteles offline'] },
+];
+
+const PHRASES = [
+  { cat:'🇬🇷 Griego', items:[
+    { nat:'Γεια σας', py:'ya sas', es:'Hola' },
+    { nat:'Ευχαριστώ', py:'efjaristó', es:'Gracias' },
+    { nat:'Παρακαλώ', py:'parakaló', es:'Por favor / De nada' },
+    { nat:'Πόσο κάνει;', py:'póso káni', es:'¿Cuánto cuesta?' },
+    { nat:'Τον λογαριασμό', py:'ton logariazmó', es:'La cuenta' },
+    { nat:'Στην υγειά μας!', py:'stin iyá mas', es:'¡Salud!' },
+    { nat:'Πολύ ωραίο', py:'polí oréo', es:'Muy bonito' } ]},
+  { cat:'🇹🇷 Turco', items:[
+    { nat:'Merhaba', py:'mer-ha-BA', es:'Hola' },
+    { nat:'Teşekkürler', py:'te-shek-kür-LER', es:'Gracias' },
+    { nat:'Lütfen', py:'lüt-FEN', es:'Por favor' },
+    { nat:'Ne kadar?', py:'ne ka-DAR', es:'¿Cuánto cuesta?' },
+    { nat:'Hesap, lütfen', py:'he-SAP lüt-FEN', es:'La cuenta, por favor' },
+    { nat:'Çok güzel!', py:'chok gü-ZEL', es:'¡Muy bonito/rico!' },
+    { nat:'Pazarlık yapalım', py:'pa-zar-LIK ya-pa-LIM', es:'Vamos a regatear' } ]},
+  { cat:'🇪🇸 Gallego', items:[
+    { nat:'Grazas', py:'GRA-zas', es:'Gracias' },
+    { nat:'Saúde!', py:'sa-Ú-de', es:'¡Salud!' },
+    { nat:'Riquiño', py:'ri-KI-ño', es:'Delicioso / entrañable' } ]},
+];
+
+const QUIZ = {
+  galicia:[
+    { q:'¿Qué vino blanco es la estrella de las Rías Baixas?', opts:['Albariño','Ribeiro','Godello'], a:0, fact:'El albariño es la uva insignia: fresca y mineral, perfecta con marisco.' },
+    { q:'¿Cómo se llaman las casonas señoriales gallegas?', opts:['Masías','Pazos','Cortijos'], a:1, fact:'Un pazo es una casa noble gallega de piedra con jardines — como el de la boda.' },
+    { q:'¿Qué playa de las Cíes fue nombrada la mejor del mundo?', opts:['Playa de Rodas','Playa América','Samil'], a:0, fact:'The Guardian la eligió la mejor playa del mundo en 2007.' } ],
+  milos:[
+    { q:'¿Por qué Sarakíniko parece la luna?', opts:['Es mármol','Roca volcánica blanca','Sal cristalizada'], a:1, fact:'Es toba volcánica blanca pulida por viento y mar.' },
+    { q:'¿Qué estatua famosa se halló en Mílos?', opts:['La Venus de Milo','El Discóbolo','La Victoria de Samotracia'], a:0, fact:'Un campesino la encontró en 1820 cerca del teatro romano; hoy está en el Louvre.' },
+    { q:'¿Qué son los syrmata?', opts:['Barcas de pesca','Garajes de barcas pintados','Redes tradicionales'], a:1, fact:'Casitas-garaje al ras del agua con puertas de colores — Klima es el ejemplo perfecto.' } ],
+  estambul:[
+    { q:'¿Entre qué continentes está Estambul?', opts:['Europa y África','Europa y Asia','Asia y Oceanía'], a:1, fact:'El Bósforo divide la ciudad: el ferry a Kadıköy cruza de continente en 25 min.' },
+    { q:'¿Qué fue Santa Sofía antes de mezquita?', opts:['Un palacio','Una basílica cristiana','Un mercado'], a:1, fact:'Fue la catedral más grande del mundo por casi 1,000 años.' },
+    { q:'¿Qué escritora vivía en el Pera Palace?', opts:['Virginia Woolf','Agatha Christie','Simone de Beauvoir'], a:1, fact:'Escribía en el cuarto 411 — se dice que ahí nació Asesinato en el Orient Express.' } ],
+};
+
+const WISDOM = [
+  'En Galicia se come despacio: una comida puede durar tres horas. Nadie trae la cuenta sin que la pidas.',
+  'En las Cícladas manda el meltemi (el viento). En septiembre ya está calmado — por eso elegimos estas fechas.',
+  'En Türkiye, aceptar el té que te ofrecen es cortesía, no compromiso de compra. Y se regatea sonriendo.',
+  'La mejor foto de Sarakíniko es al atardecer, cuando el blanco se vuelve dorado.',
+  'El secreto de Madrid en agosto: mañanas tempranas, siesta sagrada, y la ciudad revive a las 21:00.',
+  'Políegos no tiene ni un solo habitante. Solo cabras, un faro, y el agua más azul de Grecia.',
+  'En el Gran Bazar el primer precio es una invitación a conversar, no una cifra.',
+  'La queimada gallega se hace de madrugada recitando un conxuro contra los malos espíritus. Va en serio.',
+];
+
+const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
+const AGENDA = (function(){
+  const out=[]; let cur=new Date(2026,7,24); let n=1;
+  CITIES.forEach(city=>{
+    (city.days||[]).forEach((d,di)=>{
+      const dd=new Date(cur);
+      out.push({ day:n++, date:DIAS[dd.getDay()]+' '+dd.getDate()+' '+MESES[dd.getMonth()],
+        cityId:city.id, city:city.city, emoji:city.emoji, color:city.color, region:city.region,
+        events:d.events, cityDesc:city.desc, restaurants:city.restaurants, links:city.links, firstOfCity:(di===0) });
+      cur.setDate(cur.getDate()+1);
+    });
+  });
+  return out;
+})();
+
+function lsGet(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let TAB = lsGet('vb_tab','itin');
+let DAY = lsGet('vb_day',1);
+if(typeof DAY!=='number'||DAY<1||DAY>AGENDA.length) DAY=1;
+let map=null;
+(function(){ const sr=lsGet('vb_resv',{}); RESERVATIONS.forEach(r=>{ if(sr[r.id]!==undefined) r.done=sr[r.id]; }); })();
+
+function setTheme(t){ document.documentElement.setAttribute('data-theme',t); lsSet('vb_theme',t); document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙'; }
+function toggleTheme(){ setTheme(lsGet('vb_theme','dark')==='dark'?'light':'dark'); if(map) setTimeout(function(){map.invalidateSize();},120); }
+
+const TABS = [
+  { id:'itin', ic:'📍', label:'Itinerario' }, { id:'map', ic:'🗺️', label:'Mapa' },
+  { id:'resv', ic:'✅', label:'Reservas' }, { id:'budget', ic:'💶', label:'Gastos' },
+  { id:'pack', ic:'🧳', label:'Maleta' }, { id:'words', ic:'💬', label:'Frases' },
+  { id:'fun', ic:'🎲', label:'Extra' },
+];
+function setTab(t){ TAB=t; lsSet('vb_tab',t); render(); }
+function setDay(n){ DAY=n; lsSet('vb_day',n); render(); setTimeout(function(){ const el=document.getElementById('dp-'+n); if(el) el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); },30); }
+function toggleResv(id){ const r=RESERVATIONS.find(x=>x.id===id); if(!r) return; r.done=!r.done; const s=lsGet('vb_resv',{}); s[id]=r.done; lsSet('vb_resv',s); render(); }
+function togglePack(k){ const c=lsGet('vb_pack',{}); c[k]=!c[k]; lsSet('vb_pack',c); render(); }
+function updBudget(inp){ const s=lsGet('vb_budget',{}); s[inp.dataset.k]=Number(inp.value)||0; lsSet('vb_budget',s); render(); }
+function togX(id,arrowId){ const el=document.getElementById(id); const ar=document.getElementById(arrowId); if(!el) return; if(el.style.display==='block'){ el.style.display='none'; if(ar) ar.textContent='▼'; } else { el.style.display='block'; if(ar) ar.textContent='▲'; } }
+
+function renderTabs(){
+  document.getElementById('tabbar').innerHTML = TABS.map(t=>'<button class="tab '+(t.id===TAB?'on':'')+'" onclick="setTab(\''+t.id+'\')"><span class="ic">'+t.ic+'</span>'+t.label+'</button>').join('');
+}
+function renderDaybar(){
+  const el=document.getElementById('daybar');
+  if(TAB!=='itin'){ el.style.display='none'; return; }
+  el.style.display='block'; el.className='daybar';
+  const legend=[['🇪🇸 España',ACC.galicia],['🇬🇷 Grecia',ACC.atenas],['🇹🇷 Türkiye',ACC.estambul]]
+    .map(function(l){ return '<span class="leg"><span class="legdot" style="background:'+l[1]+'"></span>'+l[0]+'</span>'; }).join('');
+  el.innerHTML = '<div class="legendrow">'+legend+'</div><div class="daybar-inner">'+AGENDA.map(d=>{
+    const on=d.day===DAY; const p=d.date.split(' ');
+    return '<button id="dp-'+d.day+'" class="daypill '+(on?'on':'')+'" style="background:'+d.color+';border-color:'+d.color+(on?';outline:2px solid var(--tx1);outline-offset:1px':'')+'" onclick="setDay('+d.day+')"><span class="dow" style="color:rgba(255,255,255,.85)">'+esc(p[0])+' '+esc(p[2]||'')+'</span><span class="dnum" style="color:#fff">'+esc(p[1])+'</span></button>';
+  }).join('')+'</div>';
+}
+
+function renderItin(){
+  const d = AGENDA.find(x=>x.day===DAY)||AGENDA[0];
+  const inCity = AGENDA.filter(x=>x.cityId===d.cityId);
+  const dayNum = inCity.findIndex(x=>x.day===d.day)+1;
+  const hotel = HOTELS[d.cityId];
+  let h = '<div class="wrap">';
+  h += '<div class="dayhead" style="background:linear-gradient(135deg,'+d.color+'22,transparent);border:1px solid '+d.color+'33">'
+    + '<div class="row"><span class="em">'+d.emoji+'</span><div style="flex:1">'
+    + '<div class="title">'+esc(d.date)+' — '+esc(d.city.replace('✈️ ','').split(' · ')[0])+'</div>'
+    + '<div class="sub" style="color:'+d.color+'">'+esc(d.region)+' · día '+dayNum+' de '+inCity.length+' · '+d.events.length+' paradas</div>'
+    + '</div></div>'
+    + (d.firstOfCity&&d.cityDesc?'<div class="desc">'+esc(d.cityDesc)+'</div>':'')
+    + (hotel?'<a class="hotelchip" href="'+hotel.link+'" target="_blank" rel="noopener"><div><div class="hl">DORMIMOS EN</div><div class="hn">'+esc(hotel.name)+'</div><div class="hs">'+esc(hotel.sub)+'</div>'+(hotel.alt?'<div class="hs" style="margin-top:4px;color:var(--tx-dim);font-size:9.5px">'+esc(hotel.alt)+'</div>':'')+'</div><span style="color:var(--tx-dim);font-size:12px">→</span></a>':'')
+    + (d.firstOfCity&&d.links&&d.links.length?'<div class="lnkrow">'+d.links.map(l=>'<a class="lnk" href="'+l.url+'" target="_blank" rel="noopener">🔗 '+esc(l.label)+'</a>').join('')+'</div>':'')
+    + '</div>';
+  let lastTime=null;
+  d.events.forEach((ev,idx)=>{
+    const col=TAG[ev.tag]||'#94a3b8';
+    const uid='d'+d.day+'e'+idx;
+    if(ev.time!==lastTime){
+      h += '<div class="timehead"><span class="t">'+esc(ev.time)+'</span><span class="line"></span><span class="dot" style="background:'+col+';box-shadow:0 0 6px '+col+'90"></span></div>';
+      lastTime=ev.time;
+    }
+    h += '<div class="ev" style="border-left:3px solid '+col+'"><div class="body"><span class="ico">'+ev.icon+'</span><div class="main">'
+      + '<div class="ttl">'+esc(ev.title)+'</div><div class="pills">'
+      + '<span class="tag" style="background:'+col+'22;color:'+col+'">'+esc(ev.tag)+'</span>'
+      + (ev.dur?'<span class="dur">⏱ '+esc(ev.dur)+'</span>':'')
+      + '</div></div></div>';
+    if(ev.desc){
+      h += '<div class="evx"><button class="evx-btn" onclick="togX(\'dx-'+uid+'\',\'da-'+uid+'\')"><span class="l">¿Qué es este lugar?</span><span class="a" id="da-'+uid+'">▼</span></button>'
+        + '<div class="evx-body" id="dx-'+uid+'"><div class="d">'+esc(ev.desc)+'</div></div></div>';
+    }
+    if(ev.tips&&ev.tips.length){
+      h += '<div class="evx"><button class="evx-btn" onclick="togX(\'tx-'+uid+'\',\'ta-'+uid+'\')"><span class="l">Consejos</span><span class="a" id="ta-'+uid+'">▼</span></button>'
+        + '<div class="evx-body" id="tx-'+uid+'">'+ev.tips.map(t=>'<div class="tip">'+esc(t)+'</div>').join('')+'</div></div>';
+    }
+    h += '</div>';
+  });
+  if(d.firstOfCity&&d.restaurants&&d.restaurants.length){
+    h += '<div class="seclbl">Comer aquí</div><div class="card">';
+    h += d.restaurants.map(r=>'<div class="note" style="padding:5px 0;border-bottom:1px solid var(--divider)">'+esc(r)+'</div>').join('');
+    h += '</div>';
+  }
+  h += '<div class="daynav">';
+  if(DAY>1) h += '<button class="navbtn" onclick="setDay('+(DAY-1)+')">← Anterior</button>';
+  if(DAY<AGENDA.length) h += '<button class="navbtn" onclick="setDay('+(DAY+1)+')">Siguiente →</button>';
+  h += '</div></div>';
+  return h;
+}
+
+function renderMap(){
+  setTimeout(initMap,60);
+  return '<div class="wrap"><div class="card"><div class="h3">La ruta completa</div>'
+    + '<p class="note" style="margin-top:6px">México → Madrid → Galicia → Atenas → Mílos → velero por las Cícladas del Oeste → Estambul → casa. Toca un punto para ir a ese tramo.</p></div>'
+    + '<div id="map"></div></div>';
+}
+function initMap(){
+  const el=document.getElementById('map'); if(!el) return;
+  if(map){ map.remove(); map=null; }
+  const pts=CITIES.filter(c=>c.coords);
+  map=L.map('map',{ scrollWheelZoom:false, attributionControl:false }).setView([39.5,12],4);
+  const dark=lsGet('vb_theme','dark')==='dark';
+  L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
+  const ll=[];
+  pts.forEach((c,i)=>{
+    ll.push(c.coords);
+    const mk=L.circleMarker(c.coords,{radius:9,color:'#fff',weight:2,fillColor:c.color,fillOpacity:1}).addTo(map);
+    mk.bindTooltip((i+1)+'. '+c.city.replace('✈️ ','').split(' · ')[0],{className:'city-tooltip',direction:'top'});
+    mk.on('click',function(){ const fd=AGENDA.find(a=>a.cityId===c.id); if(fd) setDay(fd.day); setTab('itin'); });
+  });
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i].coords,b=pts[i+1].coords,seg=SEGMENTS[i]||{mode:'flight',dur:''};
+    const boat=seg.mode==='boat';
+    L.polyline([a,b],{color:boat?'#22D3EE':'#F59E0B',weight:1.6,opacity:.6,dashArray:boat?'2,6':'5,7'}).addTo(map);
+    const mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab" style="background:'+(boat?'#22D3EE':'#F59E0B')+'">'+(boat?'⛴️':'✈️')+' '+seg.dur+'</span>',iconSize:[0,0]})}).addTo(map);
+  }
+  map.fitBounds(ll,{padding:[44,44]});
+}
+
+function renderResv(){
+  const done=RESERVATIONS.filter(r=>r.done).length;
+  let h='<div class="wrap"><div class="card"><div class="h3">Reservas y pendientes</div>'
+    + '<p class="note" style="margin-top:6px">'+done+'/'+RESERVATIONS.length+' listas. 🔴 = urgente · 🟠 = pronto · 🟢 = con calma. Toca el cuadro para marcar.</p></div>';
+  const cats=[]; RESERVATIONS.forEach(r=>{ if(cats.indexOf(r.cat)<0) cats.push(r.cat); });
+  cats.forEach(cat=>{
+    h+='<div class="seclbl">'+esc(cat)+'</div>';
+    RESERVATIONS.filter(r=>r.cat===cat).forEach(r=>{
+      h+='<div class="resv '+(r.done?'done':'')+'"><div class="chk" onclick="toggleResv(\''+r.id+'\')">'+(r.done?'✓':'')+'</div>'
+        + '<div class="em">'+r.em+'</div><div class="b"><div class="nm">'+esc(r.name)+'</div>'
+        + '<div class="meta">'+esc(r.city)+' · '+esc(r.date)+' · '+esc(r.deadline)+'</div>'
+        + '<div class="meta">'+esc(r.note)+'</div>'
+        + (r.link?'<a class="lnk" style="margin-top:6px" href="'+r.link+'" target="_blank" rel="noopener">🔗 Abrir</a>':'')
+        + '</div></div>';
+    });
+  });
+  return h+'</div>';
+}
+
+function renderBudget(){
+  const s=lsGet('vb_budget',{});
+  let total=0;
+  let h='<div class="wrap"><div class="card"><div class="h3">Presupuesto detallado</div>'
+    + '<p class="note" style="margin-top:6px">Para 5 personas · 20 días · en MXN. Calculado con precios reales de temporada (hoteles 5★ elegidos, vuelos ago-sep, charter con tripulación). Tipo de cambio: 1 EUR ≈ 21.5 MXN. Toca cualquier cifra para editarla.</p></div>';
+  BUDGET.forEach((g,gi)=>{
+    let sub=0;
+    h+='<div class="seclbl">'+esc(g.cat)+'</div><div class="card">';
+    g.items.forEach(it=>{
+      const v=(s[it.k]!==undefined)?s[it.k]:it.def;
+      sub+=Number(v)||0;
+      h+='<div class="brow"><span class="l">'+esc(it.label)+'</span><span class="v">$<input value="'+v+'" inputmode="numeric" data-k="'+it.k+'" onchange="updBudget(this)" style="width:72px;background:none;border:none;border-bottom:1px dashed var(--bd);color:var(--tx1);font-family:DM Sans;font-weight:700;font-size:12px;text-align:right"></span></div>';
+    });
+    total+=sub;
+    h+='<div class="bsub"><span>Subtotal</span><span>$'+sub.toLocaleString('es-MX')+'</span></div></div>';
+  });
+  h+='<div class="btotal"><span>Total del viaje</span><span>$'+total.toLocaleString('es-MX')+' MXN</span></div>'
+    + '<p class="note" style="margin-top:10px;text-align:center">≈ $'+Math.round(total/5).toLocaleString('es-MX')+' MXN por persona · ≈ '+Math.round(total/21.5/5).toLocaleString('es-MX')+' EUR pp</p>'
+    + '<p class="note" style="margin-top:6px;text-align:center;font-size:11px;color:var(--tx-dim)">Dónde recortar sin perder magia: hoteles 4★ con carácter (−25%), charter solo con capitán cocinando ustedes (−40,000), menos cenas estrella. Dónde NO recortar: el velero, las Cíes, el hammam Hürrem Sultan.</p></div>';
+  return h;
+}
+
+function renderPack(){
+  const c=lsGet('vb_pack',{});
+  let h='<div class="wrap"><div class="card"><div class="h3">Maleta</div>'
+    + '<p class="note" style="margin-top:6px">Boda + verano de costa + 3 noches en velero. Regla de oro: bolsa blanda para el barco. Toca para marcar.</p></div>';
+  PACKING.forEach(g=>{
+    h+='<div class="seclbl">'+esc(g.cat)+'</div><div class="card" style="padding:6px 12px">';
+    g.items.forEach(it=>{ const k=g.cat+'|'+it; const on=c[k];
+      h+='<div class="resv '+(on?'done':'')+'" style="border:none;background:none;padding:7px 0;margin:0;border-bottom:1px solid var(--divider)"><div class="chk" onclick="togglePack(\''+esc(k).replace(/'/g,"\\'")+'\')">'+(on?'✓':'')+'</div><div class="b"><div class="nm" style="font-weight:500">'+esc(it)+'</div></div></div>'; });
+    h+='</div>';
+  });
+  return h+'</div>';
+}
+
+function renderWords(){
+  let h='<div class="wrap"><div class="card"><div class="h3">Frases útiles</div>'
+    + '<p class="note" style="margin-top:6px">Toca una frase para copiarla.</p></div>';
+  PHRASES.forEach(g=>{
+    h+='<div class="seclbl">'+esc(g.cat)+'</div>';
+    g.items.forEach(p=>{ h+='<div class="ph" onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+esc(p.nat).replace(/'/g,"\\'")+'\')"><div class="nat">'+esc(p.nat)+'</div><div style="flex:1"><div class="py">'+esc(p.py)+'</div><div class="es">'+esc(p.es)+'</div></div></div>'; });
+  });
+  return h+'</div>';
+}
+
+let quizState=null;
+function renderFun(){
+  return '<div class="wrap"><div class="seclbl">Quiz del viaje</div><div class="card">'
+    + '<button class="gbtn" onclick="startQuiz(\'galicia\')">🦪 Galicia</button>'
+    + '<button class="gbtn" onclick="startQuiz(\'milos\')">🌋 Mílos</button>'
+    + '<button class="gbtn" onclick="startQuiz(\'estambul\')">🕌 Estambul</button>'
+    + '<div id="quizHost"></div></div>'
+    + '<div class="seclbl">Sabiduría viajera</div><div class="card">'
+    + '<p id="wisdom" class="note" style="font-style:italic;font-size:13px;color:var(--tx2)">'+esc(WISDOM[Math.floor(Math.random()*WISDOM.length)])+'</p>'
+    + '<button class="gbtn" onclick="document.getElementById(\'wisdom\').textContent=WISDOM[Math.floor(Math.random()*WISDOM.length)]">↻ Otra</button></div></div>';
+}
+function startQuiz(k){ quizState={key:k,i:0,score:0}; showQuestion(); }
+function showQuestion(){
+  const host=document.getElementById('quizHost'); if(!host) return;
+  const qs=QUIZ[quizState.key];
+  if(quizState.i>=qs.length){ host.innerHTML='<div style="margin-top:14px;text-align:center"><div style="font-size:30px">🎉</div><p class="note" style="font-size:14px;color:var(--tx1);font-weight:700">'+quizState.score+'/'+qs.length+'</p><button class="gbtn" onclick="startQuiz(\''+quizState.key+'\')">↻ Repetir</button></div>'; return; }
+  const q=qs[quizState.i];
+  host.innerHTML='<div style="margin-top:14px"><p class="note" style="font-size:13px;color:var(--tx1);font-weight:700;margin-bottom:10px">'+esc(q.q)+'</p>'+q.opts.map((o,i)=>'<button class="qopt" onclick="answerQ('+i+')">'+esc(o)+'</button>').join('')+'<div id="qfeed"></div></div>';
+}
+function answerQ(i){
+  const q=QUIZ[quizState.key][quizState.i], ok=i===q.a; if(ok) quizState.score++;
+  document.getElementById('qfeed').innerHTML='<div class="note" style="padding:10px;border-radius:10px;background:'+(ok?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)')+';color:'+(ok?'#10b981':'#ef4444')+';font-weight:700">'+(ok?'✅ ¡Correcto!':'❌ No era')+'</div><p class="note" style="margin-top:6px">'+esc(q.fact)+'</p><button class="gbtn" onclick="quizState.i++;showQuestion()">Siguiente →</button>';
+}
+
+function render(){
+  renderTabs(); renderDaybar();
+  let h='';
+  if(TAB==='itin') h=renderItin();
+  else if(TAB==='map') h=renderMap();
+  else if(TAB==='resv') h=renderResv();
+  else if(TAB==='budget') h=renderBudget();
+  else if(TAB==='pack') h=renderPack();
+  else if(TAB==='words') h=renderWords();
+  else if(TAB==='fun') h=renderFun();
+  document.getElementById('content').innerHTML=h;
+  window.scrollTo(0,0);
+}
+
+setTheme(lsGet('vb_theme','dark'));
+render();
+</script>
+</body>
+</html>
