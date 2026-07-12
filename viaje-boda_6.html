@@ -829,36 +829,38 @@ function renderItin(){
   const inCity = AGENDA.filter(x=>x.cityId===d.cityId);
   const dayNum = inCity.findIndex(x=>x.day===d.day)+1;
   const hotel = HOTELS[d.cityId];
+  const place = d.city.replace('✈️ ','').split(' · ')[0];
   let h = '<div class="wrap">';
-  h += '<div class="dayhead" style="background:linear-gradient(135deg,'+d.color+'22,transparent);border:1px solid '+d.color+'33">'
-    + '<div class="row"><span class="em">'+d.emoji+'</span><div style="flex:1">'
-    + '<div class="title">'+esc(d.date)+' — '+esc(d.city.replace('✈️ ','').split(' · ')[0])+'</div>'
-    + '<div class="sub" style="color:'+d.color+'">'+esc(d.region)+' · día '+dayNum+' de '+inCity.length+' · '+d.events.length+' paradas</div>'
-    + '</div></div>'
-    + (d.firstOfCity&&d.cityDesc?'<div class="desc">'+esc(d.cityDesc)+'</div>':'')
-    + (hotel?'<a class="hotelchip" href="'+hotel.link+'" target="_blank" rel="noopener"><div><div class="hl">DORMIMOS EN</div><div class="hn">'+esc(hotel.name)+'</div><div class="hs">'+esc(hotel.sub)+'</div>'+(hotel.alt?'<div class="hs" style="margin-top:4px;color:var(--tx-dim);font-size:9.5px">'+esc(hotel.alt)+'</div>':'')+'</div><span style="color:var(--tx-dim);font-size:12px">→</span></a>':'')
+  h += '<div class="dayhero">'
+    + '<span class="dh-cnr tl">Día '+dayNum+' / '+inCity.length+'</span>'
+    + '<span class="dh-cnr tr">'+esc(d.region)+'</span>'
+    + '<div class="dh-em">'+d.emoji+'</div>'
+    + '<div class="dh-place">'+esc(place)+'</div>'
+    + '<div class="dh-date">'+esc(d.date)+' · '+d.events.length+' paradas</div>'
+    + '<div class="plate-rule"></div>'
+    + (d.firstOfCity&&d.cityDesc?'<div class="dh-desc">'+esc(d.cityDesc)+'</div>':'')
+    + (hotel?'<a class="hotelchip" style="margin-top:12px" href="'+hotel.link+'" target="_blank" rel="noopener"><div><div class="hl">DORMIMOS EN</div><div class="hn">'+esc(hotel.name)+'</div><div class="hs">'+esc(hotel.sub)+'</div>'+(hotel.alt?'<div class="hs" style="margin-top:4px;color:var(--tx-dim);font-size:9.5px">'+esc(hotel.alt)+'</div>':'')+'</div><span style="color:var(--tx-dim);font-size:12px">→</span></a>':'')
     + (d.firstOfCity&&d.links&&d.links.length?'<div class="lnkrow">'+d.links.map(l=>'<a class="lnk" href="'+l.url+'" target="_blank" rel="noopener">🔗 '+esc(l.label)+'</a>').join('')+'</div>':'')
     + '</div>';
-  let lastTime=null;
   d.events.forEach((ev,idx)=>{
     const col=TAG[ev.tag]||'#94a3b8';
     const uid='d'+d.day+'e'+idx;
-    if(ev.time!==lastTime){
-      h += '<div class="timehead"><span class="t">'+esc(ev.time)+'</span><span class="line"></span><span class="dot" style="background:'+col+';box-shadow:0 0 6px '+col+'90"></span></div>';
-      lastTime=ev.time;
-    }
-    h += '<div class="ev" style="border-left:3px solid '+col+'"><div class="body"><span class="ico">'+ev.icon+'</span><div class="main">'
-      + '<div class="ttl">'+esc(ev.title)+'</div><div class="pills">'
-      + '<span class="tag" style="background:'+col+'22;color:'+col+'">'+esc(ev.tag)+'</span>'
-      + (ev.dur?'<span class="dur">⏱ '+esc(ev.dur)+'</span>':'')
-      + '</div></div></div>';
-    if(ev.desc){
-      h += '<div class="evx"><button class="evx-btn" onclick="togX(\'dx-'+uid+'\',\'da-'+uid+'\')"><span class="l">¿Qué es este lugar?</span><span class="a" id="da-'+uid+'">▼</span></button>'
-        + '<div class="evx-body" id="dx-'+uid+'"><div class="d">'+esc(ev.desc)+'</div></div></div>';
-    }
-    if(ev.tips&&ev.tips.length){
-      h += '<div class="evx"><button class="evx-btn" onclick="togX(\'tx-'+uid+'\',\'ta-'+uid+'\')"><span class="l">Consejos</span><span class="a" id="ta-'+uid+'">▼</span></button>'
-        + '<div class="evx-body" id="tx-'+uid+'">'+ev.tips.map(t=>'<div class="tip">'+esc(t)+'</div>').join('')+'</div></div>';
+    const hasMore = ev.desc || (ev.tips&&ev.tips.length);
+    h += '<div class="ev-item">'
+      + '<div class="plate'+(hasMore?' clickable':'')+'" id="pl-'+uid+'"'+(hasMore?' onclick="togglePlate(\''+uid+'\')"':'')+'>'
+      + '<span class="plate-cnr tl">'+esc(ev.time)+'</span>'
+      + (ev.dur?'<span class="plate-cnr tr">'+esc(ev.dur)+'</span>':'')
+      + '<div class="plate-ico">'+ev.icon+'</div>'
+      + '<div class="plate-ttl">'+esc(ev.title)+'</div>'
+      + '<div class="plate-rule" style="background:'+col+'"></div>'
+      + '<span class="plate-cnr bl" style="color:'+col+'">'+esc(ev.tag)+'</span>'
+      + (hasMore?'<span class="plate-cnr br" id="pc-'+uid+'">＋</span>':'')
+      + '</div>';
+    if(hasMore){
+      h += '<div class="plate-more" id="pm-'+uid+'">';
+      if(ev.desc) h += '<p class="pm-desc">'+esc(ev.desc)+'</p>';
+      if(ev.tips&&ev.tips.length) h += '<div class="pm-tips">'+ev.tips.map(t=>'<div class="pm-tip">'+esc(t)+'</div>').join('')+'</div>';
+      h += '</div>';
     }
     h += '</div>';
   });
