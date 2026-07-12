@@ -766,7 +766,7 @@ function renderItin(){
       + '<div class="plate'+(hasMore?' clickable':'')+'" id="pl-'+uid+'"'+(hasMore?' onclick="togglePlate(\''+uid+'\')"':'')+'>'
       + '<span class="plate-cnr tl">'+esc(ev.time)+'</span>'
       + (ev.dur?'<span class="plate-cnr tr">'+esc(ev.dur)+'</span>':'')
-      + '<div class="plate-ttl"><span class="plate-ico">'+ev.icon+'</span>'+esc(ev.title)+'</div>'
+      + '<div class="plate-ttl"><span class="plate-ico">'+ev.icon+'</span>'+esc(ev.title)+'<span class="plate-ico">'+ev.icon+'</span></div>'
       + '<div class="plate-rule" style="background:'+col+'"></div>'
       + '<span class="plate-cnr bl" style="color:'+col+'">'+esc(ev.tag)+'</span>'
       + (hasMore?'<span class="plate-cnr br" id="pc-'+uid+'">+</span>':'')
