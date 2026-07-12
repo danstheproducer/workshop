@@ -840,15 +840,30 @@ function ensureMap(){
   const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, train:{c:'#34D399',i:'🚆',dash:'7,6',bend:0.05}, boat:{c:'#22D3EE',i:'⛵',dash:'2,7',bend:0.14} };
   const MX=[19.4326,-99.1332];
   const route=['madrid','galicia','milos','mar','estambul'].map(id=>CITIES.find(c=>c.id===id));
-  const legs=[ {mode:'train',dur:'~4h'}, {mode:'flight',dur:'~7h'}, {mode:'boat',dur:'3 noches'}, {mode:'flight',dur:'~5h'} ];
-  L.polyline(arcPts(MX,route[0].coords,0.18),{color:'#F59E0B',weight:1.4,opacity:.35,dashArray:'3,9'}).addTo(map);
-  L.polyline(arcPts(route[route.length-1].coords,MX,0.20),{color:'#F59E0B',weight:1.4,opacity:.35,dashArray:'3,9'}).addTo(map);
+  const legs=[
+    {mode:'train', dur:'~4h', name:'Madrid → Vigo', detail:['🚆 Madrid-Chamartín → Vigo-Urzáiz','Tren AVE/Alvia · ~4h · de centro a centro, sin aeropuertos']},
+    {mode:'flight',dur:'~7h', name:'Vigo → Mílos', detail:['🚆 De vuelta a Madrid en tren · ~4h','✈️ Madrid → Atenas · ~3h30','✈️ Atenas → Mílos · ~40m','Total ~7h con escala en Atenas']},
+    {mode:'boat', dur:'3 noches', name:'Mílos → velero', detail:['⛵ Embarque en Adamas','3 noches a bordo por las Cícladas del Oeste (Kléftiko, Kímolos, Políegos)']},
+    {mode:'flight',dur:'~5h', name:'Velero → Estambul', detail:['✈️ Mílos → Atenas · ~40m','✈️ Atenas → Estambul · ~1h25','Total ~5h con escala en Atenas']},
+  ];
+  LEGINFO=[];
+  const OCEAN=[
+    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.82, dur:'10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo ~10h35m (Iberia / Aeroméxico)','Sale de noche, aterriza al día siguiente por la tarde']},
+    {name:'Estambul → México', pts:arcPts(route[route.length-1].coords,MX,0.20), at:0.18, dur:'14h40m', detail:['✈️ Estambul (IST) → CDMX (MEX)','Vuelo directo ~14h40m (Turkish Airlines · Boeing 787)','El único nonstop; se aterriza de madrugada']},
+  ];
+  OCEAN.forEach(function(o){
+    L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
+    const idx=LEGINFO.push({name:o.name,detail:o.detail})-1;
+    const q=o.pts[Math.round(o.pts.length*o.at)];
+    L.marker(q,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:#F59E0B" onclick="showLeg(LEGINFO['+idx+'])">✈️ '+o.dur+'</span>',iconSize:[0,0]})}).addTo(map);
+  });
   L.circleMarker(MX,{radius:7,color:'#fff',weight:2,fillColor:'#EF4444',fillOpacity:1}).addTo(map).bindTooltip('México · inicio y fin',{className:'city-tooltip',direction:'top'});
   for(let i=0;i<route.length-1;i++){
     const m=MODE[legs[i].mode], pts=arcPts(route[i].coords,route[i+1].coords,m.bend);
     L.polyline(pts,{color:m.c,weight:2.2,opacity:.9,dashArray:m.dash}).addTo(map);
     const mid=pts[Math.floor(pts.length/2)];
-    L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab" style="background:'+m.c+'">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
+    const idx=LEGINFO.push({name:legs[i].name,detail:legs[i].detail})-1;
+    L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:'+m.c+'" onclick="showLeg(LEGINFO['+idx+'])">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
   }
   euroBounds=[]; mapNodes=[];
   route.forEach((c,i)=>{
