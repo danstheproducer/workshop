@@ -125,6 +125,43 @@
   .ph .es { font-family: 'Archivo', sans-serif; font-size: 11px; color: var(--tx3); }
   .gbtn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--bd); background: var(--bg-card); color: var(--tx1); font-family: 'Archivo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; }
   .qopt { width: 100%; text-align: left; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--bd); background: var(--bg-card); cursor: pointer; font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--tx2); margin-bottom: 8px; }
+
+  /* ---------- elegant wedding redesign ---------- */
+  .brand .t1 { font-family:'Archivo Black',sans-serif; letter-spacing:.3px; }
+  .h3 { font-family:'Archivo Black',sans-serif; letter-spacing:.3px; }
+  .seclbl { font-family:'Archivo Black',sans-serif; font-weight:400; letter-spacing:2.4px; color:var(--tx-dim); }
+  .btotal { font-family:'Archivo Black',sans-serif; }
+  /* squarer corners everywhere */
+  .card,.resv,.ph,.qopt,.gbtn,.navbtn,.hotelchip,.brow+*,#map,.dayhead,.ev,.evx-body,.iconbtn { border-radius:6px; }
+  .lnk,.ev .tag,.tag,.dur,.ev .dur,.daypill,.mapfull { border-radius:5px; }
+  /* day hero (framed) */
+  .dayhero { position:relative; background:var(--bg-card); border:1px solid var(--bd); border-radius:6px; padding:32px 18px 16px; margin-bottom:16px; text-align:center; }
+  .dayhero::before { content:''; position:absolute; inset:5px; border:1px solid var(--bd); border-radius:3px; pointer-events:none; }
+  .dh-cnr { position:absolute; top:14px; font-family:'Archivo',sans-serif; font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--tx-dim); }
+  .dh-cnr.tl { left:17px; } .dh-cnr.tr { right:17px; }
+  .dh-em { font-size:30px; line-height:1; }
+  .dh-place { font-family:'Archivo Black',sans-serif; font-size:22px; letter-spacing:.5px; text-transform:uppercase; color:var(--tx1); margin-top:8px; line-height:1.12; }
+  .dh-date { font-family:'Archivo',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--tx3); margin-top:7px; }
+  .dh-desc { font-family:'Archivo',sans-serif; font-size:11.5px; line-height:1.7; color:var(--tx3); margin-top:14px; text-align:left; }
+  .plate-rule { width:30px; height:2px; background:var(--accent); margin:12px auto 0; border-radius:2px; }
+  /* event plates with four-corner data */
+  .ev-item { margin-bottom:14px; }
+  .plate { position:relative; background:var(--bg-card); border:1px solid var(--bd); border-radius:6px; padding:34px 16px 32px; text-align:center; }
+  .plate.clickable { cursor:pointer; }
+  .plate::before { content:''; position:absolute; inset:5px; border:1px solid var(--bd); border-radius:3px; pointer-events:none; }
+  .plate.open { border-bottom-left-radius:0; border-bottom-right-radius:0; }
+  .plate-cnr { position:absolute; font-family:'Archivo',sans-serif; font-size:9.5px; font-weight:800; letter-spacing:1.1px; text-transform:uppercase; color:var(--tx-dim); max-width:44%; }
+  .plate-cnr.tl { top:15px; left:18px; }
+  .plate-cnr.tr { top:15px; right:18px; text-align:right; }
+  .plate-cnr.bl { bottom:15px; left:18px; }
+  .plate-cnr.br { bottom:12px; right:16px; font-size:15px; letter-spacing:0; color:var(--accent); font-weight:800; }
+  .plate-ico { font-size:26px; line-height:1; }
+  .plate-ttl { font-family:'Archivo Black',sans-serif; font-size:15px; line-height:1.28; color:var(--tx1); letter-spacing:.2px; margin-top:8px; padding:0 12px; }
+  .plate-more { display:none; background:var(--bg-card); border:1px solid var(--bd); border-top:1px solid var(--divider); border-radius:0 0 6px 6px; padding:13px 18px 15px; }
+  .plate-more.open { display:block; }
+  .pm-desc { font-family:'Archivo',sans-serif; font-size:12.5px; line-height:1.7; color:var(--tx3); }
+  .pm-tips { margin-top:9px; border-top:1px solid var(--divider); padding-top:9px; display:flex; flex-direction:column; gap:5px; }
+  .pm-tip { font-family:'Archivo',sans-serif; font-size:12px; line-height:1.6; color:var(--tx3); }
 </style>
 </head>
 <body>
