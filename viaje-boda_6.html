@@ -746,9 +746,7 @@ function renderDaybar(){
   const el=document.getElementById('daybar');
   if(TAB!=='itin'){ el.style.display='none'; return; }
   el.style.display='block'; el.className='daybar';
-  const legend=[['🇪🇸 España',ACC.galicia],['🇬🇷 Grecia',ACC.atenas],['🇹🇷 Türkiye',ACC.estambul]]
-    .map(function(l){ return '<span class="leg"><span class="legdot" style="background:'+l[1]+'"></span>'+l[0]+'</span>'; }).join('');
-  el.innerHTML = '<div class="legendrow">'+legend+'</div><div class="daybar-inner">'+AGENDA.map((d,i)=>{
+  el.innerHTML = '<div class="daybar-inner">'+AGENDA.map((d,i)=>{
     const on=d.day===DAY; const p=d.date.split(' ');
     const prev = i>0 ? AGENDA[i-1] : null;
     const split = prev && prev.cityId!==d.cityId;
