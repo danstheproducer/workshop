@@ -755,7 +755,7 @@ let mapFullView = lsGet('vb_mapfull', false);
 (function(){ const sr=lsGet('vb_resv',{}); RESERVATIONS.forEach(r=>{ if(sr[r.id]!==undefined) r.done=sr[r.id]; }); })();
 
 function setTheme(t){ document.documentElement.setAttribute('data-theme',t); lsSet('vb_theme',t); document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙'; }
-function toggleTheme(){ setTheme(lsGet('vb_theme','dark')==='dark'?'light':'dark'); if(map) setTimeout(function(){map.invalidateSize();},120); }
+function toggleTheme(){ setTheme(lsGet('vb_theme','light')==='dark'?'light':'dark'); if(map){ map.remove(); map=null; } renderMapPanel(); }
 
 const TABS = [
   { id:'itin', ic:'📍', label:'Itinerario' },
