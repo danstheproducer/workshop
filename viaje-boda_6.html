@@ -784,10 +784,7 @@ function renderItin(){
     h += d.restaurants.map(r=>'<div class="note" style="padding:5px 0;border-bottom:1px solid var(--divider)">'+esc(r)+'</div>').join('');
     h += '</div>';
   }
-  h += '<div class="daynav">';
-  if(DAY>1) h += '<button class="navbtn" onclick="setDay('+(DAY-1)+')">← Anterior</button>';
-  if(DAY<AGENDA.length) h += '<button class="navbtn" onclick="setDay('+(DAY+1)+')">Siguiente →</button>';
-  h += '</div></div>';
+  h += '</div>';
   return h;
 }
 
