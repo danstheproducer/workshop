@@ -926,7 +926,7 @@ function renderBudget(){
     g.items.forEach(it=>{
       const v=(s[it.k]!==undefined)?s[it.k]:it.def;
       sub+=Number(v)||0;
-      h+='<div class="brow"><span class="l">'+esc(it.label)+'</span><span class="v">$<input value="'+v+'" inputmode="numeric" data-k="'+it.k+'" onchange="updBudget(this)" style="width:72px;background:none;border:none;border-bottom:1px dashed var(--bd);color:var(--tx1);font-family:DM Sans;font-weight:700;font-size:12px;text-align:right"></span></div>';
+      h+='<div class="brow"><span class="l">'+esc(it.label)+'</span><span class="v">$<input value="'+v+'" inputmode="numeric" data-k="'+it.k+'" onchange="updBudget(this)" style="width:72px;background:none;border:none;border-bottom:1px dashed var(--bd);color:var(--tx1);font-family:Archivo,sans-serif;font-weight:700;font-size:12px;text-align:right"></span></div>';
     });
     total+=sub;
     h+='<div class="bsub"><span>Subtotal</span><span>$'+sub.toLocaleString('es-MX')+'</span></div></div>';
