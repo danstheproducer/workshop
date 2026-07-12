@@ -867,7 +867,7 @@ function renderBudget(){
   const s=lsGet('vb_budget',{});
   let total=0;
   let h='<div class="wrap"><div class="card"><div class="h3">Presupuesto detallado</div>'
-    + '<p class="note" style="margin-top:6px">Para 5 personas · 20 días · en MXN. Calculado con precios reales de temporada (hoteles 5★ elegidos, vuelos ago-sep, charter con tripulación). Tipo de cambio: 1 EUR ≈ 21.5 MXN. Toca cualquier cifra para editarla.</p></div>';
+    + '<p class="note" style="margin-top:6px">Para 5 personas · 20 días · en MXN. Precios verificados en jul 2026 (vuelos, tren Madrid-Vigo, ferry/charter). Tipo de cambio jul 2026: 1 EUR ≈ 20 MXN · 1 USD ≈ 17.5 MXN. Los hoteles 5★ son estimados de temporada — toca cualquier cifra para editarla.</p></div>';
   BUDGET.forEach((g,gi)=>{
     let sub=0;
     h+='<div class="seclbl">'+esc(g.cat)+'</div><div class="card">';
