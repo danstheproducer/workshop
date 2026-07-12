@@ -742,9 +742,6 @@ function togglePack(k){ const c=lsGet('vb_pack',{}); c[k]=!c[k]; lsSet('vb_pack'
 function updBudget(inp){ const s=lsGet('vb_budget',{}); s[inp.dataset.k]=Number(inp.value)||0; lsSet('vb_budget',s); render(); }
 function togX(id,arrowId){ const el=document.getElementById(id); const ar=document.getElementById(arrowId); if(!el) return; if(el.style.display==='block'){ el.style.display='none'; if(ar) ar.textContent='▼'; } else { el.style.display='block'; if(ar) ar.textContent='▲'; } }
 
-function renderTabs(){
-  document.getElementById('tabbar').innerHTML = TABS.map(t=>'<button class="tab '+(t.id===TAB?'on':'')+'" onclick="setTab(\''+t.id+'\')"><span class="ic">'+t.ic+'</span>'+t.label+'</button>').join('');
-}
 function renderDaybar(){
   const el=document.getElementById('daybar');
   if(TAB!=='itin'){ el.style.display='none'; return; }
