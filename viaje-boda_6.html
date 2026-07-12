@@ -989,6 +989,75 @@ function showWisdom(){
   fillModal('<div class="seclbl">Sabiduría del viaje</div><p class="note" style="font-style:italic;font-size:15px;line-height:1.75;color:var(--tx2);margin-top:12px">'+esc(w)+'</p><button class="gbtn" onclick="showWisdom()">↻ Otra</button>');
   document.getElementById('modal').classList.add('on');
 }
+// --- tap del anillo: 2 de cada 5 abren el juego, el resto sabiduría ---
+let ringTaps = lsGet('vb_ringtaps', 0);
+function ringTap(){
+  ringTaps++; lsSet('vb_ringtaps', ringTaps);
+  const r = ringTaps % 5;
+  if(r===3 || r===0) openGame(); else showWisdom();
+}
+// --- juego de reacción: añejar vino / curar queso ---
+const GAME = {
+  wine:   { title:'Vino',  emoji:'🍇', char:'🧑‍🌾', hold:'MANTÉN PARA AÑEJAR EL VINO',
+    crudo:'Sigue siendo mosto — ni vino es.', podrido:'Se pasó de años: ahora es vinagre.', punto:'¡GRAN RESERVA!',
+    fact:'En la vida real: un tinto Crianza añeja ~2 años (mín. 1 en barrica), un Reserva ~3 y un Gran Reserva 5+ años. El albariño gallego, al revés, se bebe joven y fresco.' },
+  cheese: { title:'Queso', emoji:'🧀', char:'🧑‍🌾', hold:'MANTÉN PARA CURAR EL QUESO',
+    crudo:'Aún es cuajada fresca, sin carácter.', podrido:'Moho hasta el corazón — a la basura.', punto:'¡CURADO PERFECTO!',
+    fact:'En la vida real: un Manchego semicurado madura 2-3 meses y el curado 3-12; el Parmigiano Reggiano 24-36 meses; el manoura griego se cura entre posos de vino.' },
+};
+let gameType='wine', gamePhase='ready', gameCueTime=0, gameCueTimer=null, gamePodridoTimer=null;
+function openGame(){
+  gamePhase='ready';
+  const g=GAME[gameType];
+  fillModal('<div class="seclbl">Juego · añejar '+g.title.toLowerCase()+'</div>'
+    +'<div id="gameStage" style="text-align:center;padding:10px 0 4px;border-radius:12px;transition:background .15s">'
+      +'<div style="font-size:34px">'+g.char+'</div>'
+      +'<div id="gameItem" style="font-size:34px;margin-top:2px;transition:transform .1s">'+g.emoji+'</div>'
+      +'<div style="height:9px;background:rgba(120,80,110,.14);border-radius:20px;margin:14px 0;overflow:hidden"><div id="gameBar" style="height:100%;width:0;background:var(--accent)"></div></div>'
+      +'<div id="gameMsg" style="font-family:\'Archivo\',sans-serif;font-weight:800;font-size:13.5px;color:var(--tx3);min-height:20px">El 🧑‍🌾 lo planta… suéltalo cuando esté EN SU PUNTO</div>'
+    +'</div>'
+    +'<button id="ageBtn" class="gbtn" oncontextmenu="return false" style="background:var(--accent);color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;margin-top:12px" onpointerdown="ageStart(event)" onpointerup="ageEnd()" onpointercancel="ageEnd()">'+g.hold+'</button>'
+    +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:12px;line-height:1.6">'+esc(g.fact)+'</p>');
+  document.getElementById('modal').classList.add('on');
+}
+function ageStart(e){
+  if(gamePhase!=='ready') return;
+  try{ e.target.setPointerCapture(e.pointerId); }catch(_){}
+  gamePhase='aging';
+  const bar=document.getElementById('gameBar'), item=document.getElementById('gameItem'), msg=document.getElementById('gameMsg');
+  if(!bar) return;
+  msg.textContent='Añejando…'; msg.style.color='var(--tx3)';
+  const delay=1400+Math.random()*2800;
+  bar.style.transition='width '+delay+'ms linear'; requestAnimationFrame(function(){ bar.style.width='86%'; });
+  item.style.transition='transform '+delay+'ms linear'; item.style.transform='scale(1.55)';
+  gameCueTimer=setTimeout(function(){
+    const b=document.getElementById('gameBar'); if(!b) return;
+    gamePhase='signal'; gameCueTime=Date.now();
+    b.style.transition='width .1s'; b.style.width='100%'; b.style.background='#F5C542';
+    const st=document.getElementById('gameStage'); if(st) st.style.background='rgba(245,197,66,.16)';
+    const m=document.getElementById('gameMsg'); if(m){ m.textContent='¡EN SU PUNTO! ¡SUELTA!'; m.style.color='#B8860B'; }
+    gamePodridoTimer=setTimeout(function(){ finishGame('podrido',0); }, 820);
+  }, delay);
+}
+function ageEnd(){
+  if(gamePhase==='aging'){ clearTimeout(gameCueTimer); finishGame('crudo',0); }
+  else if(gamePhase==='signal'){ clearTimeout(gamePodridoTimer); finishGame('punto', Date.now()-gameCueTime); }
+}
+function finishGame(kind, rt){
+  if(gamePhase==='result') return;
+  gamePhase='result'; clearTimeout(gameCueTimer); clearTimeout(gamePodridoTimer);
+  const g=GAME[gameType];
+  let big, color, sub, face;
+  if(kind==='crudo'){ big='CRUDO!'; color='#EF4444'; sub=g.crudo; face='🫙'; }
+  else if(kind==='podrido'){ big='PODRIDO!'; color='#7c3f00'; sub=g.podrido; face='🤢'; }
+  else { const stars=rt<250?'⭐⭐⭐':rt<450?'⭐⭐':'⭐'; big=g.punto; color='#10b981'; sub='Reacción: '+rt+' ms · '+stars; face=g.emoji; }
+  gameType = gameType==='wine'?'cheese':'wine';
+  fillModal('<div class="seclbl">Juego · resultado</div><div style="text-align:center;padding:10px 0"><div style="font-size:44px">'+face+'</div>'
+    +'<p style="font-family:\'Archivo Black\',sans-serif;font-size:23px;color:'+color+';margin:8px 0 4px">'+big+'</p>'
+    +'<p class="note" style="color:var(--tx2)">'+esc(sub)+'</p></div>'
+    +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:6px;line-height:1.6">'+esc(g.fact)+'</p>'
+    +'<button class="gbtn" onclick="openGame()">↻ Otra cosecha · '+GAME[gameType].title+'</button>');
+}
 
 function render(){
   renderMenu(); renderDaybar(); renderMapPanel();
