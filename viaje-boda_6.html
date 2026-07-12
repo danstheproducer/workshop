@@ -876,6 +876,13 @@ function renderItin(){
   return h;
 }
 
+function togglePlate(uid){
+  const p=document.getElementById('pl-'+uid), m=document.getElementById('pm-'+uid), b=document.getElementById('pc-'+uid);
+  if(!m) return;
+  const open=m.classList.toggle('open');
+  if(p) p.classList.toggle('open',open);
+  if(b) b.textContent = open?'—':'＋';
+}
 function arcPts(a,b,bend){
   const clat=(a[0]+b[0])/2 + (b[1]-a[1])*bend, clng=(a[1]+b[1])/2 - (b[0]-a[0])*bend, p=[];
   for(let t=0;t<=1.0001;t+=0.05){ const u=1-t; p.push([u*u*a[0]+2*u*t*clat+t*t*b[0], u*u*a[1]+2*u*t*clng+t*t*b[1]]); }
