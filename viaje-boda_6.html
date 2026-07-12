@@ -174,15 +174,20 @@
   <div class="topbar">
     <div class="topbar-row">
       <div class="brand">
-        <span class="em">💍</span>
+        <span class="em" onclick="showWisdom()" title="Sabiduría del viaje">💍</span>
         <div>
           <div class="t1">Boda + Viaje · 16 días</div>
-          <div class="t2">Galicia · Madrid · Grecia · Türkiye · 6 viajeros · Ago 27 – Sep 11</div>
+          <div class="t2">🇪🇸 Galicia · Madrid · 🇬🇷 Grecia · 🇹🇷 Türkiye · 6 viajeros · Ago 27 – Sep 11</div>
         </div>
       </div>
-      <button class="iconbtn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+      <div class="topbtns">
+        <button class="iconbtn" onclick="toggleMenu()" aria-label="Menú">☰</button>
+        <button class="iconbtn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+      </div>
     </div>
+    <div id="menu"></div>
   </div>
+  <div id="menuBackdrop" onclick="toggleMenu()"></div>
   <div id="daybar"></div>
   <div id="mapwrap">
     <div class="maphead">
