@@ -755,7 +755,7 @@ function setTheme(t){ document.documentElement.setAttribute('data-theme',t); lsS
 function toggleTheme(){ setTheme(lsGet('vb_theme','dark')==='dark'?'light':'dark'); if(map) setTimeout(function(){map.invalidateSize();},120); }
 
 const TABS = [
-  { id:'itin', ic:'📍', label:'Itinerario' }, { id:'map', ic:'🗺️', label:'Mapa' },
+  { id:'itin', ic:'📍', label:'Itinerario' },
   { id:'resv', ic:'✅', label:'Reservas' }, { id:'budget', ic:'💶', label:'Gastos' },
   { id:'pack', ic:'🧳', label:'Maleta' }, { id:'words', ic:'💬', label:'Frases' },
   { id:'fun', ic:'🎲', label:'Extra' },
