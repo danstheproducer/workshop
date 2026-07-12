@@ -812,8 +812,8 @@ function ensureMap(){
   L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
   const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, train:{c:'#34D399',i:'🚆',dash:'7,6',bend:0.05}, boat:{c:'#22D3EE',i:'⛵',dash:'2,7',bend:0.14} };
   const MX=[19.4326,-99.1332];
-  const route=['madrid','galicia','atenas','milos','mar','estambul'].map(id=>CITIES.find(c=>c.id===id));
-  const legs=[ {mode:'train',dur:'~4h'}, {mode:'flight',dur:'~6h vía MAD'}, {mode:'flight',dur:'40m'}, {mode:'boat',dur:'3 noches'}, {mode:'flight',dur:'~5h'} ];
+  const route=['madrid','galicia','milos','mar','estambul'].map(id=>CITIES.find(c=>c.id===id));
+  const legs=[ {mode:'train',dur:'~4h'}, {mode:'flight',dur:'~7h'}, {mode:'boat',dur:'3 noches'}, {mode:'flight',dur:'~5h'} ];
   L.polyline(arcPts(MX,route[0].coords,0.18),{color:'#F59E0B',weight:1.4,opacity:.35,dashArray:'3,9'}).addTo(map);
   L.polyline(arcPts(route[route.length-1].coords,MX,0.20),{color:'#F59E0B',weight:1.4,opacity:.35,dashArray:'3,9'}).addTo(map);
   L.circleMarker(MX,{radius:7,color:'#fff',weight:2,fillColor:'#EF4444',fillOpacity:1}).addTo(map).bindTooltip('México · inicio y fin',{className:'city-tooltip',direction:'top'});
