@@ -727,13 +727,15 @@ let mapFullView = lsGet('vb_mapfull', false);
 function setTheme(t){ document.documentElement.setAttribute('data-theme',t); lsSet('vb_theme',t); document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙'; }
 function toggleTheme(){ setTheme(lsGet('vb_theme','light')==='dark'?'light':'dark'); if(map){ map.remove(); map=null; } renderMapPanel(); }
 
-const TABS = [
+const MENU = [
   { id:'itin', ic:'📍', label:'Itinerario' },
   { id:'resv', ic:'✅', label:'Reservas' }, { id:'budget', ic:'💶', label:'Gastos' },
   { id:'pack', ic:'🧳', label:'Maleta' }, { id:'words', ic:'💬', label:'Frases' },
-  { id:'fun', ic:'🎲', label:'Extra' },
 ];
-function setTab(t){ TAB=t; lsSet('vb_tab',t); render(); }
+let menuOpen=false;
+function renderMenu(){ document.getElementById('menu').innerHTML = MENU.map(m=>'<button class="menu-item'+(m.id===TAB?' on':'')+'" onclick="setTab(\''+m.id+'\')"><span class="mi">'+m.ic+'</span>'+m.label+'</button>').join(''); }
+function toggleMenu(){ menuOpen=!menuOpen; document.getElementById('menu').classList.toggle('on',menuOpen); document.getElementById('menuBackdrop').classList.toggle('on',menuOpen); }
+function setTab(t){ TAB=t; lsSet('vb_tab',t); menuOpen=false; document.getElementById('menu').classList.remove('on'); document.getElementById('menuBackdrop').classList.remove('on'); render(); }
 function setDay(n){ DAY=n; lsSet('vb_day',n); mapFullView=false; lsSet('vb_mapfull',false); render(); setTimeout(function(){ const el=document.getElementById('dp-'+n); if(el) el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); },30); }
 function toggleResv(id){ const r=RESERVATIONS.find(x=>x.id===id); if(!r) return; r.done=!r.done; const s=lsGet('vb_resv',{}); s[id]=r.done; lsSet('vb_resv',s); render(); }
 function togglePack(k){ const c=lsGet('vb_pack',{}); c[k]=!c[k]; lsSet('vb_pack',c); render(); }
