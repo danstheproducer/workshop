@@ -880,7 +880,7 @@ function renderBudget(){
     h+='<div class="bsub"><span>Subtotal</span><span>$'+sub.toLocaleString('es-MX')+'</span></div></div>';
   });
   h+='<div class="btotal"><span>Total del viaje</span><span>$'+total.toLocaleString('es-MX')+' MXN</span></div>'
-    + '<p class="note" style="margin-top:10px;text-align:center">≈ $'+Math.round(total/5).toLocaleString('es-MX')+' MXN por persona · ≈ '+Math.round(total/21.5/5).toLocaleString('es-MX')+' EUR pp</p>'
+    + '<p class="note" style="margin-top:10px;text-align:center">≈ $'+Math.round(total/5).toLocaleString('es-MX')+' MXN por persona · ≈ '+Math.round(total/20/5).toLocaleString('es-MX')+' EUR pp</p>'
     + '<p class="note" style="margin-top:6px;text-align:center;font-size:11px;color:var(--tx-dim)">Dónde recortar sin perder magia: hoteles 4★ con carácter (−25%), charter solo con capitán cocinando ustedes (−40,000), menos cenas estrella. Dónde NO recortar: el velero, las Cíes, el hammam Hürrem Sultan.</p></div>';
   return h;
 }
