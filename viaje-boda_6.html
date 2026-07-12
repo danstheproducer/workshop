@@ -765,7 +765,7 @@ function renderItin(){
   h += '<div class="dayhero">'
     + '<span class="dh-cnr tl">Día '+dayNum+' / '+inCity.length+'</span>'
     + '<span class="dh-cnr tr">'+esc(d.region)+'</span>'
-    + '<div class="dh-em">'+d.emoji+'</div>'
+    + '<div class="dh-em'+(QUIZ[d.cityId]?' hasquiz':'')+'"'+(QUIZ[d.cityId]?' onclick="openQuiz(\''+d.cityId+'\')" title="Quiz de '+esc(d.city.split(' · ')[0])+'"':'')+'>'+d.emoji+(QUIZ[d.cityId]?'<span class="quizbadge">🎲</span>':'')+'</div>'
     + '<div class="dh-place">'+esc(place)+'</div>'
     + '<div class="dh-date">'+esc(d.date)+' · '+d.events.length+' paradas</div>'
     + '<div class="plate-rule"></div>'
