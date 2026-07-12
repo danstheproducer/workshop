@@ -827,7 +827,12 @@ function arcPts(a,b,bend){
   for(let t=0;t<=1.0001;t+=0.05){ const u=1-t; p.push([u*u*a[0]+2*u*t*clat+t*t*b[0], u*u*a[1]+2*u*t*clng+t*t*b[1]]); }
   return p;
 }
-let mapNodes=[], euroBounds=[];
+let mapNodes=[], euroBounds=[], LEGINFO=[];
+function showLeg(leg){
+  if(!leg) return;
+  fillModal('<div class="seclbl">Trayecto</div><p class="h3" style="margin:8px 0 12px">'+esc(leg.name)+'</p>'+leg.detail.map(function(l){return '<p class="note" style="font-size:14px;line-height:1.75;color:var(--tx2);margin-bottom:3px">'+esc(l)+'</p>';}).join('')+'<button class="gbtn" onclick="closeModal()">Cerrar</button>');
+  document.getElementById('modal').classList.add('on');
+}
 function mapLegendHTML(){
   return [['✈️ Vuelo','#F59E0B'],['🚆 Tren','#34D399'],['⛵ Velero','#22D3EE']]
     .map(m=>'<span class="leg"><span class="legdot" style="background:'+m[1]+'"></span>'+m[0]+'</span>').join('');
