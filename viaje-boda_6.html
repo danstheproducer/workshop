@@ -804,7 +804,7 @@ function confirmReset(){ menuOpen=false; document.getElementById('menu').classLi
 function resetApp(){ try{ const rm=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.indexOf('vb_')===0) rm.push(k); } rm.forEach(function(k){ localStorage.removeItem(k); }); localStorage.setItem('vb_mapfull','true'); }catch(e){} location.reload(); }
 function toggleMenu(){ menuOpen=!menuOpen; document.getElementById('menu').classList.toggle('on',menuOpen); document.getElementById('menuBackdrop').classList.toggle('on',menuOpen); }
 function setTab(t){ TAB=t; lsSet('vb_tab',t); menuOpen=false; document.getElementById('menu').classList.remove('on'); document.getElementById('menuBackdrop').classList.remove('on'); render(); }
-function setDay(n){ DAY=n; lsSet('vb_day',n); mapFullView=false; lsSet('vb_mapfull',false); render(); setTimeout(function(){ const el=document.getElementById('dp-'+n); if(el) el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); },30); }
+function setDay(n){ DAY=n; lsSet('vb_day',n); mapFullView=(n===0); lsSet('vb_mapfull',n===0); render(); setTimeout(function(){ const el=document.getElementById('dp-'+n); if(el) el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); },30); }
 function toggleResv(id){ const r=RESERVATIONS.find(x=>x.id===id); if(!r) return; r.done=!r.done; const s=lsGet('vb_resv',{}); s[id]=r.done; lsSet('vb_resv',s); render(); }
 function togglePack(k){ const c=lsGet('vb_pack',{}); c[k]=!c[k]; lsSet('vb_pack',c); render(); }
 function updBudget(inp){ const s=lsGet('vb_budget',{}); s[inp.dataset.k]=Number(inp.value)||0; lsSet('vb_budget',s); render(); }
