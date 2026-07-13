@@ -1191,7 +1191,7 @@ function initPull(){
 }
 
 function render(){
-  renderMenu(); renderDaybar(); renderMapPanel(); renderBadges();
+  renderMenu(); renderDaybar(); renderMapPanel(); renderBadges(); renderStatus();
   let h='';
   if(TAB==='itin') h=renderItin();
   else if(TAB==='resv') h=renderResv();
