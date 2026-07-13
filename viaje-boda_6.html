@@ -1154,11 +1154,12 @@ function finishGame(kind, rt){
   if(kind==='crudo'){ big='CRUDO!'; color='#EF4444'; sub=g.crudo; face='🫙'; }
   else if(kind==='podrido'){ big='PODRIDO!'; color='#7c3f00'; sub=g.podrido; face='🤢'; }
   else { const stars=rt<130?'⭐⭐⭐':rt<280?'⭐⭐':'⭐'; big=g.punto; color='#10b981'; sub='Reacción: '+rt+' ms · '+stars; face=g.emoji;
-    const isWine=WINES.indexOf(gameItem)>=0, key=isWine?'vb_wintally':'vb_chztally', insKey=isWine?'wine':'cheese';
-    const now=lsGet(key,0)+1; lsSet(key,now);
-    if(now===3){ extra='<p class="gwin">🏅 ¡INSIGNIA! '+INSIGNIA[insKey].em+' '+esc(INSIGNIA[insKey].title)+'</p><p class="note" style="margin-top:6px;font-weight:800;color:#c47f17">'+(isWine?'🍷 ¡Modo VINO desbloqueado!':'🧀 ¡Modo QUESO desbloqueado!')+' (botón de tema)</p>'; if(document.getElementById('themeBtn')) setTheme(lsGet('vb_theme','light')); }
-    else if(now<3){ extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">'+INSIGNIA[insKey].em+' progreso: '+now+'/3 para la insignia</p>'; }
-    else { extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">'+INSIGNIA[insKey].em+' ya tienes la insignia · '+now+' clavados</p>'; }
+    const isWine=WINES.indexOf(gameItem)>=0, listKey=isWine?'vb_winewon':'vb_cheesewon', insKey=isWine?'wine':'cheese';
+    const won=lsGet(listKey,[]), first=won.indexOf(g.name)<0; if(first){ won.push(g.name); lsSet(listKey,won); }
+    const total=isWine?WINES.length:CHEESES.length, have=won.length, done=isWine?wineDone():cheeseDone();
+    if(done && first){ extra='<p class="gwin">🏅 ¡INSIGNIA! '+INSIGNIA[insKey].em+' '+esc(INSIGNIA[insKey].title)+'</p><p class="note" style="margin-top:6px;font-weight:800;color:#c47f17">'+(isWine?'🍷 ¡Modo VINO desbloqueado!':'🧀 ¡Modo QUESO desbloqueado!')+' (botón de tema)</p>'; if(document.getElementById('themeBtn')) setTheme(lsGet('vb_theme','light')); }
+    else if(done){ extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">'+INSIGNIA[insKey].em+' insignia completa · los 3 '+(isWine?'vinos':'quesos')+' distintos</p>'; }
+    else { extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">'+INSIGNIA[insKey].em+' progreso: '+have+'/'+total+' '+(isWine?'vinos':'quesos')+' distintos</p>'; }
     extra += proNote(); renderBadges(); renderStatus();
   }
   gameCat = gameCat==='wine'?'cheese':'wine';
