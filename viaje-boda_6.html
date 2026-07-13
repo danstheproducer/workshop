@@ -1080,6 +1080,7 @@ const CATSAY = {
 let gameCat='wine', gameItem=WINES[0], gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
 function winewon(){ return lsGet('vb_winewon',[]); }
 function cheesewon(){ return lsGet('vb_cheesewon',[]); }
+function cats(){ return lsGet('vb_cats',0); }
 function wineDone(){ const w=winewon(); return WINES.every(function(x){return w.indexOf(x.name)>=0;}); }
 function cheeseDone(){ const c=cheesewon(); return CHEESES.every(function(x){return c.indexOf(x.name)>=0;}); }
 function earnedInsignias(){ const a=[]; if(!isPro()){ if(wineDone())a.push('wine'); if(cheeseDone())a.push('cheese'); } if(!isMax()){ lsGet('vb_quizwins',[]).forEach(function(k){ if(INSIGNIA[k]) a.push(k); }); } return a; }
