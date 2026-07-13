@@ -1016,24 +1016,40 @@ function ringTap(){
   if(r===3 || r===0) openGame(); else showWisdom();
 }
 // --- juego de reacción: añejar vino / curar queso ---
-const GAME = {
-  wine:   { title:'Vino',  emoji:'🍇', char:'🧑‍🌾', hold:'MANTÉN PARA AÑEJAR EL VINO',
-    crudo:'Sigue siendo mosto — ni vino es.', podrido:'Se pasó de años: ahora es vinagre.', punto:'¡GRAN RESERVA!',
-    fact:'En la vida real: un tinto Crianza añeja ~2 años (mín. 1 en barrica), un Reserva ~3 y un Gran Reserva 5+ años. El albariño gallego, al revés, se bebe joven y fresco.' },
-  cheese: { title:'Queso', emoji:'🧀', char:'🧑‍🌾', hold:'MANTÉN PARA CURAR EL QUESO',
-    crudo:'Aún es cuajada fresca, sin carácter.', podrido:'Moho hasta el corazón — a la basura.', punto:'¡CURADO PERFECTO!',
-    fact:'En la vida real: un Manchego semicurado madura 2-3 meses y el curado 3-12; el Parmigiano Reggiano 24-36 meses; el manoura griego se cura entre posos de vino.' },
+const WINES = [
+  { name:'Albariño joven', emoji:'🥂', diff:'fácil',   ms:400, hold:'MANTÉN PARA AÑEJAR EL ALBARIÑO',     punto:'¡FRESCO Y VIVO!',    crudo:'Todavía es mosto.',   podrido:'Se oxidó — a vinagre.',      fact:'El albariño de las Rías Baixas se bebe JOVEN, a los pocos meses. Cuanto más fresco, mejor.' },
+  { name:'Rioja Crianza',  emoji:'🍷', diff:'media',   ms:270, hold:'MANTÉN PARA CRIAR EL RIOJA',          punto:'¡CRIANZA REDONDA!',  crudo:'Aún es vino verde.',  podrido:'Pasado de barrica.',         fact:'Un Rioja Crianza reposa ~2 años, mínimo 1 en barrica de roble.' },
+  { name:'Gran Reserva',   emoji:'🍷', diff:'difícil', ms:170, hold:'MANTÉN PARA AÑEJAR EL GRAN RESERVA',  punto:'¡GRAN RESERVA!',     crudo:'Le faltan años.',     podrido:'Demasiado viejo, muerto.',   fact:'Un Gran Reserva envejece 5+ años (≥2 en barrica). Acertar su punto exacto es un arte.' },
+];
+const CHEESES = [
+  { name:'Brie',            emoji:'🧀', diff:'fácil',   ms:400, hold:'MANTÉN PARA AFINAR EL BRIE',      punto:'¡CREMOSO PERFECTO!', crudo:'Cuajada sin hacer.',  podrido:'Amoníaco: pasado.',           fact:'El Brie madura solo 4-8 semanas; se come joven y cremoso.' },
+  { name:'Manchego curado', emoji:'🧀', diff:'media',   ms:270, hold:'MANTÉN PARA CURAR EL MANCHEGO',   punto:'¡CURADO PERFECTO!',  crudo:'Todavía tierno.',     podrido:'Reseco y picante de más.',    fact:'El Manchego curado madura 3-12 meses.' },
+  { name:'Azul (Cabrales)', emoji:'🧀', diff:'difícil', ms:170, hold:'MANTÉN PARA AZULAR EL CABRALES',  punto:'¡AZUL EN SU PUNTO!', crudo:'Sin vetas aún.',      podrido:'Moho hasta pudrirse.',        fact:'El Cabrales madura en cuevas de montaña 2-6 meses; su punto azul es delicadísimo.' },
+];
+const FOODMOJIS = ['🦪','🦐','🐙','🐟','🦞','🫒','🍇','🧀','🥙','🍯','🍷','🫓','🍶','🐐'];
+const PRIZES = {
+  galicia:['pulpo á feira','empanada gallega','percebes','tarta de Santiago','ostras de la ría'],
+  madrid:['cocido madrileño','bocata de calamares','huevos rotos','fabada','churros con chocolate'],
+  milos:['revithada','pastelli','queso manoura','cabrito al horno','ensalada milesia'],
+  estambul:['baklava','lokum de pistache','simit','künefe','pistachio kebab'],
 };
-let gameType='wine', gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
+let gameCat='wine', gameItem=WINES[0], gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
+function collCount(){ return lsGet('vb_badges',[]).length + lsGet('vb_prizes',[]).length; }
+function renderBadges(){ const el=document.getElementById('badges'); if(!el) return; const b=lsGet('vb_badges',[]); el.innerHTML=b.map(function(e){return '<span>'+e+'</span>';}).join(''); el.style.display=b.length?'flex':'none'; }
+function awardBadge(){ const b=lsGet('vb_badges',[]); b.push(FOODMOJIS[Math.floor(Math.random()*FOODMOJIS.length)]); lsSet('vb_badges',b); renderBadges(); return b[b.length-1]; }
+function awardPrize(place){ const pool=PRIZES[place]||PRIZES.madrid; const dish=pool[Math.floor(Math.random()*pool.length)]; const pr=lsGet('vb_prizes',[]); pr.push(dish); lsSet('vb_prizes',pr); return dish; }
+function noteCheeseUnlock(){ if(collCount()>=3 && !lsGet('vb_cheese_ann',false)){ lsSet('vb_cheese_ann',true); if(document.getElementById('themeBtn')) setTheme(lsGet('vb_theme','light')); return '<p class="note" style="margin-top:10px;font-weight:800;color:#c47f17;line-height:1.5">🧀 ¡Desbloqueaste el MODO QUESO! Tócalo en el botón de tema (arriba a la derecha).</p>'; } return ''; }
+function diffDots(d){ return d==='fácil'?'🌶️':d==='media'?'🌶️🌶️':'🌶️🌶️🌶️'; }
 function openGame(){
   gamePhase='ready';
-  const g=GAME[gameType];
-  fillModal('<div class="seclbl">Juego · añejar '+g.title.toLowerCase()+'</div>'
+  gameItem = (gameCat==='wine'?WINES:CHEESES)[Math.floor(Math.random()*3)];
+  const g=gameItem;
+  fillModal('<div class="seclbl">Juego · '+esc(g.name)+' · '+g.diff+' '+diffDots(g.diff)+'</div>'
     +'<div id="gameStage" style="text-align:center;padding:10px 0 4px;border-radius:12px;transition:background .15s">'
-      +'<div style="font-size:34px">'+g.char+'</div>'
+      +'<div style="font-size:34px">🧑‍🌾</div>'
       +'<div id="gameItem" style="font-size:34px;margin-top:2px;transition:transform .1s">'+g.emoji+'</div>'
-      +'<div style="height:9px;background:rgba(120,80,110,.14);border-radius:20px;margin:14px 0;overflow:hidden"><div id="gameBar" style="height:100%;width:0;background:var(--accent)"></div></div>'
-      +'<div id="gameMsg" style="font-family:\'Archivo\',sans-serif;font-weight:800;font-size:13.5px;color:var(--tx3);min-height:20px">El 🧑‍🌾 lo planta… suéltalo cuando esté EN SU PUNTO</div>'
+      +'<div style="height:9px;background:rgba(120,80,110,.14);border-radius:20px;margin:14px 0;overflow:hidden;position:relative"><div style="position:absolute;left:75%;top:0;bottom:0;width:2px;background:rgba(0,0,0,.28)"></div><div id="gameBar" style="height:100%;width:0;background:var(--accent)"></div></div>'
+      +'<div id="gameMsg" style="font-family:\'Archivo\',sans-serif;font-weight:800;font-size:13px;color:var(--tx3);min-height:20px">Mantén y suelta justo cuando llegue a la marca (¾)</div>'
     +'</div>'
     +'<button id="ageBtn" class="gbtn" oncontextmenu="return false" style="background:var(--accent);color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;margin-top:12px" onpointerdown="ageStart(event)" onpointerup="ageEnd()" onpointercancel="ageEnd()">'+g.hold+'</button>'
     +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:12px;line-height:1.6">'+esc(g.fact)+'</p>');
@@ -1042,7 +1058,7 @@ function openGame(){
 function ageStart(e){
   if(gamePhase!=='ready') return;
   try{ e.target.setPointerCapture(e.pointerId); }catch(_){}
-  gamePhase='aging'; gStart=Date.now(); ripenAt=1000+Math.random()*4800;   // más variable: 1.0–5.8 s
+  gamePhase='aging'; gStart=Date.now(); ripenAt=1000+Math.random()*4800;
   const item=document.getElementById('gameItem'), msg=document.getElementById('gameMsg');
   if(msg){ msg.textContent='Añejando…'; msg.style.color='var(--tx3)'; }
   if(item){ item.style.transition='transform '+ripenAt+'ms linear'; item.style.transform='scale(1.5)'; }
@@ -1051,17 +1067,17 @@ function ageStart(e){
 function setBar(w,hue){ const b=document.getElementById('gameBar'); if(b){ b.style.transition='none'; b.style.width=w+'%'; b.style.background='hsl('+Math.max(0,Math.round(hue))+',72%,46%)'; } }
 function gLoop(){
   const bar=document.getElementById('gameBar'); if(!bar){ gRAF=null; return; }
-  const t=Date.now()-gStart, perfEnd=ripenAt+600, rotEnd=perfEnd+700, moldEnd=rotEnd+500;
-  if(t<ripenAt){ const p=t/ripenAt; setBar(p*75, 120-60*p); }                       // añejando: verde→amarillo, hasta 3/4
-  else if(t<perfEnd){                                                                // EN SU PUNTO (dorado, en 3/4)
+  const t=Date.now()-gStart, perfEnd=ripenAt+gameItem.ms, rotEnd=perfEnd+650, moldEnd=rotEnd+500;
+  if(t<ripenAt){ const p=t/ripenAt; setBar(p*75, 120-60*p); }                        // añejando: verde→amarillo, hasta 3/4
+  else if(t<perfEnd){                                                                 // EN SU PUNTO (dorado, en 3/4)
     if(gamePhase==='aging'){ gamePhase='signal'; gameCueTime=Date.now(); const m=document.getElementById('gameMsg'); if(m){ m.textContent='¡EN SU PUNTO! ¡SUELTA!'; m.style.color='#0a9d5a'; } const st=document.getElementById('gameStage'); if(st) st.style.background='rgba(16,185,129,.16)'; }
-    const p=(t-ripenAt)/600; setBar(75+p*6, 58-6*p);
+    const p=(t-ripenAt)/gameItem.ms; setBar(75+p*4, 58-6*p);
   }
-  else if(t<rotEnd){                                                                 // se pasa: dorado→rojo
+  else if(t<rotEnd){                                                                  // se pasa: dorado→rojo
     if(gamePhase==='signal'){ gamePhase='rot'; const m=document.getElementById('gameMsg'); if(m){ m.textContent='se está pasando…'; m.style.color='#b45309'; } const st=document.getElementById('gameStage'); if(st) st.style.background='rgba(239,68,68,.12)'; }
-    const p=(t-perfEnd)/700; setBar(81+p*19, 50-50*p);
+    const p=(t-perfEnd)/650; setBar(79+p*21, 50-50*p);
   }
-  else if(t<moldEnd){ const p=(t-rotEnd)/500; setBar(100, p*110); }                  // podrido: rojo→moho verde
+  else if(t<moldEnd){ const p=(t-rotEnd)/500; setBar(100, p*110); }                   // podrido: rojo→moho verde
   else { gRAF=null; finishGame('podrido',0); return; }
   gRAF=requestAnimationFrame(gLoop);
 }
@@ -1073,17 +1089,17 @@ function ageEnd(){
 function finishGame(kind, rt){
   if(gamePhase==='result') return;
   gamePhase='result'; if(gRAF) cancelAnimationFrame(gRAF); gRAF=null;
-  const g=GAME[gameType];
-  let big, color, sub, face;
+  const g=gameItem;
+  let big, color, sub, face, extra='';
   if(kind==='crudo'){ big='CRUDO!'; color='#EF4444'; sub=g.crudo; face='🫙'; }
   else if(kind==='podrido'){ big='PODRIDO!'; color='#7c3f00'; sub=g.podrido; face='🤢'; }
-  else { const stars=rt<250?'⭐⭐⭐':rt<450?'⭐⭐':'⭐'; big=g.punto; color='#10b981'; sub='Reacción: '+rt+' ms · '+stars; face=g.emoji; }
-  gameType = gameType==='wine'?'cheese':'wine';
-  fillModal('<div class="seclbl">Juego · resultado</div><div style="text-align:center;padding:10px 0"><div style="font-size:44px">'+face+'</div>'
+  else { const stars=rt<130?'⭐⭐⭐':rt<280?'⭐⭐':'⭐'; big=g.punto; color='#10b981'; sub='Reacción: '+rt+' ms · '+stars; face=g.emoji; const badge=awardBadge(); extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">🏅 Ganaste una insignia: <span style="font-size:18px">'+badge+'</span></p>'+noteCheeseUnlock(); }
+  gameCat = gameCat==='wine'?'cheese':'wine';
+  fillModal('<div class="seclbl">Juego · '+esc(g.name)+'</div><div style="text-align:center;padding:10px 0"><div style="font-size:44px">'+face+'</div>'
     +'<p style="font-family:\'Archivo Black\',sans-serif;font-size:23px;color:'+color+';margin:8px 0 4px">'+big+'</p>'
-    +'<p class="note" style="color:var(--tx2)">'+esc(sub)+'</p></div>'
+    +'<p class="note" style="color:var(--tx2)">'+esc(sub)+'</p>'+extra+'</div>'
     +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:6px;line-height:1.6">'+esc(g.fact)+'</p>'
-    +'<button class="gbtn" onclick="openGame()">↻ Otra cosecha · '+GAME[gameType].title+'</button>');
+    +'<button class="gbtn" onclick="openGame()">↻ Otra cosecha · '+(gameCat==='wine'?'Vino':'Queso')+'</button>');
 }
 
 function render(){
