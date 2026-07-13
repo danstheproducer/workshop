@@ -1268,7 +1268,7 @@ function initPull(){
 function render(){
   renderMenu(); renderDaybar(); renderMapPanel(); renderBadges(); renderStatus();
   let h='';
-  if(TAB==='itin') h=renderItin();
+  if(TAB==='itin') h = (DAY===0) ? renderOverview() : renderItin();
   else if(TAB==='resv') h=renderResv();
   else if(TAB==='budget') h=renderBudget();
   else if(TAB==='pack') h=renderPack();
