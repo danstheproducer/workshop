@@ -755,16 +755,18 @@ let mapFullView = lsGet('vb_mapfull', false);
 (function(){ const sr=lsGet('vb_resv',{}); RESERVATIONS.forEach(r=>{ if(sr[r.id]!==undefined) r.done=sr[r.id]; }); })();
 
 function setTheme(t){
-  if(t==='cheese' && collCount()<3) t='light';
+  if(t==='cheese' && chzTally()<3) t='light';
+  if(t==='wine' && winTally()<3) t='light';
   lsSet('vb_theme',t);
   document.documentElement.setAttribute('data-theme', t==='dark'?'dark':'light');
   document.documentElement.classList.toggle('cheese', t==='cheese');
-  document.getElementById('themeBtn').textContent = t==='light' ? '🌙' : t==='dark' ? (collCount()>=3?'🧀':'☀️') : '☀️';
+  document.documentElement.classList.toggle('wine', t==='wine');
+  const b=document.getElementById('themeBtn'); if(b) b.textContent = t==='dark'?'🌙' : t==='cheese'?'🧀' : t==='wine'?'🍷' : '☀️';
 }
 function toggleTheme(){
-  const cur=lsGet('vb_theme','light'), cheese=collCount()>=3;
-  const next = cur==='light' ? 'dark' : cur==='dark' ? (cheese?'cheese':'light') : 'light';
-  setTheme(next); if(map){ map.remove(); map=null; } renderMapPanel();
+  const modes=['light','dark']; if(chzTally()>=3) modes.push('cheese'); if(winTally()>=3) modes.push('wine');
+  let i=modes.indexOf(lsGet('vb_theme','light')); if(i<0) i=0;
+  setTheme(modes[(i+1)%modes.length]); if(map){ map.remove(); map=null; } renderMapPanel();
 }
 
 const MENU = [
