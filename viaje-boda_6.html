@@ -1170,16 +1170,21 @@ function maxNote(){ if(isMax() && !lsGet('vb_max_ann',false)){ lsSet('vb_max_ann
 function renderStatus(){ const el=document.getElementById('status'); if(!el) return; let h=''; if(isMax()) h+='<span class="stchip max" onclick="statusClick()">MAX</span>'; if(isPro()) h+='<span class="stchip pro" onclick="statusClick()">PRO</span>'; el.innerHTML=h; }
 function statusClick(){ if(isMax()&&isPro()) openWordSoup(); else if(isMax()) toast('🧠 Eres MAX. Vence los 6 vinos y quesos (juego del anillo) para desbloquear MAX PRO.'); else toast('🏆 Eres PRO. Perfecciona toda la trivia (emoji de cada lugar) para desbloquear MAX PRO.'); }
 function toast(msg){ fillModal('<div class="seclbl">Estado</div><p class="note" style="font-size:14px;line-height:1.7;color:var(--tx2);margin-top:10px">'+esc(msg)+'</p><button class="gbtn" onclick="closeModal()">Ok</button>'); document.getElementById('modal').classList.add('on'); }
-const SOUPWORDS=['CALIFA','FARAON','NILO'];
-let soupGrid=[], soupFound=[], soupFoundCells=new Set(), soupSel=null;
+const SOUPPOOL=['CALIFA','FARAON','NILO','SUFI','RUMI','EGEO','MECA','SULTAN','HAREM','VISIR','SAHARA','DERVIS','HAFIZ','MEDINA','SFINGE'];
+let SOUPWORDS=[], soupGrid=[], soupFound=[], soupFoundCells=new Set(), soupSel=null, soupTimer=null, soupLeft=30;
+function pick3(){ const p=SOUPPOOL.filter(function(w){return w.length<=10;}); const out=[]; while(out.length<3 && p.length){ out.push(p.splice(Math.floor(Math.random()*p.length),1)[0]); } return out; }
 function openWordSoup(){
-  soupFound=[]; soupFoundCells=new Set(); soupSel=null;
+  clearInterval(soupTimer);
+  SOUPWORDS=pick3();
+  soupFound=[]; soupFoundCells=new Set(); soupSel=null; soupLeft=30;
   soupGrid=Array.from({length:10},function(){return Array(10).fill('');});
   SOUPWORDS.forEach(function(w){ placeWord(w); });
   const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   for(let r=0;r<10;r++)for(let c=0;c<10;c++){ if(!soupGrid[r][c]) soupGrid[r][c]=A[Math.floor(Math.random()*26)]; }
   renderSoup(); document.getElementById('modal').classList.add('on');
+  soupTimer=setInterval(function(){ soupLeft--; const t=document.getElementById('soupTime'); if(t){ t.textContent=soupLeft+'s'; if(soupLeft<=10) t.style.color='#EF4444'; } if(soupLeft<=0){ clearInterval(soupTimer); soupLose(); } }, 1000);
 }
+function soupLose(){ clearInterval(soupTimer); fillModal('<div class="seclbl">⏳ Se acabó el tiempo</div><div style="text-align:center;padding:10px 0"><div class="popin" style="font-size:44px">🐫💨</div><p class="gtitle" style="color:#EF4444">¡MUY LENTO!</p><p class="note" style="color:var(--tx2)">Encontraste '+soupFound.length+'/3. El desierto es paciente… vuelve a intentarlo.</p></div><button class="gbtn" onclick="openWordSoup()">↻ Otra sopa (palabras nuevas)</button>'); document.getElementById('modal').classList.add('on'); }
 function placeWord(w){
   for(let tr=0;tr<300;tr++){
     const h=Math.random()<0.5;
