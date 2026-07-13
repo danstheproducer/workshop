@@ -1072,14 +1072,11 @@ const INSIGNIA = {
   milos:    { em:'🌋', title:'Historiador de Mílos', desc:'Sarakíniko, la Venus y los syrmata: sabio de las Cícladas.' },
   estambul: { em:'🕌', title:'Historiador de Estambul', desc:'Dos continentes y tres imperios: dueño de la historia de la ciudad de ciudades.' },
 };
-const CATPHRASES = [
-  'El ojo del gato ha estado entre nosotros todo este tiempo.',
-  'Kedinin gözü başından beri aramızdaydı. — (turco)',
-  'Oculus felis semper inter nos fuit. — (latín)',
-  'عين القطّ كانت بيننا منذ الأزل. — (árabe)',
-  '𓁹 𓃠 — el ojo que todo lo ve dormía en el gato.',
-  'Ὁ ὀφθαλμὸς τοῦ αἰλούρου ἀεὶ σὺν ἡμῖν ἦν. — (griego antiguo)',
-];
+const CATSAY = {
+  1:['El ojo del gato ha estado entre nosotros todo este tiempo.','Kedinin gözü başından beri aramızdaydı.','Oculus felis semper inter nos fuit.','عين القطّ كانت بيننا منذ الأزل.','Ὁ ὀφθαλμὸς τοῦ αἰλούρου ἀεὶ σὺν ἡμῖν ἦν.'],
+  2:['El ojo del gato está sobre nosotros.','Kedinin gözü üzerimizde.','Oculus felis super nos est.','عين القطّ علينا.','Ὁ ὀφθαλμὸς τοῦ αἰλούρου ἐφ’ ἡμᾶς ἐστιν.'],
+  3:['El ojo del gato se ha abierto.','Kedinin gözü açıldı.','Oculus felis apertus est.','عين القطّ قد انفتحت.','Ὁ ὀφθαλμὸς τοῦ αἰλούρου ἀνέῳκται.'],
+};
 let gameCat='wine', gameItem=WINES[0], gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
 function winewon(){ return lsGet('vb_winewon',[]); }
 function cheesewon(){ return lsGet('vb_cheesewon',[]); }
