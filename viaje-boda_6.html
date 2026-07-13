@@ -1107,7 +1107,7 @@ function finishGame(kind, rt){
 }
 
 function render(){
-  renderMenu(); renderDaybar(); renderMapPanel();
+  renderMenu(); renderDaybar(); renderMapPanel(); renderBadges();
   let h='';
   if(TAB==='itin') h=renderItin();
   else if(TAB==='resv') h=renderResv();
