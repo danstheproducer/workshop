@@ -1101,9 +1101,14 @@ function finishGame(kind, rt){
   let big, color, sub, face, extra='';
   if(kind==='crudo'){ big='CRUDO!'; color='#EF4444'; sub=g.crudo; face='🫙'; }
   else if(kind==='podrido'){ big='PODRIDO!'; color='#7c3f00'; sub=g.podrido; face='🤢'; }
-  else { const stars=rt<130?'⭐⭐⭐':rt<280?'⭐⭐':'⭐'; big=g.punto; color='#10b981'; sub='Reacción: '+rt+' ms · '+stars; face=g.emoji; const badge=awardBadge(); extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">🏅 Ganaste una insignia: <span style="font-size:18px">'+badge+'</span></p>'+noteCheeseUnlock(); }
+  else { const stars=rt<130?'⭐⭐⭐':rt<280?'⭐⭐':'⭐'; big=g.punto; color='#10b981'; sub='Reacción: '+rt+' ms · '+stars; face=g.emoji;
+    const badge=awardBadge();
+    const gw=lsGet('vb_gamewins',[]); if(gw.indexOf(g.name)<0){ gw.push(g.name); lsSet('vb_gamewins',gw); }
+    renderStatus();
+    extra='<p class="note" style="margin-top:8px;font-weight:700;color:var(--tx1)">🏅 Insignia: <span style="font-size:18px">'+badge+'</span></p>'+noteCheeseUnlock()+proNote();
+  }
   gameCat = gameCat==='wine'?'cheese':'wine';
-  fillModal('<div class="seclbl">Juego · '+esc(g.name)+'</div><div style="text-align:center;padding:10px 0"><div style="font-size:44px">'+face+'</div>'
+  fillModal('<div class="seclbl">Juego · '+esc(g.name)+'</div><div style="text-align:center;padding:10px 0"><div class="popin" style="font-size:46px">'+face+'</div>'
     +'<p style="font-family:\'Archivo Black\',sans-serif;font-size:23px;color:'+color+';margin:8px 0 4px">'+big+'</p>'
     +'<p class="note" style="color:var(--tx2)">'+esc(sub)+'</p>'+extra+'</div>'
     +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:6px;line-height:1.6">'+esc(g.fact)+'</p>'
