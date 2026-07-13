@@ -27,6 +27,11 @@
   @keyframes popin { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
   .popin { animation:popin .4s ease-out; display:inline-block; }
   @keyframes cuePulse { 0%{transform:scale(1)} 40%{transform:scale(1.05)} 100%{transform:scale(1)} }
+  html.wine { --bg:#efd9dd; }
+  html.wine body { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><text x="10" y="50" font-size="42" opacity="0.18">🍷</text></svg>'); background-size:72px 72px; }
+  .gtitle { font-family:'Archivo Black',sans-serif; font-size:26px; letter-spacing:.5px; margin:8px 0 4px; text-shadow:0 2px 0 rgba(0,0,0,.12); }
+  .greact { font-family:'Archivo',sans-serif; font-weight:800; font-size:14px; color:var(--tx2); letter-spacing:.5px; }
+  .gwin { font-family:'Archivo Black',sans-serif; font-size:15px; color:#c47f17; margin-top:10px; animation:cuePulse .5s ease-out; }
   ::-webkit-scrollbar { height: 2px; width: 2px; }
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px);} to {opacity:1; transform:translateY(0);} }
