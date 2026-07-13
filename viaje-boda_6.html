@@ -1215,7 +1215,7 @@ function renderSoup(){
   fillModal(g);
 }
 function soupVictory(){
-  lsSet('vb_emperor',true);
+  clearInterval(soupTimer); lsSet('vb_emperor',true); renderBadges(); renderStatus();
   fillModal('<div class="seclbl">✦ Coronación ✦</div><div style="text-align:center;padding:8px 0"><div class="popin" style="font-size:48px">👑</div><p style="font-family:\'Archivo Black\',sans-serif;font-size:19px;color:var(--accent);margin:10px 0;line-height:1.25">EMPERADOR/A DEL CALIFATO EGIPCIO</p><p class="note" style="color:var(--tx2);line-height:1.75">Queda demostrado: eres la persona más culta en historia del Mediterráneo de todo el mundo. Sufíes, faraones y sultanes se inclinan ante ti. 🏺🕌⚱️🐫</p></div><button class="gbtn" onclick="closeModal()">Reinar en paz</button>');
   document.getElementById('modal').classList.add('on');
 }
