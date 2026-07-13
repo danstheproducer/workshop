@@ -1168,7 +1168,7 @@ function finishGame(kind, rt){
     +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:6px;line-height:1.6">'+esc(g.fact)+'</p>'
     +'<button class="gbtn" onclick="openGame()">↻ Otra cosecha · '+(gameCat==='wine'?'Vino':'Queso')+'</button>');
 }
-function isPro(){ return winTally()>=3 && chzTally()>=3; }
+function isPro(){ return wineDone() && cheeseDone(); }
 function isMax(){ const q=lsGet('vb_quizwins',[]); return ALLQUIZ.every(function(k){return q.indexOf(k)>=0;}); }
 function proNote(){ if(isPro() && !lsGet('vb_pro_ann',false)){ lsSet('vb_pro_ann',true); return '<p class="note" style="margin-top:8px;font-weight:800;color:var(--accent)">🏆 ¡Venciste los 6 vinos y quesos! Eres PRO.</p>'; } return ''; }
 function maxNote(){ if(isMax() && !lsGet('vb_max_ann',false)){ lsSet('vb_max_ann',true); return '<p class="note" style="margin-top:8px;font-weight:800;color:var(--accent)">🧠 ¡Dominaste toda la trivia! Eres MAX.</p>'; } return ''; }
