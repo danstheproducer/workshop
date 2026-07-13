@@ -93,6 +93,26 @@
   .daypill .dow { font-family: 'Archivo', sans-serif; font-size: 9px; font-weight: 700; line-height: 1.3; text-transform: uppercase; color: rgba(255,255,255,.9); text-shadow: 0 1px 1px rgba(0,0,0,.22); }
   .daypill .dnum { font-family: 'Archivo', sans-serif; font-size: 15px; font-weight: 800; line-height: 1.2; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
   .daypill.on { outline: 2px solid var(--tx1); outline-offset: 1px; }
+  .daypill.ov { background:#0E7C7B; border-color:#0b5f5e; }
+  .daypill.ov .dow { color:#FDF0D5; }
+  .daypill.ov .dnum { font-size:14px; }
+  /* --- overview / landing --- */
+  .ov-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:14px 0 6px; }
+  .ov-stat { background:var(--bg-card); border:1px solid var(--bd); border-radius:10px; padding:10px 4px; text-align:center; }
+  .ov-stat .ov-n { font-family:'Archivo Black',sans-serif; font-size:22px; line-height:1; color:var(--tx1); }
+  .ov-stat .ov-l { font-family:'Archivo',sans-serif; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--tx-dim); margin-top:5px; }
+  .ov-leg { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:var(--bg-card); border:1px solid var(--bd); border-left:4px solid #ccc; border-radius:10px; padding:12px 13px; cursor:pointer; transition:transform .12s, box-shadow .12s; }
+  .ov-leg:active { transform:scale(.985); }
+  .ov-leg:hover { box-shadow:0 4px 14px rgba(0,0,0,.12); }
+  .ov-em { font-size:26px; line-height:1; flex:0 0 auto; }
+  .ov-body { flex:1 1 auto; min-width:0; }
+  .ov-top { display:flex; align-items:center; gap:8px; }
+  .ov-city { font-family:'Archivo Black',sans-serif; font-size:16px; color:var(--tx1); }
+  .ov-reg { font-family:'Archivo',sans-serif; font-size:8.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#fff; padding:2px 7px; border-radius:20px; text-shadow:0 1px 1px rgba(0,0,0,.2); white-space:nowrap; }
+  .ov-when { font-family:'Archivo',sans-serif; font-size:11px; font-weight:700; color:var(--tx-dim); margin-top:2px; }
+  .ov-desc { font-family:'Archivo',sans-serif; font-size:12px; line-height:1.5; color:var(--tx2); margin-top:5px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .ov-go { flex:0 0 auto; color:var(--tx-dim); font-size:16px; }
+  .ov-conn { height:12px; width:2px; margin:0 auto; background:repeating-linear-gradient(var(--bd) 0 3px, transparent 3px 6px); }
   .wrap { padding: 14px 16px 24px; animation: fadeIn .25s; max-width: 620px; margin: 0 auto; }
   .dayhead { border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
   .dayhead .row { display: flex; align-items: center; gap: 11px; }
