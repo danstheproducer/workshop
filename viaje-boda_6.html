@@ -1055,8 +1055,8 @@ function openGame(){
     +'<div id="gameStage" style="text-align:center;padding:10px 0 4px;border-radius:12px;transition:background .15s">'
       +'<div style="font-size:34px">🧑‍🌾</div>'
       +'<div id="gameItem" style="font-size:34px;margin-top:2px;transition:transform .1s">'+g.emoji+'</div>'
-      +'<div style="height:9px;background:rgba(120,80,110,.14);border-radius:20px;margin:14px 0;overflow:hidden;position:relative"><div style="position:absolute;left:75%;top:0;bottom:0;width:2px;background:rgba(0,0,0,.28)"></div><div id="gameBar" style="height:100%;width:0;background:var(--accent)"></div></div>'
-      +'<div id="gameMsg" style="font-family:\'Archivo\',sans-serif;font-weight:800;font-size:13px;color:var(--tx3);min-height:20px">Mantén y suelta justo cuando llegue a la marca (¾)</div>'
+      +'<div style="height:11px;background:rgba(120,80,110,.14);border-radius:20px;margin:14px 0;overflow:hidden;position:relative"><div style="position:absolute;left:'+Math.round(g.pos*100)+'%;top:-3px;bottom:-3px;width:3px;background:#0a9d5a;box-shadow:0 0 5px #0a9d5a;z-index:2"></div><div id="gameBar" style="height:100%;width:0;background:var(--accent)"></div></div>'
+      +'<div id="gameMsg" style="font-family:\'Archivo\',sans-serif;font-weight:800;font-size:13px;color:var(--tx3);min-height:20px">Mantén y suelta justo al llegar a la marca verde ▲</div>'
     +'</div>'
     +'<button id="ageBtn" class="gbtn" oncontextmenu="return false" style="background:var(--accent);color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;margin-top:12px" onpointerdown="ageStart(event)" onpointerup="ageEnd()" onpointercancel="ageEnd()">'+g.hold+'</button>'
     +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:12px;line-height:1.6">'+esc(g.fact)+'</p>');
