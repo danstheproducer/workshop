@@ -771,7 +771,7 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 let TAB = lsGet('vb_tab','itin');
 if(!['itin','resv','budget','pack','words'].includes(TAB)) TAB='itin';
 let DAY = lsGet('vb_day',1);
-if(typeof DAY!=='number'||DAY<1||DAY>AGENDA.length) DAY=1;
+if(typeof DAY!=='number'||DAY<0||DAY>AGENDA.length) DAY=1;
 let map=null;
 let mapOpen = lsGet('vb_mapopen', true);
 let mapFullView = lsGet('vb_mapfull', false);
