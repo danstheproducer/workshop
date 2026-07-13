@@ -1080,11 +1080,13 @@ const CATPHRASES = [
   'Ὁ ὀφθαλμὸς τοῦ αἰλούρου ἀεὶ σὺν ἡμῖν ἦν. — (griego antiguo)',
 ];
 let gameCat='wine', gameItem=WINES[0], gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
-function winTally(){ return lsGet('vb_wintally',0); }
-function chzTally(){ return lsGet('vb_chztally',0); }
-function earnedInsignias(){ const a=[]; if(winTally()>=3)a.push('wine'); if(chzTally()>=3)a.push('cheese'); lsGet('vb_quizwins',[]).forEach(function(k){ if(INSIGNIA[k]) a.push(k); }); return a; }
-function allInsignias(){ return winTally()>=3 && chzTally()>=3 && ALLQUIZ.every(function(k){return lsGet('vb_quizwins',[]).indexOf(k)>=0;}); }
-function collCount(){ return winTally() + chzTally() + lsGet('vb_quizwins',[]).length; }
+function winewon(){ return lsGet('vb_winewon',[]); }
+function cheesewon(){ return lsGet('vb_cheesewon',[]); }
+function wineDone(){ const w=winewon(); return WINES.every(function(x){return w.indexOf(x.name)>=0;}); }
+function cheeseDone(){ const c=cheesewon(); return CHEESES.every(function(x){return c.indexOf(x.name)>=0;}); }
+function earnedInsignias(){ const a=[]; if(!isPro()){ if(wineDone())a.push('wine'); if(cheeseDone())a.push('cheese'); } if(!isMax()){ lsGet('vb_quizwins',[]).forEach(function(k){ if(INSIGNIA[k]) a.push(k); }); } return a; }
+function allInsignias(){ return isPro() && isMax(); }
+function collCount(){ return winewon().length + cheesewon().length + lsGet('vb_quizwins',[]).length; }
 function renderBadges(){
   const el=document.getElementById('badges'); if(!el) return;
   if(lsGet('vb_emperor',false) && allInsignias()){ el.innerHTML='<span class="catwin" onclick="catPhrase()" title="Ojos de gato">🐱</span>'; el.style.display='flex'; return; }
