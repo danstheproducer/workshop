@@ -1223,8 +1223,13 @@ function renderSoup(){
   fillModal(g);
 }
 function soupVictory(){
-  clearInterval(soupTimer); lsSet('vb_emperor',true); renderBadges(); renderStatus();
-  fillModal('<div class="seclbl">✦ Coronación ✦</div><div style="text-align:center;padding:8px 0"><div class="popin" style="font-size:48px">👑</div><p style="font-family:\'Archivo Black\',sans-serif;font-size:19px;color:var(--accent);margin:10px 0;line-height:1.25">EMPERADOR/A DEL CALIFATO EGIPCIO</p><p class="note" style="color:var(--tx2);line-height:1.75">Queda demostrado: eres la persona más culta en historia del Mediterráneo de todo el mundo. Sufíes, faraones y sultanes se inclinan ante ti. 🏺🕌⚱️🐫</p></div><button class="gbtn" onclick="closeModal()">Reinar en paz</button>');
+  clearInterval(soupTimer);
+  const n=cats()+1; lsSet('vb_cats',n);
+  lsSet('vb_winewon',[]); lsSet('vb_cheesewon',[]); lsSet('vb_quizwins',[]); lsSet('vb_pro_ann',false); lsSet('vb_max_ann',false);
+  renderBadges(); renderStatus();
+  if(n>=3){ lockApp(); return; }
+  const p=CATSAY[n][Math.floor(Math.random()*CATSAY[n].length)];
+  fillModal('<div class="seclbl">✦ Gato '+n+' de 3 ✦</div><div style="text-align:center;padding:8px 0"><div class="popin" style="font-size:54px">🐱</div><p style="font-family:\'Archivo Black\',sans-serif;font-size:18px;color:var(--accent);margin:10px 0;line-height:1.25">GATO '+n+' DESBLOQUEADO</p><p class="note" style="font-style:italic;color:var(--tx2);line-height:1.75">'+esc(p)+'</p><p class="note" style="margin-top:10px;color:var(--tx-dim);font-size:12px">Vuelve a ganar todas las insignias y la sopa para el próximo gato…</p></div><button class="gbtn" onclick="closeModal()">Seguir</button>');
   document.getElementById('modal').classList.add('on');
 }
 let pullStart=0, pulling=false, pullArmed=false, wheelUp=0;
