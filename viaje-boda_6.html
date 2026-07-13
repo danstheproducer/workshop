@@ -1088,10 +1088,12 @@ function allInsignias(){ return isPro() && isMax(); }
 function collCount(){ return winewon().length + cheesewon().length + lsGet('vb_quizwins',[]).length; }
 function renderBadges(){
   const el=document.getElementById('badges'); if(!el) return;
-  if(lsGet('vb_emperor',false) && allInsignias()){ el.innerHTML='<span class="catwin" onclick="catPhrase()" title="Ojos de gato">🐱</span>'; el.style.display='flex'; return; }
-  const ins=earnedInsignias();
-  el.innerHTML=ins.map(function(k){ return '<span onclick="showInsignia(\''+k+'\')" style="cursor:pointer">'+INSIGNIA[k].em+'</span>'; }).join('');
-  el.style.display=ins.length?'flex':'none';
+  const n=cats();
+  if(n>=3){ lockApp(); }
+  let h='';
+  for(let i=0;i<Math.min(n,3);i++){ h+='<span class="catwin" onclick="catPhrase()" title="Ojos de gato">🐱</span>'; }
+  earnedInsignias().forEach(function(k){ h+='<span onclick="showInsignia(\''+k+'\')" style="cursor:pointer">'+INSIGNIA[k].em+'</span>'; });
+  el.innerHTML=h; el.style.display=h?'flex':'none';
 }
 function showInsignia(k){ const i=INSIGNIA[k]; if(!i) return; fillModal('<div class="seclbl">Insignia</div><div style="text-align:center;padding:6px 0"><div style="font-size:40px">'+i.em+'</div><p style="font-family:\'Archivo Black\',sans-serif;font-size:18px;color:var(--accent);margin:8px 0">'+esc(i.title)+'</p><p class="note" style="color:var(--tx2);line-height:1.7">'+esc(i.desc)+'</p></div><button class="gbtn" onclick="closeModal()">Cerrar</button>'); document.getElementById('modal').classList.add('on'); }
 function catPhrase(){ const p=CATPHRASES[Math.floor(Math.random()*CATPHRASES.length)]; fillModal('<div class="seclbl">👁 Ojos de gato</div><div style="text-align:center;padding:8px 0"><div class="popin" style="font-size:56px">🐱</div><p class="note" style="font-style:italic;font-size:16px;color:var(--tx2);line-height:1.75;margin-top:12px">'+esc(p)+'</p></div><button class="gbtn" onclick="catPhrase()">↻ Otra vez</button>'); document.getElementById('modal').classList.add('on'); }
