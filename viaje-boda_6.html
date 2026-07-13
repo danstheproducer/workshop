@@ -1009,7 +1009,7 @@ function renderWords(){
 
 let quizState=null;
 function fillModal(html){ document.getElementById('modalCard').innerHTML='<span class="modal-close" onclick="closeModal()">✕</span>'+html; }
-function closeModal(){ document.getElementById('modal').classList.remove('on'); if(gRAF) cancelAnimationFrame(gRAF); gRAF=null; gamePhase='result'; }
+function closeModal(){ document.getElementById('modal').classList.remove('on'); if(gRAF) cancelAnimationFrame(gRAF); gRAF=null; gamePhase='result'; clearInterval(soupTimer); }
 function openQuiz(k){ if(!QUIZ[k]) return; quizState={key:k,i:0,score:0}; showQuestion(); document.getElementById('modal').classList.add('on'); }
 function showQuestion(){
   const qs=QUIZ[quizState.key]; let html;
