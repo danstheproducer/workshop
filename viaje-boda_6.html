@@ -1021,15 +1021,18 @@ function ringTap(){
 }
 // --- juego de reacción: añejar vino / curar queso ---
 const WINES = [
-  { name:'Albariño joven', emoji:'🥂', diff:'fácil',   ms:400, hold:'MANTÉN PARA AÑEJAR EL ALBARIÑO',     punto:'¡FRESCO Y VIVO!',    crudo:'Todavía es mosto.',   podrido:'Se oxidó — a vinagre.',      fact:'El albariño de las Rías Baixas se bebe JOVEN, a los pocos meses. Cuanto más fresco, mejor.' },
-  { name:'Rioja Crianza',  emoji:'🍷', diff:'media',   ms:270, hold:'MANTÉN PARA CRIAR EL RIOJA',          punto:'¡CRIANZA REDONDA!',  crudo:'Aún es vino verde.',  podrido:'Pasado de barrica.',         fact:'Un Rioja Crianza reposa ~2 años, mínimo 1 en barrica de roble.' },
-  { name:'Gran Reserva',   emoji:'🍷', diff:'difícil', ms:170, hold:'MANTÉN PARA AÑEJAR EL GRAN RESERVA',  punto:'¡GRAN RESERVA!',     crudo:'Le faltan años.',     podrido:'Demasiado viejo, muerto.',   fact:'Un Gran Reserva envejece 5+ años (≥2 en barrica). Acertar su punto exacto es un arte.' },
+  { name:'Albariño joven', emoji:'🥂', diff:'fácil',   pos:0.33, ms:400, hold:'MANTÉN PARA AÑEJAR EL ALBARIÑO',     punto:'¡FRESCO Y VIVO!',    crudo:'Todavía es mosto.',   podrido:'Se oxidó — a vinagre.',      fact:'El albariño de las Rías Baixas se bebe JOVEN, a los pocos meses. Cuanto más fresco, mejor — por eso su punto llega pronto.' },
+  { name:'Rioja Crianza',  emoji:'🍷', diff:'media',   pos:0.5,  ms:270, hold:'MANTÉN PARA CRIAR EL RIOJA',          punto:'¡CRIANZA REDONDA!',  crudo:'Aún es vino verde.',  podrido:'Pasado de barrica.',         fact:'Un Rioja Crianza reposa ~2 años, mínimo 1 en barrica de roble: su punto está a media vida.' },
+  { name:'Gran Reserva',   emoji:'🍷', diff:'difícil', pos:0.75, ms:170, hold:'MANTÉN PARA AÑEJAR EL GRAN RESERVA',  punto:'¡GRAN RESERVA!',     crudo:'Le faltan años.',     podrido:'Demasiado viejo, muerto.',   fact:'Un Gran Reserva envejece 5+ años (≥2 en barrica): su punto llega casi al final, y acertarlo es un arte.' },
 ];
 const CHEESES = [
-  { name:'Brie',            emoji:'🧀', diff:'fácil',   ms:400, hold:'MANTÉN PARA AFINAR EL BRIE',      punto:'¡CREMOSO PERFECTO!', crudo:'Cuajada sin hacer.',  podrido:'Amoníaco: pasado.',           fact:'El Brie madura solo 4-8 semanas; se come joven y cremoso.' },
-  { name:'Manchego curado', emoji:'🧀', diff:'media',   ms:270, hold:'MANTÉN PARA CURAR EL MANCHEGO',   punto:'¡CURADO PERFECTO!',  crudo:'Todavía tierno.',     podrido:'Reseco y picante de más.',    fact:'El Manchego curado madura 3-12 meses.' },
-  { name:'Azul (Cabrales)', emoji:'🧀', diff:'difícil', ms:170, hold:'MANTÉN PARA AZULAR EL CABRALES',  punto:'¡AZUL EN SU PUNTO!', crudo:'Sin vetas aún.',      podrido:'Moho hasta pudrirse.',        fact:'El Cabrales madura en cuevas de montaña 2-6 meses; su punto azul es delicadísimo.' },
+  { name:'Brie',            emoji:'🧀', diff:'fácil',   pos:0.33, ms:400, hold:'MANTÉN PARA AFINAR EL BRIE',      punto:'¡CREMOSO PERFECTO!', crudo:'Cuajada sin hacer.',  podrido:'Amoníaco: pasado.',           fact:'El Brie madura solo 4-8 semanas: se come joven y cremoso, su punto llega temprano.' },
+  { name:'Manchego curado', emoji:'🧀', diff:'media',   pos:0.5,  ms:270, hold:'MANTÉN PARA CURAR EL MANCHEGO',   punto:'¡CURADO PERFECTO!',  crudo:'Todavía tierno.',     podrido:'Reseco y picante de más.',    fact:'El Manchego curado madura 3-12 meses: su punto está a media vida.' },
+  { name:'Azul (Cabrales)', emoji:'🧀', diff:'difícil', pos:0.75, ms:170, hold:'MANTÉN PARA AZULAR EL CABRALES',  punto:'¡AZUL EN SU PUNTO!', crudo:'Sin vetas aún.',      podrido:'Moho hasta pudrirse.',        fact:'El Cabrales madura en cuevas de montaña 2-6 meses: su punto azul llega tarde y es delicadísimo.' },
 ];
+const ALLGAME = WINES.concat(CHEESES).map(function(x){return x.name;});
+const ALLQUIZ = ['galicia','madrid','milos','estambul'];
+const QUIZINSIGNIA = { galicia:'🦪', madrid:'🐻', milos:'🌋', estambul:'🕌' };
 const FOODMOJIS = ['🦪','🦐','🐙','🐟','🦞','🫒','🍇','🧀','🥙','🍯','🍷','🫓','🍶','🐐'];
 const PRIZES = {
   galicia:['pulpo á feira','empanada gallega','percebes','tarta de Santiago','ostras de la ría'],
