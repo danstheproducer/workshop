@@ -794,6 +794,7 @@ const MENU = [
   { id:'itin', ic:'📍', label:'Itinerario' },
   { id:'resv', ic:'✅', label:'Reservas' }, { id:'budget', ic:'💶', label:'Gastos' },
   { id:'pack', ic:'🧳', label:'Maleta' }, { id:'words', ic:'💬', label:'Frases' },
+  { id:'reset', ic:'⟲', label:'RESET' },
 ];
 let menuOpen=false;
 function renderMenu(){ document.getElementById('menu').innerHTML = MENU.map(m=>'<button class="menu-item'+(m.id===TAB?' on':'')+'" onclick="setTab(\''+m.id+'\')"><span class="mi">'+m.ic+'</span>'+m.label+'</button>').join(''); }
