@@ -895,46 +895,42 @@ function renderItin(){
   return h;
 }
 
+const TRAVELIN = {
+  'vuelo-ida':    { ic:'✈️', mode:'Vuelo México → Madrid', dur:'10h35m' },
+  'galicia':      { ic:'🚆', mode:'Tren Madrid → Vigo',     dur:'~4h' },
+  'madrid':       { ic:'🚆', mode:'Tren Vigo → Madrid',     dur:'~4h' },
+  'milos':        { ic:'✈️', mode:'Vuelo Madrid → Mílos (vía Atenas)', dur:'~7h' },
+  'mar':          { ic:'⛵', mode:'Velero por las Cícladas', dur:'3 noches' },
+  'estambul':     { ic:'✈️', mode:'Vuelo velero → Estambul (vía Atenas)', dur:'~5h' },
+  'vuelo-vuelta': { ic:'✈️', mode:'Vuelo Estambul → México', dur:'14h40m' },
+};
 function renderOverview(){
   const seen=[], legs=[];
   AGENDA.forEach(function(a){ if(seen.indexOf(a.cityId)<0){ seen.push(a.cityId); legs.push(a); } });
-  const total=AGENDA.length;
-  function shortDate(s){ const p=String(s).split(' '); return p.length>=3 ? (p[1]+' '+p[2]) : s; }
-  function firstSentence(t){ t=String(t||''); const i=t.indexOf('. '); return i>0 ? t.slice(0,i+1) : t; }
+  function fmtRange(a,b){
+    const p=a.split(' '), q=b.split(' ');
+    if(a===b) return p[1]+' '+p[2];
+    if(p[2]===q[2]) return p[1]+'–'+q[1]+' '+p[2];
+    return p[1]+' '+p[2]+' – '+q[1]+' '+q[2];
+  }
   let h='<div class="wrap">';
-  h += '<div class="dayhero ov-hero">'
-    + '<span class="dh-cnr tl">EL VIAJE</span>'
-    + '<span class="dh-cnr tr">2026</span>'
-    + '<div class="dh-em"><svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E7C7B"/><circle cx="32" cy="26" r="11" fill="#F4C15D"/><path d="M6 42 q6.5 -7 13 0 t13 0 t13 0 t13 0" fill="none" stroke="#FDF0D5" stroke-width="3.4" stroke-linecap="round"/><path d="M6 51 q6.5 -7 13 0 t13 0 t13 0 t13 0" fill="none" stroke="#FDF0D5" stroke-width="3.4" stroke-linecap="round"/></svg></div>'
-    + '<div class="dh-place">Boda + Rutas del Mediterráneo</div>'
-    + '<div class="dh-date">27 Ago – 11 Sep · '+total+' días · 6 viajeros</div>'
-    + '<div class="plate-rule"></div>'
-    + '<div class="dh-desc">De la boda gallega frente al Atlántico a las alfombras de Estambul — cruzando España, las islas Cícladas de Grecia y el Bósforo, con tres noches a bordo de un velero por el Egeo.</div>'
-    + '</div>';
-  h += '<div class="ov-stats">'
-    + '<div class="ov-stat"><div class="ov-n">'+total+'</div><div class="ov-l">Días</div></div>'
-    + '<div class="ov-stat"><div class="ov-n">'+legs.length+'</div><div class="ov-l">Etapas</div></div>'
-    + '<div class="ov-stat"><div class="ov-n">3</div><div class="ov-l">Países</div></div>'
-    + '<div class="ov-stat"><div class="ov-n">6</div><div class="ov-l">Viajeros</div></div>'
-    + '</div>';
-  h += '<div class="seclbl">El recorrido · toca una etapa</div>';
-  legs.forEach(function(a,i){
+  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 11 Sep 2026 · '+AGENDA.length+' días · 6 viajeros</div></div>';
+  h += '<div class="ovl">';
+  legs.forEach(function(a){
     const inCity=AGENDA.filter(function(x){ return x.cityId===a.cityId; });
     const first=inCity[0], last=inCity[inCity.length-1];
-    const range = inCity.length>1 ? (shortDate(first.date)+' – '+shortDate(last.date)) : shortDate(first.date);
+    const range=fmtRange(first.date,last.date);
     const place=a.city.replace('✈️ ','').split(' · ')[0];
-    h += '<button class="ov-leg" style="border-left-color:'+a.color+'" onclick="setDay('+first.day+')">'
-      + '<span class="ov-em">'+a.emoji+'</span>'
-      + '<div class="ov-body">'
-      +   '<div class="ov-top"><span class="ov-city">'+esc(place)+'</span><span class="ov-reg" style="background:'+a.color+'">'+esc(a.region)+'</span></div>'
-      +   '<div class="ov-when">'+esc(range)+' · '+inCity.length+(inCity.length>1?' días':' día')+'</div>'
-      +   '<div class="ov-desc">'+esc(firstSentence(a.cityDesc))+'</div>'
-      + '</div>'
-      + '<span class="ov-go">→</span>'
+    const t=TRAVELIN[a.cityId];
+    if(t) h += '<div class="ovl-move"><span class="ovl-mi">'+t.ic+'</span>'+esc(t.mode)+' · '+esc(t.dur)+'</div>';
+    h += '<button class="ovl-row" onclick="setDay('+first.day+')">'
+      + '<span class="ovl-dot" style="background:'+a.color+'"></span>'
+      + '<span class="ovl-em">'+a.emoji+'</span>'
+      + '<span class="ovl-name">'+esc(place)+'</span>'
+      + '<span class="ovl-dates">'+esc(range)+'</span>'
       + '</button>';
-    if(i<legs.length-1) h += '<div class="ov-conn"></div>';
   });
-  h += '</div>';
+  h += '</div></div>';
   return h;
 }
 function togglePlate(uid){
