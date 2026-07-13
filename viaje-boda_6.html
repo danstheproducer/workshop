@@ -1005,7 +1005,7 @@ const GAME = {
     crudo:'Aún es cuajada fresca, sin carácter.', podrido:'Moho hasta el corazón — a la basura.', punto:'¡CURADO PERFECTO!',
     fact:'En la vida real: un Manchego semicurado madura 2-3 meses y el curado 3-12; el Parmigiano Reggiano 24-36 meses; el manoura griego se cura entre posos de vino.' },
 };
-let gameType='wine', gamePhase='ready', gameCueTime=0, gameCueTimer=null, gamePodridoTimer=null;
+let gameType='wine', gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
 function openGame(){
   gamePhase='ready';
   const g=GAME[gameType];
