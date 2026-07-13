@@ -1053,7 +1053,7 @@ function ageEnd(){
 }
 function finishGame(kind, rt){
   if(gamePhase==='result') return;
-  gamePhase='result'; clearTimeout(gameCueTimer); clearTimeout(gamePodridoTimer);
+  gamePhase='result'; if(gRAF) cancelAnimationFrame(gRAF); gRAF=null;
   const g=GAME[gameType];
   let big, color, sub, face;
   if(kind==='crudo'){ big='CRUDO!'; color='#EF4444'; sub=g.crudo; face='🫙'; }
