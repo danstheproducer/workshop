@@ -16,8 +16,9 @@
   body { font-family: 'Archivo', system-ui, sans-serif; background-color: var(--bg); min-height: 100vh; color: var(--tx3); transition: background-color .25s; }
   html.cheese { --bg:#f0e7d0; }
   html.cheese body { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><text x="10" y="50" font-size="42" opacity="0.2">🧀</text></svg>'); background-size: 72px 72px; }
-  #badges { display:none; justify-content:center; flex-wrap:wrap; gap:3px; padding:1px 40px 4px; }
-  #badges span { font-size:13px; line-height:1; }
+  #badges { display:none; align-items:center; gap:2px; }
+  #badges span { font-size:15px; line-height:1; cursor:pointer; }
+  #badges .catwin { font-size:23px; }
   #status { display:flex; align-items:center; gap:3px; }
   .stchip { display:inline-block; font-family:'Archivo Black',sans-serif; font-size:9px; letter-spacing:.5px; padding:3px 6px; border-radius:5px; cursor:pointer; }
   .stchip.pro { background:var(--accent); color:#fff; }
