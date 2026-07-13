@@ -13,7 +13,11 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { overscroll-behavior-y: none; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
-  body { font-family: 'Archivo', system-ui, sans-serif; background: var(--bg); min-height: 100vh; color: var(--tx3); transition: background .25s; }
+  body { font-family: 'Archivo', system-ui, sans-serif; background-color: var(--bg); min-height: 100vh; color: var(--tx3); transition: background-color .25s; }
+  html.cheese { --bg:#f0e7d0; }
+  html.cheese body { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><text x="10" y="50" font-size="42" opacity="0.2">🧀</text></svg>'); background-size: 72px 72px; }
+  #badges { display:none; justify-content:center; flex-wrap:wrap; gap:3px; padding:1px 40px 4px; }
+  #badges span { font-size:13px; line-height:1; }
   ::-webkit-scrollbar { height: 2px; width: 2px; }
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px);} to {opacity:1; transform:translateY(0);} }
