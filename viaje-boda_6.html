@@ -1046,20 +1046,46 @@ const CHEESES = [
   { name:'Azul (Cabrales)', emoji:'🧀', diff:'difícil', pos:0.75, ms:170, hold:'MANTÉN PARA AZULAR EL CABRALES',  punto:'¡AZUL EN SU PUNTO!', crudo:'Sin vetas aún.',      podrido:'Moho hasta pudrirse.',        fact:'El Cabrales madura en cuevas de montaña 2-6 meses: su punto azul llega tarde y es delicadísimo.' },
 ];
 const ALLQUIZ = ['galicia','madrid','milos','estambul'];
-const FOODMOJIS = ['🦪','🦐','🐙','🐟','🦞','🫒','🍇','🧀','🥙','🍯','🍷','🫓','🍶','🐐'];
 const PRIZES = {
   galicia:['pulpo á feira','empanada gallega','percebes','tarta de Santiago','ostras de la ría'],
   madrid:['cocido madrileño','bocata de calamares','huevos rotos','fabada','churros con chocolate'],
   milos:['revithada','pastelli','queso manoura','cabrito al horno','ensalada milesia'],
   estambul:['baklava','lokum de pistache','simit','künefe','pistachio kebab'],
 };
+const INSIGNIA = {
+  wine:     { em:'🍷', title:'Experto Vinero', desc:'Catador consumado: sabes justo cuándo un vino llega a su punto. (3 vinos clavados.)' },
+  cheese:   { em:'🧀', title:'Maestro Quesero', desc:'Afinador de raza: dominas el arte de la maduración del queso. (3 quesos clavados.)' },
+  galicia:  { em:'🦪', title:'Historiador de Galicia', desc:'Las rías, los pazos y el marisco no tienen secretos para ti.' },
+  madrid:   { em:'🐻', title:'Historiador de Madrid', desc:'Del oso y el madroño a Botín y el Prado: dominas la villa y corte.' },
+  milos:    { em:'🌋', title:'Historiador de Mílos', desc:'Sarakíniko, la Venus y los syrmata: sabio de las Cícladas.' },
+  estambul: { em:'🕌', title:'Historiador de Estambul', desc:'Dos continentes y tres imperios: dueño de la historia de la ciudad de ciudades.' },
+};
+const CATPHRASES = [
+  'El ojo del gato ha estado entre nosotros todo este tiempo.',
+  'Kedinin gözü başından beri aramızdaydı. — (turco)',
+  'Oculus felis semper inter nos fuit. — (latín)',
+  'عين القطّ كانت بيننا منذ الأزل. — (árabe)',
+  '𓁹 𓃠 — el ojo que todo lo ve dormía en el gato.',
+  'Ὁ ὀφθαλμὸς τοῦ αἰλούρου ἀεὶ σὺν ἡμῖν ἦν. — (griego antiguo)',
+];
 let gameCat='wine', gameItem=WINES[0], gamePhase='ready', gameCueTime=0, gStart=0, ripenAt=0, gRAF=null;
-function collCount(){ return lsGet('vb_badges',[]).length + lsGet('vb_prizes',[]).length; }
-function renderBadges(){ const el=document.getElementById('badges'); if(!el) return; const b=lsGet('vb_badges',[]); el.innerHTML=b.map(function(e){return '<span>'+e+'</span>';}).join(''); el.style.display=b.length?'flex':'none'; }
-function awardBadge(){ const b=lsGet('vb_badges',[]); b.push(FOODMOJIS[Math.floor(Math.random()*FOODMOJIS.length)]); lsSet('vb_badges',b); renderBadges(); return b[b.length-1]; }
+function winTally(){ return lsGet('vb_wintally',0); }
+function chzTally(){ return lsGet('vb_chztally',0); }
+function earnedInsignias(){ const a=[]; if(winTally()>=3)a.push('wine'); if(chzTally()>=3)a.push('cheese'); lsGet('vb_quizwins',[]).forEach(function(k){ if(INSIGNIA[k]) a.push(k); }); return a; }
+function allInsignias(){ return winTally()>=3 && chzTally()>=3 && ALLQUIZ.every(function(k){return lsGet('vb_quizwins',[]).indexOf(k)>=0;}); }
+function collCount(){ return winTally() + chzTally() + lsGet('vb_quizwins',[]).length; }
+function renderBadges(){
+  const el=document.getElementById('badges'); if(!el) return;
+  if(lsGet('vb_emperor',false) && allInsignias()){ el.innerHTML='<span class="catwin" onclick="catPhrase()" title="Ojos de gato">🐱</span>'; el.style.display='flex'; return; }
+  const ins=earnedInsignias();
+  el.innerHTML=ins.map(function(k){ return '<span onclick="showInsignia(\''+k+'\')" style="cursor:pointer">'+INSIGNIA[k].em+'</span>'; }).join('');
+  el.style.display=ins.length?'flex':'none';
+}
+function showInsignia(k){ const i=INSIGNIA[k]; if(!i) return; fillModal('<div class="seclbl">Insignia</div><div style="text-align:center;padding:6px 0"><div style="font-size:40px">'+i.em+'</div><p style="font-family:\'Archivo Black\',sans-serif;font-size:18px;color:var(--accent);margin:8px 0">'+esc(i.title)+'</p><p class="note" style="color:var(--tx2);line-height:1.7">'+esc(i.desc)+'</p></div><button class="gbtn" onclick="closeModal()">Cerrar</button>'); document.getElementById('modal').classList.add('on'); }
+function catPhrase(){ const p=CATPHRASES[Math.floor(Math.random()*CATPHRASES.length)]; fillModal('<div class="seclbl">👁 Ojos de gato</div><div style="text-align:center;padding:8px 0"><div class="popin" style="font-size:56px">🐱</div><p class="note" style="font-style:italic;font-size:16px;color:var(--tx2);line-height:1.75;margin-top:12px">'+esc(p)+'</p></div><button class="gbtn" onclick="catPhrase()">↻ Otra vez</button>'); document.getElementById('modal').classList.add('on'); }
 function awardPrize(place){ const pool=PRIZES[place]||PRIZES.madrid; const dish=pool[Math.floor(Math.random()*pool.length)]; const pr=lsGet('vb_prizes',[]); pr.push(dish); lsSet('vb_prizes',pr); return dish; }
-function noteCheeseUnlock(){ if(collCount()>=3 && !lsGet('vb_cheese_ann',false)){ lsSet('vb_cheese_ann',true); if(document.getElementById('themeBtn')) setTheme(lsGet('vb_theme','light')); return '<p class="note" style="margin-top:10px;font-weight:800;color:#c47f17;line-height:1.5">🧀 ¡Desbloqueaste el MODO QUESO! Tócalo en el botón de tema (arriba a la derecha).</p>'; } return ''; }
-function diffDots(d){ return d==='fácil'?'🌶️':d==='media'?'🌶️🌶️':'🌶️🌶️🌶️'; }
+function noteCheeseUnlock(){ if(collCount()>=3 && !lsGet('vb_cheese_ann',false)){ lsSet('vb_cheese_ann',true); if(document.getElementById('themeBtn')) setTheme(lsGet('vb_theme','light')); return '<p class="note" style="margin-top:10px;font-weight:800;color:#c47f17;line-height:1.5">🧀 ¡Desbloqueaste el MODO QUESO! Tócalo en el botón de tema.</p>'; } return ''; }
+function diffDots(d){ return d==='fácil'?'✦':d==='media'?'✦✦':'✦✦✦'; }
 function openGame(){
   gamePhase='ready';
   gameItem = (gameCat==='wine'?WINES:CHEESES)[Math.floor(Math.random()*3)];
