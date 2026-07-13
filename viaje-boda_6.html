@@ -995,7 +995,11 @@ function closeModal(){ document.getElementById('modal').classList.remove('on'); 
 function openQuiz(k){ if(!QUIZ[k]) return; quizState={key:k,i:0,score:0}; showQuestion(); document.getElementById('modal').classList.add('on'); }
 function showQuestion(){
   const qs=QUIZ[quizState.key]; let html;
-  if(quizState.i>=qs.length){ html='<div class="seclbl">Quiz</div><div style="text-align:center;margin-top:12px"><div style="font-size:34px">🎉</div><p class="note" style="font-size:16px;color:var(--tx1);font-weight:800;margin-top:6px">'+quizState.score+' / '+qs.length+'</p><button class="gbtn" onclick="openQuiz(\''+quizState.key+'\')">↻ Repetir</button></div>'; }
+  if(quizState.i>=qs.length){
+    const perfect=quizState.score===qs.length; let prizeHtml='';
+    if(perfect){ const dish=awardPrize(quizState.key); prizeHtml='<p class="note" style="margin-top:8px;font-weight:800;color:var(--accent)">🏆 ¡Premio! Ganaste: <b>'+esc(dish)+'</b></p>'+noteCheeseUnlock(); }
+    html='<div class="seclbl">Quiz</div><div style="text-align:center;margin-top:12px"><div style="font-size:34px">'+(perfect?'🏆':'🎉')+'</div><p class="note" style="font-size:16px;color:var(--tx1);font-weight:800;margin-top:6px">'+quizState.score+' / '+qs.length+'</p>'+prizeHtml+'<button class="gbtn" onclick="openQuiz(\''+quizState.key+'\')">↻ Repetir</button></div>';
+  }
   else { const q=qs[quizState.i]; html='<div class="seclbl">Quiz · '+(quizState.i+1)+'/'+qs.length+'</div><p class="note" style="font-size:15px;color:var(--tx1);font-weight:700;margin:10px 0 12px">'+esc(q.q)+'</p>'+q.opts.map((o,i)=>'<button class="qopt" onclick="answerQ('+i+')">'+esc(o)+'</button>').join('')+'<div id="qfeed"></div>'; }
   fillModal(html);
 }
