@@ -797,7 +797,9 @@ const MENU = [
   { id:'reset', ic:'⟲', label:'RESET' },
 ];
 let menuOpen=false;
-function renderMenu(){ document.getElementById('menu').innerHTML = MENU.map(m=>'<button class="menu-item'+(m.id===TAB?' on':'')+'" onclick="setTab(\''+m.id+'\')"><span class="mi">'+m.ic+'</span>'+m.label+'</button>').join(''); }
+function renderMenu(){ document.getElementById('menu').innerHTML = MENU.map(m=> m.id==='reset' ? '<button class="menu-item mi-reset" onclick="confirmReset()"><span class="mi">'+m.ic+'</span>'+m.label+'</button>' : '<button class="menu-item'+(m.id===TAB?' on':'')+'" onclick="setTab(\''+m.id+'\')"><span class="mi">'+m.ic+'</span>'+m.label+'</button>').join(''); }
+function confirmReset(){ menuOpen=false; document.getElementById('menu').classList.remove('on'); document.getElementById('menuBackdrop').classList.remove('on'); if(confirm('¿Reiniciar la app? Se borran insignias, gatos, reservas marcadas, gastos, maleta y todo el progreso. Volverás al Día 1 con el mapa completo, como la primera vez.')) resetApp(); }
+function resetApp(){ try{ const rm=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.indexOf('vb_')===0) rm.push(k); } rm.forEach(function(k){ localStorage.removeItem(k); }); localStorage.setItem('vb_mapfull','true'); }catch(e){} location.reload(); }
 function toggleMenu(){ menuOpen=!menuOpen; document.getElementById('menu').classList.toggle('on',menuOpen); document.getElementById('menuBackdrop').classList.toggle('on',menuOpen); }
 function setTab(t){ TAB=t; lsSet('vb_tab',t); menuOpen=false; document.getElementById('menu').classList.remove('on'); document.getElementById('menuBackdrop').classList.remove('on'); render(); }
 function setDay(n){ DAY=n; lsSet('vb_day',n); mapFullView=false; lsSet('vb_mapfull',false); render(); setTimeout(function(){ const el=document.getElementById('dp-'+n); if(el) el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); },30); }
