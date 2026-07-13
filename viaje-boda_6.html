@@ -820,7 +820,8 @@ function renderDaybar(){
     if(d.cityId==='galicia' && AGENDA[i+1] && AGENDA[i+1].cityId!=='galicia') return ACC.madrid; // último día de Galicia → tren de vuelta a Madrid
     return d.color;
   });
-  el.innerHTML = '<div class="daybar-inner">'+AGENDA.map((d,i)=>{
+  const ovPill = '<button id="dp-0" class="daypill ov'+(DAY===0?' on':'')+'" onclick="setDay(0)"><span class="dow">Resumen</span><span class="dnum">🗺️</span></button>';
+  el.innerHTML = '<div class="daybar-inner">'+ovPill+AGENDA.map((d,i)=>{
     const on=d.day===DAY; const p=d.date.split(' ');
     const startC = i>0 ? ends[i-1] : ACC['vuelo-ida'];   // arranca donde despertaste (o el vuelo desde México el día 1)
     const endC = ends[i];
