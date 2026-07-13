@@ -758,8 +758,8 @@ let mapFullView = lsGet('vb_mapfull', false);
 (function(){ const sr=lsGet('vb_resv',{}); RESERVATIONS.forEach(r=>{ if(sr[r.id]!==undefined) r.done=sr[r.id]; }); })();
 
 function setTheme(t){
-  if(t==='cheese' && chzTally()<3) t='light';
-  if(t==='wine' && winTally()<3) t='light';
+  if(t==='cheese' && !cheeseDone()) t='light';
+  if(t==='wine' && !wineDone()) t='light';
   lsSet('vb_theme',t);
   document.documentElement.setAttribute('data-theme', t==='dark'?'dark':'light');
   document.documentElement.classList.toggle('cheese', t==='cheese');
