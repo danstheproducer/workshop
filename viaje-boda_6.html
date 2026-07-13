@@ -1023,25 +1023,33 @@ function openGame(){
 function ageStart(e){
   if(gamePhase!=='ready') return;
   try{ e.target.setPointerCapture(e.pointerId); }catch(_){}
-  gamePhase='aging';
-  const bar=document.getElementById('gameBar'), item=document.getElementById('gameItem'), msg=document.getElementById('gameMsg');
-  if(!bar) return;
-  msg.textContent='Añejando…'; msg.style.color='var(--tx3)';
-  const delay=1400+Math.random()*2800;
-  bar.style.transition='width '+delay+'ms linear'; requestAnimationFrame(function(){ bar.style.width='86%'; });
-  item.style.transition='transform '+delay+'ms linear'; item.style.transform='scale(1.55)';
-  gameCueTimer=setTimeout(function(){
-    const b=document.getElementById('gameBar'); if(!b) return;
-    gamePhase='signal'; gameCueTime=Date.now();
-    b.style.transition='width .1s'; b.style.width='100%'; b.style.background='#F5C542';
-    const st=document.getElementById('gameStage'); if(st) st.style.background='rgba(245,197,66,.16)';
-    const m=document.getElementById('gameMsg'); if(m){ m.textContent='¡EN SU PUNTO! ¡SUELTA!'; m.style.color='#B8860B'; }
-    gamePodridoTimer=setTimeout(function(){ finishGame('podrido',0); }, 820);
-  }, delay);
+  gamePhase='aging'; gStart=Date.now(); ripenAt=1000+Math.random()*4800;   // más variable: 1.0–5.8 s
+  const item=document.getElementById('gameItem'), msg=document.getElementById('gameMsg');
+  if(msg){ msg.textContent='Añejando…'; msg.style.color='var(--tx3)'; }
+  if(item){ item.style.transition='transform '+ripenAt+'ms linear'; item.style.transform='scale(1.5)'; }
+  gRAF=requestAnimationFrame(gLoop);
+}
+function setBar(w,hue){ const b=document.getElementById('gameBar'); if(b){ b.style.transition='none'; b.style.width=w+'%'; b.style.background='hsl('+Math.max(0,Math.round(hue))+',72%,46%)'; } }
+function gLoop(){
+  const bar=document.getElementById('gameBar'); if(!bar){ gRAF=null; return; }
+  const t=Date.now()-gStart, perfEnd=ripenAt+600, rotEnd=perfEnd+700, moldEnd=rotEnd+500;
+  if(t<ripenAt){ const p=t/ripenAt; setBar(p*75, 120-60*p); }                       // añejando: verde→amarillo, hasta 3/4
+  else if(t<perfEnd){                                                                // EN SU PUNTO (dorado, en 3/4)
+    if(gamePhase==='aging'){ gamePhase='signal'; gameCueTime=Date.now(); const m=document.getElementById('gameMsg'); if(m){ m.textContent='¡EN SU PUNTO! ¡SUELTA!'; m.style.color='#0a9d5a'; } const st=document.getElementById('gameStage'); if(st) st.style.background='rgba(16,185,129,.16)'; }
+    const p=(t-ripenAt)/600; setBar(75+p*6, 58-6*p);
+  }
+  else if(t<rotEnd){                                                                 // se pasa: dorado→rojo
+    if(gamePhase==='signal'){ gamePhase='rot'; const m=document.getElementById('gameMsg'); if(m){ m.textContent='se está pasando…'; m.style.color='#b45309'; } const st=document.getElementById('gameStage'); if(st) st.style.background='rgba(239,68,68,.12)'; }
+    const p=(t-perfEnd)/700; setBar(81+p*19, 50-50*p);
+  }
+  else if(t<moldEnd){ const p=(t-rotEnd)/500; setBar(100, p*110); }                  // podrido: rojo→moho verde
+  else { gRAF=null; finishGame('podrido',0); return; }
+  gRAF=requestAnimationFrame(gLoop);
 }
 function ageEnd(){
-  if(gamePhase==='aging'){ clearTimeout(gameCueTimer); finishGame('crudo',0); }
-  else if(gamePhase==='signal'){ clearTimeout(gamePodridoTimer); finishGame('punto', Date.now()-gameCueTime); }
+  if(gamePhase==='aging'){ if(gRAF) cancelAnimationFrame(gRAF); gRAF=null; finishGame('crudo',0); }
+  else if(gamePhase==='signal'){ if(gRAF) cancelAnimationFrame(gRAF); gRAF=null; finishGame('punto', Date.now()-gameCueTime); }
+  else if(gamePhase==='rot'){ if(gRAF) cancelAnimationFrame(gRAF); gRAF=null; finishGame('podrido',0); }
 }
 function finishGame(kind, rt){
   if(gamePhase==='result') return;
