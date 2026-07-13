@@ -1114,6 +1114,66 @@ function finishGame(kind, rt){
     +'<p class="note" style="font-size:12px;color:var(--tx-dim);margin-top:6px;line-height:1.6">'+esc(g.fact)+'</p>'
     +'<button class="gbtn" onclick="openGame()">↻ Otra cosecha · '+(gameCat==='wine'?'Vino':'Queso')+'</button>');
 }
+function isPro(){ const w=lsGet('vb_gamewins',[]); return ALLGAME.every(function(n){return w.indexOf(n)>=0;}); }
+function isMax(){ const q=lsGet('vb_quizwins',[]); return ALLQUIZ.every(function(k){return q.indexOf(k)>=0;}); }
+function proNote(){ if(isPro() && !lsGet('vb_pro_ann',false)){ lsSet('vb_pro_ann',true); return '<p class="note" style="margin-top:8px;font-weight:800;color:var(--accent)">🏆 ¡Venciste los 6 vinos y quesos! Eres PRO.</p>'; } return ''; }
+function maxNote(){ if(isMax() && !lsGet('vb_max_ann',false)){ lsSet('vb_max_ann',true); return '<p class="note" style="margin-top:8px;font-weight:800;color:var(--accent)">🧠 ¡Dominaste toda la trivia! Eres MAX.</p>'; } return ''; }
+function renderStatus(){ const el=document.getElementById('status'); if(!el) return; let h=''; if(isMax()) h+='<span class="stchip max" onclick="statusClick()">MAX</span>'; if(isPro()) h+='<span class="stchip pro" onclick="statusClick()">PRO</span>'; el.innerHTML=h; }
+function statusClick(){ if(isMax()&&isPro()) openWordSoup(); else if(isMax()) toast('🧠 Eres MAX. Vence los 6 vinos y quesos (juego del anillo) para desbloquear MAX PRO.'); else toast('🏆 Eres PRO. Perfecciona toda la trivia (emoji de cada lugar) para desbloquear MAX PRO.'); }
+function toast(msg){ fillModal('<div class="seclbl">Estado</div><p class="note" style="font-size:14px;line-height:1.7;color:var(--tx2);margin-top:10px">'+esc(msg)+'</p><button class="gbtn" onclick="closeModal()">Ok</button>'); document.getElementById('modal').classList.add('on'); }
+const SOUPWORDS=['CALIFA','FARAON','NILO'];
+let soupGrid=[], soupFound=[], soupFoundCells=new Set(), soupSel=null;
+function openWordSoup(){
+  soupFound=[]; soupFoundCells=new Set(); soupSel=null;
+  soupGrid=Array.from({length:10},function(){return Array(10).fill('');});
+  SOUPWORDS.forEach(function(w){ placeWord(w); });
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for(let r=0;r<10;r++)for(let c=0;c<10;c++){ if(!soupGrid[r][c]) soupGrid[r][c]=A[Math.floor(Math.random()*26)]; }
+  renderSoup(); document.getElementById('modal').classList.add('on');
+}
+function placeWord(w){
+  for(let tr=0;tr<300;tr++){
+    const h=Math.random()<0.5;
+    const r=Math.floor(Math.random()*(h?10:11-w.length));
+    const c=Math.floor(Math.random()*(h?11-w.length:10));
+    let ok=true; for(let i=0;i<w.length;i++){ const rr=h?r:r+i, cc=h?c+i:c; const cur=soupGrid[rr][cc]; if(cur && cur!==w[i]){ ok=false; break; } }
+    if(ok){ for(let i=0;i<w.length;i++){ const rr=h?r:r+i, cc=h?c+i:c; soupGrid[rr][cc]=w[i]; } return; }
+  }
+}
+function cellsOf(r0,c0,r1,c1){ const out=[]; if(r0===r1){ const s=c1>=c0?1:-1; for(let c=c0;;c+=s){ out.push(r0+'-'+c); if(c===c1) break; } } else { const s=r1>=r0?1:-1; for(let r=r0;;r+=s){ out.push(r+'-'+c0); if(r===r1) break; } } return out; }
+function lineWord(r0,c0,r1,c1){
+  if(r0===r1){ const s=c1>=c0?1:-1; let out=''; for(let c=c0;;c+=s){ out+=soupGrid[r0][c]; if(c===c1) break; } return {word:out, cells:cellsOf(r0,c0,r1,c1)}; }
+  if(c0===c1){ const s=r1>=r0?1:-1; let out=''; for(let r=r0;;r+=s){ out+=soupGrid[r][c0]; if(r===r1) break; } return {word:out, cells:cellsOf(r0,c0,r1,c1)}; }
+  return null;
+}
+function soupClick(r,c){
+  if(!soupSel){ soupSel=[r,c]; renderSoup(); return; }
+  const res=lineWord(soupSel[0],soupSel[1],r,c); soupSel=null;
+  if(res){ const w=res.word, rw=w.split('').reverse().join(''); const hit=SOUPWORDS.find(function(tw){ return (tw===w||tw===rw) && soupFound.indexOf(tw)<0; }); if(hit){ soupFound.push(hit); res.cells.forEach(function(k){ soupFoundCells.add(k); }); if(soupFound.length===SOUPWORDS.length){ soupVictory(); return; } } }
+  renderSoup();
+}
+function renderSoup(){
+  let g='<div class="seclbl">MAX PRO · sopa de letras</div><div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0">'
+    +SOUPWORDS.map(function(w){ const f=soupFound.indexOf(w)>=0; return '<span style="font-family:Archivo;font-size:12px;font-weight:800;padding:3px 9px;border-radius:20px;'+(f?'background:#10b981;color:#fff':'background:rgba(0,0,0,.06);color:var(--tx2)')+'">'+w+'</span>'; }).join('')+'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:2px;max-width:330px;margin:0 auto">';
+  for(let r=0;r<10;r++)for(let c=0;c<10;c++){ const key=r+'-'+c, found=soupFoundCells.has(key), sel=soupSel&&soupSel[0]===r&&soupSel[1]===c; g+='<button onclick="soupClick('+r+','+c+')" style="aspect-ratio:1;border:none;border-radius:4px;font-family:Archivo;font-weight:800;font-size:12px;cursor:pointer;background:'+(found?'#10b981':sel?'var(--accent)':'rgba(0,0,0,.05)')+';color:'+(found||sel?'#fff':'var(--tx1)')+'">'+soupGrid[r][c]+'</button>'; }
+  g+='</div><p class="note" style="font-size:11px;color:var(--tx-dim);margin-top:10px;text-align:center">Toca la primera y la última letra de cada palabra (horizontal o vertical).</p>';
+  fillModal(g);
+}
+function soupVictory(){
+  lsSet('vb_emperor',true);
+  fillModal('<div class="seclbl">✦ Coronación ✦</div><div style="text-align:center;padding:8px 0"><div class="popin" style="font-size:48px">👑</div><p style="font-family:\'Archivo Black\',sans-serif;font-size:19px;color:var(--accent);margin:10px 0;line-height:1.25">EMPERADOR/A DEL CALIFATO EGIPCIO</p><p class="note" style="color:var(--tx2);line-height:1.75">Queda demostrado: eres la persona más culta en historia del Mediterráneo de todo el mundo. Sufíes, faraones y sultanes se inclinan ante ti. 🏺🕌⚱️🐫</p></div><button class="gbtn" onclick="closeModal()">Reinar en paz</button>');
+  document.getElementById('modal').classList.add('on');
+}
+let pullStart=0, pulling=false, pullArmed=false, wheelUp=0;
+function doReload(){ lsSet('vb_mapfull',true); lsSet('vb_mapopen',true); location.reload(); }
+function initPull(){
+  const ind=document.getElementById('pullInd');
+  window.addEventListener('touchstart', function(e){ if(window.scrollY<=0){ pullStart=e.touches[0].clientY; pulling=true; pullArmed=false; } }, {passive:true});
+  window.addEventListener('touchmove', function(e){ if(!pulling) return; const dy=e.touches[0].clientY-pullStart; if(window.scrollY<=0 && dy>0){ const d=Math.min(dy,130); if(ind){ ind.style.height=d+'px'; ind.style.opacity=Math.min(1,d/90); ind.textContent = d>85?'↻ suelta para recargar':'↓ tira para recargar'; } pullArmed=d>85; } else { pullArmed=false; if(ind) ind.style.height='0'; } }, {passive:true});
+  window.addEventListener('touchend', function(){ const armed=pullArmed; pulling=false; pullArmed=false; const ind=document.getElementById('pullInd'); if(ind){ ind.style.height='0'; ind.style.opacity='0'; } if(armed) doReload(); }, {passive:true});
+  window.addEventListener('wheel', function(e){ if(window.scrollY<=0 && e.deltaY<0){ wheelUp+=(-e.deltaY); if(wheelUp>420){ wheelUp=0; doReload(); } } else { wheelUp=0; } }, {passive:true});
+}
 
 function render(){
   renderMenu(); renderDaybar(); renderMapPanel(); renderBadges();
