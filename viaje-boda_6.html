@@ -1100,8 +1100,12 @@ function ensureMap(){
     L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:'+m.c+'" onclick="showLeg(LEGINFO['+idx+'])">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
   }
   euroBounds=[]; mapNodes=[];
+  const plotted={};
   route.forEach((c,i)=>{
     euroBounds.push(c.coords); mapNodes.push({id:c.id,coords:c.coords});
+    const ck=c.coords[0].toFixed(3)+','+c.coords[1].toFixed(3);
+    if(plotted[ck]) return; // Madrid llegada y cierre comparten coordenadas: un solo pin
+    plotted[ck]=true;
     const nm=({madrid:'Madrid',galicia:'Vigo',barcelona:'Barcelona',dubrovnik:'Dubrovnik',hvar:'Hvar',estambul:'Estambul','madrid-fin':'Madrid'})[c.id]||c.city.replace('✈️ ','').split(' · ')[0];
     const dir=({madrid:'left',galicia:'top',barcelona:'bottom',dubrovnik:'left',hvar:'bottom',estambul:'top','madrid-fin':'right'})[c.id]||'left';
     const off=dir==='right'?[10,0]:dir==='left'?[-10,0]:dir==='top'?[0,-8]:[0,8];
