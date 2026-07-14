@@ -1061,7 +1061,7 @@ function showLeg(leg){
   document.getElementById('modal').classList.add('on');
 }
 function mapLegendHTML(){
-  return [['✈️ Vuelo','#F59E0B'],['🚆 Tren','#34D399'],['⛵ Velero','#22D3EE']]
+  return [['✈️ Vuelo','#F59E0B'],['⛴️ Ferry','#22D3EE']]
     .map(m=>'<span class="leg"><span class="legdot" style="background:'+m[1]+'"></span>'+m[0]+'</span>').join('');
 }
 function ensureMap(){
