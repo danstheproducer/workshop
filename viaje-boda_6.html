@@ -762,30 +762,34 @@ const RESERVATIONS = [
 
 const BUDGET = [
   { cat:'✈️ Vuelos', items:[
-    { k:'v_main', label:'MEX→MAD + IST→MEX open-jaw (6p)', def:156000 },
-    { k:'v_vgo', label:'Madrid ⇄ Vigo · tren AVE i/v (6p)', def:8400 },
-    { k:'v_mlo', label:'Madrid → Mílos vía Atenas (6p)', def:33600 },
-    { k:'v_ist', label:'Mílos → Atenas → Estambul (6p)', def:25000 },
-    { k:'v_extra', label:'Equipaje documentado + asientos', def:10000 } ]},
+    { k:'v_main', label:'Redondo MEX⇄MAD (6p)', def:144000 },
+    { k:'v_vgo', label:'Madrid → Vigo · vuelo (6p)', def:12000 },
+    { k:'v_bcn', label:'Vigo → Barcelona · vuelo (6p)', def:15000 },
+    { k:'v_dbv', label:'Barcelona → Dubrovnik · vuelo (6p)', def:21000 },
+    { k:'v_ist', label:'Split → Estambul · vuelo directo (6p)', def:18000 },
+    { k:'v_madret', label:'Estambul → Madrid · vuelo (6p)', def:27000 },
+    { k:'v_extra', label:'Equipaje documentado + asientos', def:12000 } ]},
   { cat:'🏨 Hoteles (3 habitaciones)', items:[
-    { k:'h_mad', label:'Hotel Urban, Madrid · 3 noches (1+2)', def:54000 },
+    { k:'h_mad', label:'Hotel Urban, Madrid · llegada · 2 noches', def:36000 },
     { k:'h_vgo', label:'AC Palacio Universal, Vigo · 2 noches ✅', def:22596 },
-    { k:'h_mlo', label:'Villa/Airbnb para 6, Mílos · 3 noches', def:33000 },
-    { k:'h_ist', label:'Pera Palace, Estambul · 4 noches', def:77000 } ]},
-  { cat:'⛵ Velero privado (3 noches · todo incluido)', items:[
-    { k:'b_boat', label:'Catamarán de vela crewed · TODO INCLUIDO (~€2,000/n)', def:120000 },
-    { k:'b_dinner', label:'Cenas en tierra (no incluidas) × 3', def:11000 },
-    { k:'b_tip', label:'Propina tripulación (~10%)', def:8000 } ]},
-  { cat:'🍽️ Comida (13 días en tierra)', items:[
-    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:82000 },
-    { k:'c_esp', label:'Cenas especiales: Maruja Limón, Botín, Mikla', def:24000 },
-    { k:'c_vino', label:'Vinos, cafés, helados, antojos', def:9000 } ]},
+    { k:'h_bcn', label:'Hotel 1898, Barcelona · 2 noches', def:39000 },
+    { k:'h_dbv', label:'Excelsior, Dubrovnik · 2 noches', def:42000 },
+    { k:'h_hvar', label:'Palace Elisabeth, Hvar · 1 noche', def:22500 },
+    { k:'h_ist', label:'Pera Palace, Estambul · 5 noches', def:96000 },
+    { k:'h_madfin', label:'Hotel Urban, Madrid · cierre · 3 noches', def:54000 } ]},
+  { cat:'⛴️ Ferries de Croacia', items:[
+    { k:'f_hvar', label:'Ferry Dubrovnik → Hvar (6p)', def:2400 },
+    { k:'f_split', label:'Ferry Hvar → Split (6p)', def:1800 } ]},
+  { cat:'🍽️ Comida (~17 días)', items:[
+    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:107000 },
+    { k:'c_esp', label:'Cenas especiales: Maruja Limón, Nautika, Botín, Mikla', def:30000 },
+    { k:'c_vino', label:'Vinos, cafés, helados, antojos', def:10000 } ]},
   { cat:'🚕 Transporte local', items:[
-    { k:'t_cars', label:'2 coches en Mílos × 4 días', def:10000 },
-    { k:'t_taxi', label:'Taxis y traslados aeropuerto', def:13000 },
-    { k:'t_pub', label:'Metro, tranvía, ferries del Bósforo', def:4000 } ]},
+    { k:'t_taxi', label:'Taxis y traslados aeropuerto', def:15000 },
+    { k:'t_pub', label:'Metro, tranvía, ferries del Bósforo, teleféricos', def:6000 },
+    { k:'t_toledo', label:'Tren AVE a Toledo i/v (6p)', def:3000 } ]},
   { cat:'🎁 Extras y experiencias', items:[
-    { k:'e_tickets', label:'Entradas: Prado, Palacio Real, Sta. Sofía, Cisterna', def:10000 },
+    { k:'e_tickets', label:'Entradas: Prado, Reina Sofía, Sagrada Família, Murallas Dubrovnik, Sta. Sofía', def:16000 },
     { k:'e_hammam', label:'Hammam Hürrem Sultan Ayasofya (6p)', def:18000 },
     { k:'e_regalo', label:'Regalo de boda', def:10000 },
     { k:'e_alfombra', label:'🧶 Alfombras de mamá (lana, Estambul)', def:40000 },
@@ -999,13 +1003,15 @@ function renderItin(){
 }
 
 const TRAVELIN = {
-  'vuelo-ida':    { ic:'✈️', mode:'Vuelo México → Madrid', dur:'10h35m' },
-  'galicia':      { ic:'🚆', mode:'Tren Madrid → Vigo',     dur:'~4h' },
-  'madrid':       { ic:'🚆', mode:'Tren Vigo → Madrid',     dur:'~4h' },
-  'milos':        { ic:'✈️', mode:'Vuelo Madrid → Mílos (vía Atenas)', dur:'~7h' },
-  'mar':          { ic:'⛵', mode:'Velero por las Cícladas', dur:'3 noches' },
-  'estambul':     { ic:'✈️', mode:'Vuelo velero → Estambul (vía Atenas)', dur:'~5h' },
-  'vuelo-vuelta': { ic:'✈️', mode:'Vuelo Estambul → México', dur:'14h40m' },
+  'vuelo-ida':    { ic:'✈️', mode:'Vuelo México → Madrid', dur:'~10h35m' },
+  'madrid':       { ic:'🛬', mode:'Llegada a Madrid',       dur:'2 noches' },
+  'galicia':      { ic:'✈️', mode:'Vuelo Madrid → Vigo',    dur:'~1h15m' },
+  'barcelona':    { ic:'✈️', mode:'Vuelo Vigo → Barcelona', dur:'~1h45m' },
+  'dubrovnik':    { ic:'✈️', mode:'Vuelo Barcelona → Dubrovnik', dur:'~2h20m' },
+  'hvar':         { ic:'⛴️', mode:'Ferry Dubrovnik → Hvar', dur:'~3h45m' },
+  'estambul':     { ic:'✈️', mode:'Hvar → Split → Estambul (ferry + vuelo directo)', dur:'~5h' },
+  'madrid-fin':   { ic:'✈️', mode:'Vuelo Estambul → Madrid', dur:'~4h30m' },
+  'vuelo-vuelta': { ic:'✈️', mode:'Vuelo Madrid → México', dur:'~11-12h' },
 };
 function renderOverview(){
   const seen=[], legs=[];
