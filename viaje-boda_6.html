@@ -1111,7 +1111,7 @@ function ensureMap(){
   });
   map.fitBounds(euroBounds,{padding:[38,38]});
 }
-function cityZoom(id){ return ({madrid:7.5, galicia:8, atenas:8, milos:10, mar:9.5, estambul:8})[id] || 6.5; }
+function cityZoom(id){ return ({madrid:7.5, galicia:8, barcelona:8, dubrovnik:9, hvar:9.5, estambul:8, 'madrid-fin':7.5})[id] || 6.5; }
 function focusMap(){
   if(!map) return;
   if(mapFullView){ map.fitBounds(euroBounds,{padding:[38,38],animate:false}); return; }
