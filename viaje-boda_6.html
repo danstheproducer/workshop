@@ -1069,19 +1069,21 @@ function ensureMap(){
   const dark=lsGet('vb_theme','light')==='dark';
   map=L.map('map',{ scrollWheelZoom:false, attributionControl:false });
   L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
-  const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, train:{c:'#34D399',i:'🚆',dash:'7,6',bend:0.05}, boat:{c:'#22D3EE',i:'⛵',dash:'2,7',bend:0.14} };
+  const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, ferry:{c:'#22D3EE',i:'⛴️',dash:'2,7',bend:0.12} };
   const MX=[19.4326,-99.1332];
-  const route=['madrid','galicia','milos','mar','estambul'].map(id=>CITIES.find(c=>c.id===id));
+  const route=['madrid','galicia','barcelona','dubrovnik','hvar','estambul','madrid-fin'].map(id=>CITIES.find(c=>c.id===id));
   const legs=[
-    {mode:'train', dur:'~4h', name:'Madrid → Vigo', detail:['🚆 Madrid-Chamartín → Vigo-Urzáiz','Tren AVE/Alvia · ~4h · de centro a centro, sin aeropuertos']},
-    {mode:'flight',dur:'~7h', name:'Vigo → Mílos', detail:['🚆 De vuelta a Madrid en tren · ~4h','✈️ Madrid → Atenas · ~3h30','✈️ Atenas → Mílos · ~40m','Total ~7h con escala en Atenas']},
-    {mode:'boat', dur:'3 noches', name:'Mílos → velero', detail:['⛵ Embarque en Adamas','3 noches a bordo por las Cícladas del Oeste (Kléftiko, Kímolos, Políegos)']},
-    {mode:'flight',dur:'~5h', name:'Velero → Estambul', detail:['✈️ Mílos → Atenas · ~40m','✈️ Atenas → Estambul · ~1h25','Total ~5h con escala en Atenas']},
+    {mode:'flight',dur:'~1h15m', name:'Madrid → Vigo', detail:['✈️ Madrid-Barajas → Vigo (Peinador)','Vuelo directo ~1h15m (Iberia/Air Nostrum)','La mañana del viernes, rumbo a la boda']},
+    {mode:'flight',dur:'~1h45m', name:'Vigo → Barcelona', detail:['✈️ Vigo → Barcelona','Vuelo directo ~1h45m (Vueling)','La mañana después de la boda']},
+    {mode:'flight',dur:'~2h20m', name:'Barcelona → Dubrovnik', detail:['✈️ Barcelona → Dubrovnik','Vuelo directo ~2h20m (Vueling/Croatia Airlines, temporada)','Del Mediterráneo al Adriático']},
+    {mode:'ferry', dur:'~3h45m', name:'Dubrovnik → Hvar', detail:['⛴️ Catamarán Krilo/Jadrolinija por la costa dálmata','~3h45m con parada en Korčula','Reservar online, se llena en verano']},
+    {mode:'flight',dur:'~5h', name:'Hvar → Estambul', detail:['⛴️ Ferry Hvar → Split · ~1h','✈️ Vuelo DIRECTO Split → Estambul · ~2h','🔴 El directo SPU→IST solo opera este día: el 4 sep es inamovible']},
+    {mode:'flight',dur:'~4h30m', name:'Estambul → Madrid', detail:['✈️ Estambul (IST) → Madrid (MAD)','Vuelo directo ~4h30m (Turkish/Iberia)','De vuelta a Madrid para el cierre del viaje']},
   ];
   LEGINFO=[];
   const OCEAN=[
-    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.82, dur:'10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo ~10h35m (Iberia / Aeroméxico)','Sale de noche, aterriza al día siguiente por la tarde']},
-    {name:'Estambul → México', pts:arcPts(route[route.length-1].coords,MX,0.20), at:0.18, dur:'14h40m', detail:['✈️ Estambul (IST) → CDMX (MEX)','Vuelo directo ~14h40m (Turkish Airlines · Boeing 787)','El único nonstop; se aterriza de madrugada']},
+    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.82, dur:'~10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo ~10h35m (Iberia / Aeroméxico)','Sale la noche del 25 ago, aterriza el 26 por la tarde']},
+    {name:'Madrid → México', pts:arcPts(route[route.length-1].coords,MX,0.20), at:0.18, dur:'~11-12h', detail:['✈️ Madrid (MAD) → CDMX (MEX)','Vuelo directo ~11-12h (Iberia / Aeroméxico)','Sale a mediodía del 12 sep, aterriza la misma tarde']},
   ];
   OCEAN.forEach(function(o){
     L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
