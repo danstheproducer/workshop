@@ -372,7 +372,7 @@ const CITIES = [
           tips:['🍷 Albariño y tinto de la tierra','🎂 El corte de tarta cae por la tarde'] },
         { time:'19:00', title:'Fiesta hasta el último brindis', icon:'🎉', tag:'espectáculo', dur:'hasta la 1:00',
           desc:'Una fiesta hecha para celebrar hasta el último brindis — baile y barra libre hasta la 1 de la madrugada (30 ago 1:00).',
-          tips:['🥂 La queimada de madrugada: ritual gallego de aguardiente en llamas — no perdérselo','🚕 Dejar cuadrado el regreso al hotel (~30 min) antes de que empiece la fiesta'] },
+          tips:['🥂 La queimada de madrugada: ritual gallego de aguardiente en llamas — no perdérselo','🚕 Dejar cuadrado el regreso al hotel (~30 min) antes de que empiece la fiesta','😴 Bailar sin miedo: mañana NO hay madrugón — el vuelo a Barcelona va por la tarde'] },
       ]},
     ],
     restaurants:[
@@ -383,16 +383,19 @@ const CITIES = [
     links:[{label:'Pazo de Cea',url:'https://pazodecea.com/en/'},{label:'Maruja Limón',url:'https://marujalimon.es'},{label:'Renfe (tren)',url:'https://www.renfe.com/es/en'}] },
 
   { id:'barcelona', city:'Barcelona', region:'España', emoji:'🎨', color:ACC.barcelona, coords:[41.3874,2.1686],
-    desc:'De las rías gallegas al Mediterráneo: la ciudad de Gaudí, el Gótico y la playa. Se vuela desde Vigo la mañana después de la boda. Dos noches en el Grand Hotel Central, al borde del Born, con todo el casco antiguo a pie y alberca infinity en la azotea. Un día completo para lo imperdible — la Sagrada Família, el modernismo y el mar — antes de saltar al Adriático.',
+    desc:'De las rías gallegas al Mediterráneo: la ciudad de Gaudí, el Gótico y la playa. Se vuela desde Vigo la TARDE después de la boda — la mañana queda libre para sobrevivir la fiesta. Dos noches en el Grand Hotel Central, al borde del Born, con todo el casco antiguo a pie y alberca infinity en la azotea. Un día completo para lo imperdible — la Sagrada Família, el modernismo y el mar — antes de saltar al Adriático.',
     days:[
       { events:[
-        { time:'10:00', title:'Checkout Vigo + vuelo Vigo → Barcelona', icon:'✈️', tag:'transporte', dur:'~1h45m',
-          desc:'La mañana después de la boda, con calma: checkout del AC Palacio Universal y vuelo directo Vigo (Peinador) → Barcelona (Vueling, ~1h45m). Se llega a media tarde al Mediterráneo.',
-          tips:['🎟️ Vueling VGO→BCN directo · reservar pronto, es la mejor conexión','😴 Vuelo perfecto para recuperar la fiesta de anoche','🚕 Aeropuerto BCN → centro: Aerobús a Plaça Catalunya (~6 EUR, 35 min) o taxi ~35 EUR'] },
-        { time:'16:00', title:'Check-in Grand Hotel Central (Born)', icon:'🏨', tag:'hotel',
+        { time:'11:30', title:'Despertar sin culpa + checkout tranquilo', icon:'😴', tag:'descanso', dur:'~1h',
+          desc:'La mañana después de la boda es SAGRADA: anoche terminó a la 1:00 (más la queimada), así que hoy nadie madruga. Dormir hasta tarde, café con vista al puerto, y checkout a las 12:00 — el vuelo va por la tarde precisamente para esto.',
+          tips:['🥓 Desayuno-brunch contundente: el mejor remedio post-boda','🧳 El hotel guarda maletas si sobra rato para un último paseo por la Rúa Pescadería'] },
+        { time:'14:30', title:'Vuelo Vigo → Barcelona (frecuencia de la TARDE)', icon:'✈️', tag:'transporte', dur:'~1h45m',
+          desc:'Vuelo directo Vigo (Peinador) → Barcelona (Vueling, ~1h45m) — RESERVAR la frecuencia de la tarde, no la matinal: es la decisión más importante del día 4. Se llega al Mediterráneo con la resaca ya domada.',
+          tips:['🎟️ OJO al reservar: elegir el vuelo de la TARDE (~14-17h) — si ese domingo solo opera el matinal, avisar para replanear la noche de la boda','🚕 Aeropuerto BCN → centro: Aerobús a Plaça Catalunya (~6 EUR, 35 min) o taxi ~35 EUR'] },
+        { time:'17:00', title:'Check-in Grand Hotel Central (Born)', icon:'🏨', tag:'hotel',
           desc:'5★ renovado por completo en 2023 en Via Laietana, al borde del Born: cuartos impecables y una alberca infinity en la azotea con la Catedral de fondo. El Gótico de un lado, el Born del otro.',
           tips:['🏊 La infinity de la azotea al atardecer: la mejor postal del casco antiguo','🛏️ Reservar una categoría arriba de la base (las entry son chicas) · piso alto interior o trasero','📍 A 3-5 min del Born, la Catedral y el Museo Picasso'] },
-        { time:'17:30', title:'Barrio Gótico + Catedral', icon:'⛪', tag:'atracción', dur:'2h',
+        { time:'18:00', title:'Barrio Gótico + Catedral', icon:'⛪', tag:'atracción', dur:'1.5h',
           desc:'El laberinto medieval de Barcelona: la Catedral con sus gárgolas, la Plaça del Rei, el Pont del Bisbe y callejones que desembocan en plazas escondidas. La Barcelona antes de Gaudí.',
           tips:['🚶 Perderse a propósito es el plan — todo está cerca','🎸 Suele haber músicos en la Plaça de Sant Felip Neri al atardecer'] },
         { time:'20:30', title:'Cena de tapas: Cervecería Catalana o Ciudad Condal', icon:'🍢', tag:'comida', dur:'2h',
@@ -488,7 +491,7 @@ const CITIES = [
           tips:['🦪 Proto (1886) o un konoba de callejón','🚕 15:15: taxi al puerto de Gruž (~10-15 min desde Ploče)'] },
         { time:'16:00', title:'Catamarán Dubrovnik → Hvar (por la costa)', icon:'⛴️', tag:'transporte', dur:'~3h25m',
           desc:'El ferry rápido de la tarde (Krilo, salida ~16:00) remonta la costa dálmata con parada en Korčula. Mar adentro pasando islas y penínsulas de viñedos, con el sol bajando — se llega a Hvar al atardecer, la hora más bonita del puerto.',
-          tips:['🎟️ RESERVAR online con antelación (krilo.hr) — en verano se llena · ~35-45 EUR pp','⏰ Confirmar la salida de la tarde (~16:00) al reservar; si solo hubiera matinal, avisar para replanear el día','🧳 El catamarán deja las maletas en bodega; llevar solo lo del día a cubierta','🪑 Asiento en cubierta exterior — la costa dálmata al atardecer es el espectáculo'] },
+          tips:['🎟️ RESERVAR online con antelación (krilo.hr) — en verano se llena · ~35-45 EUR pp','⏰ Confirmar la salida de la tarde (~16:00) al reservar; si solo hubiera matinal, avisar para replanear el día','🌬️ Si el bura cancela el barco (raro en sep): plan B por tierra vía Drvenik + ferry a Sućuraj — preguntar al operador esa mañana','🧳 El catamarán deja las maletas en bodega; llevar solo lo del día a cubierta','🪑 Asiento en cubierta exterior — la costa dálmata al atardecer es el espectáculo'] },
         { time:'19:30', title:'Llegada dorada + check-in Adriana', icon:'🏨', tag:'hotel', dur:'1h',
           desc:'Llegada a Hvar con la última luz: el puerto de yates encendiéndose y la Pjaca a 5 min. Check-in en el Adriana — desde la azotea (alberca infinity de agua de mar) se mira el casco viejo cruzando el agua.',
           tips:['🌊 Pedir PISO MEDIO alejado de la marina — ni el último (bar en azotea hasta tarde) ni el primero (montaje del desayuno 6am) · tapones de oídos: Hvar de noche es Hvar','🚿 Aviso: baños con mampara de vidrio semi-abierta — moderna pero poco pudorosa'] },
@@ -544,7 +547,7 @@ const CITIES = [
       { events:[
         { time:'10:15', title:'Santa Sofía (a media mañana, sin alarma)', icon:'🕌', tag:'atracción', dur:'1.5h',
           desc:'1,500 años: basílica bizantina, mezquita otomana, y hoy mezquita de nuevo. La cúpula que cambió la arquitectura para siempre y los mosaicos dorados de la galería. Desayuno 9:30 en Karaköy y tranvía T1 — anoche se llegó a la 1:30, hoy nadie madruga.',
-          tips:['🎟️ Turistas entran por la galería superior: ~25 EUR · a media mañana hay fila pero avanza','🧕 Código de vestimenta: hombros y rodillas cubiertos, pañuelo para mujeres (prestan)'] },
+          tips:['🧺 Antes de salir: dejar la lavandería del tramo 2-2-2-2 en recepción — Estambul es el punto de reset de la maleta','🎟️ Turistas entran por la galería superior: ~25 EUR · a media mañana hay fila pero avanza','🧕 Código de vestimenta: hombros y rodillas cubiertos, pañuelo para mujeres (prestan)'] },
         { time:'11:45', title:'Mezquita Azul + Hipódromo', icon:'🕌', tag:'atracción', dur:'1h',
           desc:'Los seis minaretes y los 20,000 azulejos de Iznik azules. Enfrente, el Hipódromo bizantino con el obelisco egipcio de Teodosio.',
           tips:['🆓 Gratis · cierra a turistas en horas de rezo (~20 min, 5 veces al día — el del mediodía cae ~13h)','👞 Bolsa para los zapatos en la entrada'] },
@@ -596,7 +599,8 @@ const CITIES = [
             '📜 Pide SIEMPRE factura detallada (material, origen, medidas, "hecho a mano") y certificado si lo tienen — lo necesitas para la aduana mexicana',
             '📦 A casa: los buenos comerciantes envían puerta a puerta con seguro (~€150-350), o se enrolla y va como equipaje documentado (la lana comprime bien)',
             '⚠️ Una alfombra genuinamente ANTIGUA (100+ años) necesita permiso de exportación turco — evita el lío comprando piezas nuevas o semi-nuevas',
-            '🚫 Ignora a los "guías" que te llevan a la tienda de su primo. Busca tú los locales con taller a la vista'] },
+            '🚫 Ignora a los "guías" que te llevan a la tienda de su primo. Busca tú los locales con taller a la vista',
+            '👨‍👩‍👧 Separarse sin culpa: 4 horas de alfombras no son para los 6 — los no-alfombristas a Balat y Fener (las casas de colores, 15 min en taxi) o al Museo Arqueológico, y reencuentro en Pandeli a las 15:30'] },
         { time:'15:30', title:'Comida tardía en Pandeli (1901)', icon:'🍽️', tag:'comida', dur:'1h',
           desc:'La pausa del día de bazares: Pandeli, desde 1901 arriba de la puerta del Bazar Egipcio — comedores de azulejo turquesa donde comieron Atatürk y Audrey Hepburn. A 8 min a pie del Gran Bazar. (Cierra domingos, por eso cae hoy.)',
           tips:['🐟 El levrek en papel (lubina) es el plato histórico · ~20-30 EUR pp · cierra ~19h — confirmar que la cocina sirva completo a las 15:30','🫖 Alt rápida: köfte o pide en un han del bazar — el té de los comerciantes es cortesía, no compromiso'] },
@@ -656,12 +660,12 @@ const RESERVATIONS = [
     note:'CONFIRMADO (a nombre de Daniel): MEX → MAD directo, mar 25 ago 11:15 → mié 26 ago 5:50 (10h35m). Llegada de madrugada: pedir early check-in en CoolRooms. El grupo converge en Madrid: cada quien reserva su propia llegada — punto de encuentro, CoolRooms Palacio de Atocha, todos ahí a más tardar la noche del jue 27. La salida es desde Estambul, cada quien la suya (ver "Salidas de Estambul").', link:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-25' },
   { id:'flight-vgo', em:'✈️', city:'España', name:'Vuelo Madrid → Vigo · 28 Ago', date:'28 Ago ~12:30 · ~1h15m', deadline:'🟢 Reservar pronto (pocas frecuencias)', cat:'Transporte', done:false,
     note:'Iberia/Air Nostrum MAD (Barajas) → VGO (Peinador), directo ~1h15m. Sale ~12:30 del viernes para llegar a media tarde a Vigo (ostras + Maruja Limón a las 20:45). ~1,500-2,800 MXN pp. Facturar maletas de boda. Peinador → centro: taxi ~20-25 EUR.', link:'https://www.google.com/travel/flights?q=Flights%20from%20MAD%20to%20VGO%20on%202026-08-28' },
-  { id:'flight-bcn', em:'✈️', city:'España', name:'Vuelo Vigo → Barcelona · 30 Ago', date:'30 Ago (mañana) · ~1h45m', deadline:'🟠 Reservar pronto', cat:'Transporte', done:false,
-    note:'Vueling VGO→BCN directo, la mañana después de la boda (~1h45m). ~1,800-3,200 MXN pp. Checkout del AC Palacio Universal y al aeropuerto de Vigo. Aeropuerto BCN → centro: Aerobús a Plaça Catalunya (~6 EUR) o taxi ~35 EUR.', link:'https://www.google.com/travel/flights?q=Flights%20from%20VGO%20to%20BCN%20on%202026-08-30' },
+  { id:'flight-bcn', em:'✈️', city:'España', name:'Vuelo Vigo → Barcelona · 30 Ago (TARDE)', date:'30 Ago ~14:30 · ~1h45m', deadline:'🟠 Reservar la frecuencia de la tarde', cat:'Transporte', done:false,
+    note:'Vueling VGO→BCN directo (~1h45m) — reservar la frecuencia de la TARDE (~14-17h): la boda termina a la 1:00 y la mañana del 30 es para dormir. Si ese domingo solo opera el vuelo matinal, avisar (se replantearía la última hora de la fiesta). ~1,800-3,200 MXN pp. Aerobús a Plaça Catalunya (~6 EUR) o taxi ~35 EUR.', link:'https://www.google.com/travel/flights?q=Flights%20from%20VGO%20to%20BCN%20on%202026-08-30' },
   { id:'flight-dbv', em:'✈️', city:'Croacia', name:'Vuelo Barcelona → Dubrovnik · 1 Sep', date:'1 Sep · ~2h20m', deadline:'🟠 Directo solo en verano — reservar pronto', cat:'Transporte', done:false,
     note:'Vueling/Croatia Airlines BCN→DBV directo (~2h20m), operan en temporada de verano. ~2,500-4,500 MXN pp. Si no cuadra el directo, escala vía Zagreb o Roma. Croacia usa EURO y es Schengen: sin visa ni cambio de moneda.', link:'https://www.google.com/travel/flights?q=Flights%20from%20BCN%20to%20DBV%20on%202026-09-01' },
   { id:'ferry-hvar', em:'⛴️', city:'Croacia', name:'Ferry Dubrovnik → Hvar · 3 Sep 16:00', date:'3 Sep ~16:00 (tarde) · ~3h25m', deadline:'🟠 Reservar online (se llena en verano)', cat:'Transporte', done:false,
-    note:'Catamarán de la TARDE (Krilo, ~16:00 → Hvar ~19:25) por la costa dálmata con parada en Korčula: mañana libre en Dubrovnik sin madrugar y llegada a Hvar al atardecer. ~35-45 EUR pp. Reservar en krilo.hr con antelación. Confirmar el horario de la tarde al reservar.', link:'https://krilo.hr/en/' },
+    note:'Catamarán de la TARDE (Krilo, ~16:00 → Hvar ~19:25) por la costa dálmata con parada en Korčula: mañana libre en Dubrovnik sin madrugar y llegada a Hvar al atardecer. ~35-45 EUR pp. Reservar en krilo.hr con antelación y confirmar el horario. Plan B si el viento (bura/jugo) cancela catamaranes (raro a inicios de sep): transfer por tierra a Drvenik (~2.5h) + ferry corto a Sućuraj + ~1h cruzando la isla — largo pero existe; decidirlo esa mañana con el operador.', link:'https://krilo.hr/en/' },
   { id:'ferry-split', em:'⛴️', city:'Croacia', name:'Ferry Hvar → Split · 5 Sep (media mañana)', date:'5 Sep ~10:00 · ~1h', deadline:'🟠 Reservar online — en ago-sep se llena', cat:'Transporte', done:false,
     note:'Catamarán matinal Hvar→Split (Krilo/Jadrolinija/TP Line, ~1h, 10+ salidas en verano). Es la pieza que conecta con el vuelo a Estambul: reservar el de ~10:00-10:30 — sin madrugar y aún con todo el día en Split. Maletas en bodega.', link:'https://krilo.hr/en/' },
   { id:'flight-ist', em:'✈️', city:'Türkiye', name:'Hvar → Split → Estambul · 5 Sep (sáb)', date:'5 Sep · ferry + día en Split + vuelo 21:10', deadline:'🟠 Croatia Airlines vuela mar/jue/sáb — tomamos el sábado', cat:'Transporte', done:false,
@@ -739,6 +743,7 @@ const BUDGET = [
 ];
 
 const PACKING = [
+  { cat:'🧺 Sistema de maleta (el tramo 2-2-2-2)', items:['Packing cubes: un "cubo de 48h" por pareja — en las paradas de 2 noches (BCN, Dubrovnik, Hvar) no se deshace la maleta','Bolsa de ropa sucia por pareja','Plan de lavandería: Estambul (5 noches) es el punto de reset — el JW lava, y Karaköy tiene same-day baratas'] },
   { cat:'🎩 Boda', items:['Traje / vestido formal','Zapatos formales (césped del pazo: tacón ancho)','Segundo look por si hay pre-boda','Regalo o sobre para los novios'] },
   { cat:'☀️ Verano de costa', items:['Trajes de baño (3+)','Escarpines para calas rocosas (Adriático y Barceloneta)','Protector solar 50+','Gorra y lentes de sol','Toalla de microfibra','Ropa de lino / ligera','Bolsa de playa / seca para el ferry'] },
   { cat:'👟 Ciudad y caminata', items:['Zapato cómodo para adoquín (Gótico, murallas de Dubrovnik, Sultanahmet)','Pañuelo/chal para mezquitas (hombros y rodillas)','Rompevientos ligero para el ferry y las noches','Mochila de día plegable'] },
@@ -967,7 +972,7 @@ function renderOverview(){
     return p[1]+' '+p[2]+' – '+q[1]+' '+q[2];
   }
   let h='<div class="wrap">';
-  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 10 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div></div>';
+  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 10 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div><div class="ov-sub" style="margin-top:5px">🍃 El plan es un menú, no tarea: cualquier parada se salta sin culpa. Lo único fijo: vuelos, ferrys y LA BODA.</div></div>';
   h += '<div class="ovl">';
   h += '<div class="ovl-move"><span class="ovl-mi">✈️</span>Vuelo de Daniel ✓ CONFIRMADO: MEX mar 25 · 11:15 → MAD mié 26 · 5:50 am (10h35m) · los demás llegan por su lado</div>';
   legs.forEach(function(a){
@@ -1088,7 +1093,7 @@ function toggleMapFull(){ mapFullView=!mapFullView; lsSet('vb_mapfull',mapFullVi
 function renderResv(){
   const done=RESERVATIONS.filter(r=>r.done).length;
   let h='<div class="wrap"><div class="card"><div class="h3">Reservas y pendientes</div>'
-    + '<p class="note" style="margin-top:6px">'+done+'/'+RESERVATIONS.length+' listas. 🔴 = urgente · 🟠 = pronto · 🟢 = con calma. Toca el cuadro para marcar.</p></div>';
+    + '<p class="note" style="margin-top:6px">'+done+'/'+RESERVATIONS.length+' listas. 🔴 = urgente · 🟠 = pronto · 🟢 = con calma. Toca el cuadro para marcar.</p><p class="note" style="margin-top:4px;font-size:10.5px;color:var(--tx-dim)">📵 Los checks viven en ESTE teléfono (no se sincronizan entre los 6): que una sola persona sea la dueña oficial de esta lista.</p></div>';
   const cats=[]; RESERVATIONS.forEach(r=>{ if(cats.indexOf(r.cat)<0) cats.push(r.cat); });
   cats.forEach(cat=>{
     h+='<div class="seclbl">'+esc(cat)+'</div>';
