@@ -939,9 +939,8 @@ function renderDaybar(){
   el.style.display='block'; el.className='daybar';
   // ends[i] = color de la región donde se DUERME esa noche
   const ends = AGENDA.map((d,i)=>{
-    if(d.cityId==='vuelo-ida') return ACC.madrid;                                             // vuelo desde México → se duerme en Madrid
-    if(d.cityId==='galicia' && AGENDA[i+1] && AGENDA[i+1].cityId!=='galicia') return ACC.madrid; // último día de Galicia → tren de vuelta a Madrid
-    return d.color;
+    if(d.cityId==='vuelo-ida') return ACC.madrid;                                             // vuelo nocturno desde México → se despierta en Madrid
+    return d.color;                                                                            // se duerme en la ciudad del segmento (boda: noche en Vigo, y el 30 se vuela a Barcelona)
   });
   const ovPill = '<button id="dp-0" class="daypill ov'+(DAY===0?' on':'')+'" onclick="setDay(0)"><span class="dow">Resumen</span><span class="dnum">🗺️</span></button>';
   el.innerHTML = '<div class="daybar-inner">'+ovPill+AGENDA.map((d,i)=>{
