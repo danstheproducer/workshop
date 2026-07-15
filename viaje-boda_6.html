@@ -838,14 +838,11 @@ function renderDaybar(){
   if(TAB!=='itin'){ el.style.display='none'; return; }
   el.style.display='block'; el.className='daybar';
   // ends[i] = color de la región donde se DUERME esa noche
-  const ends = AGENDA.map((d,i)=>{
-    if(d.cityId==='vuelo-ida') return ACC.madrid;                                             // vuelo desde México → se amanece en Madrid
-    return d.color;                                                                            // se duerme en la ciudad del segmento (boda: noche en Vigo, y el 30 se vuela a Barcelona)
-  });
+  const ends = AGENDA.map(d=>d.color);                                                         // se duerme en la ciudad del segmento (boda: noche en Vigo, y el 30 se vuela a Barcelona)
   const ovPill = '<button id="dp-0" class="daypill ov'+(DAY===0?' on':'')+'" onclick="setDay(0)"><span class="dow">Resumen</span><span class="dnum">🗺️</span></button>';
   el.innerHTML = '<div class="daybar-inner">'+ovPill+AGENDA.map((d,i)=>{
     const on=d.day===DAY; const p=d.date.split(' ');
-    const startC = i>0 ? ends[i-1] : ACC['vuelo-ida'];   // arranca donde despertaste (o el vuelo desde México el día 1)
+    const startC = i>0 ? ends[i-1] : ends[0];   // arranca donde despertaste — el día 1 ya amanece en Madrid, pill sólido
     const endC = ends[i];
     const split = startC!==endC;
     const bg = split ? 'linear-gradient(90deg,'+startC+' 0 50%,'+endC+' 50% 100%)' : endC;
