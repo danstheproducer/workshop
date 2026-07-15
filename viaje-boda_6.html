@@ -108,6 +108,7 @@
   .ovl-dot { width:9px; height:9px; border-radius:50%; flex:0 0 auto; }
   .ovl-em { font-size:19px; flex:0 0 auto; }
   .ovl-name { font-family:'Archivo Black',sans-serif; font-size:15px; color:var(--tx1); flex:1 1 auto; min-width:0; }
+  .ovl-hotel { display:block; font-family:'Archivo',sans-serif; font-size:10px; font-weight:600; color:var(--tx-dim); margin-top:2px; }
   .ovl-dates { font-family:'Archivo',sans-serif; font-size:12px; font-weight:800; color:var(--tx2); white-space:nowrap; flex:0 0 auto; }
   .wrap { padding: 14px 16px 24px; animation: fadeIn .25s; max-width: 620px; margin: 0 auto; }
   .dayhead { border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
@@ -183,6 +184,9 @@
   .bsub { display: flex; justify-content: space-between; padding: 9px 2px 2px; font-family: 'Archivo', sans-serif; font-size: 12px; font-weight: 800; color: var(--tx2); }
   .btotal { display: flex; justify-content: space-between; padding: 13px 14px; margin-top: 12px; border-radius: 6px; background: var(--accent); color: #fff; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 15px; }
   .ph { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 11px; border: 1px solid var(--bd); background: var(--bg-card); margin-bottom: 6px; cursor: pointer; }
+  .ph .copyok { opacity:0; color:#22c55e; font-weight:900; transition:opacity .2s; }
+  .ph.copied { border-color:#22c55e; }
+  .ph.copied .copyok { opacity:1; }
   .ph .nat { font-family: 'Archivo', sans-serif; font-size: 15px; color: var(--tx1); font-weight: 700; min-width: 96px; }
   .ph .py { font-family: 'Archivo', sans-serif; font-size: 12px; font-weight: 700; color: var(--accent); }
   .ph .es { font-family: 'Archivo', sans-serif; font-size: 11px; color: var(--tx3); }
@@ -526,10 +530,10 @@ const CITIES = [
           tips:['🌅 Marjan: subida de 15 min a los miradores desde el extremo oeste de la Riva','🏖️ Bačvice: la playa urbana de Split, a 10 min del puerto'] },
         { time:'18:15', title:'Aeropuerto de Split (SPU) + vuelo OU4352 a Estambul', icon:'✈️', tag:'transporte', dur:'~2h de vuelo',
           desc:'Traslado al aeropuerto de Split (~25 min del centro) y vuelo directo Croatia Airlines OU4352 → Estambul (IST, lado europeo): sale 21:10 y aterriza 00:10. Opera mar/jue/sáb hasta mediados de octubre; tomamos el del sábado, y por eso hay día completo en Split antes.',
-          tips:['⏰ OJO al reservar: en la ruta hay dos vuelos — OU4352 (21:10→00:10) y OU4356 (12:55→15:50). CONFIRMAR cuál opera el sáb 5 sep: si toca el del mediodía, primer ferry (~6:00-7:30) y saltarse Split','🛂 La e-visa turca es OBLIGATORIA para mexicanos (~50 USD pp): tramitar en evisa.gov.tr y llevarla impresa','💱 Sacar liras (TRY) del cajero en llegadas: mejor tasa que casas de cambio'] },
+          tips:['⏰ OJO al reservar: en la ruta hay dos vuelos — OU4352 (21:10→00:10) y OU4356 (12:55→15:50). CONFIRMAR cuál opera el sáb 5 sep: si toca el del mediodía, primer ferry (~6:00-7:30) y saltarse Split','🛂 La e-visa turca es OBLIGATORIA para mexicanos (~50 USD pp): tramitar en evisa.gov.tr y llevarla impresa','💱 Sacar liras (TRY) del cajero en llegadas: mejor tasa que casas de cambio','🕐 Türkiye va 1h ADELANTE de España/Croacia — adelantar relojes al aterrizar'] },
         { time:'0:30', title:'Llegada de madrugada + check-in JW Marriott (Karaköy)', icon:'🏨', tag:'hotel', dur:'1h',
           desc:'Aterrizaje 00:10 y traslado al JW Marriott Bosphorus: un banco del siglo XIX convertido en hotel (2020) en Karaköy, con cuartos impecables y hammam propio en el spa. Directo a dormir — Estambul empieza mañana.',
-          tips:['🚕 Taxi IST → Karaköy: ~45-60 min · ~25-35 EUR (de madrugada casi sin tráfico)','📧 Avisar al hotel del late check-in al reservar','😴 Noche corta: el arranque de mañana puede correrse una hora sin culpa'] },
+          tips:['🚐 Somos 6 + maletas: RESERVAR van/transfer con el hotel para las 00:10 — o dos taxis (~30 EUR c/u) · ~45-60 min sin tráfico','📧 Avisar al hotel del late check-in al reservar','😴 Noche corta: el arranque de mañana puede correrse una hora sin culpa'] },
       ]},
       { events:[
         { time:'8:45', title:'Santa Sofía al abrir', icon:'🕌', tag:'atracción', dur:'1.5h',
@@ -652,6 +656,8 @@ const RESERVATIONS = [
     note:'Vueling/Croatia Airlines BCN→DBV directo (~2h20m), operan en temporada de verano. ~2,500-4,500 MXN pp. Si no cuadra el directo, escala vía Zagreb o Roma. Croacia usa EURO y es Schengen: sin visa ni cambio de moneda.', link:'https://www.google.com/travel/flights?q=Flights%20from%20BCN%20to%20DBV%20on%202026-09-01' },
   { id:'ferry-hvar', em:'⛴️', city:'Croacia', name:'Ferry Dubrovnik → Hvar · 3 Sep', date:'3 Sep (mañana) · ~3h45m', deadline:'🟠 Reservar online (se llena en verano)', cat:'Transporte', done:false,
     note:'Catamarán rápido Kapetan Luka (Krilo) o Jadrolinija por la costa dálmata, con parada en Korčula. ~35-45 EUR pp. Reservar en krilo.hr / jadrolinija.hr con antelación. Asiento en cubierta exterior para la costa.', link:'https://krilo.hr/en/' },
+  { id:'ferry-split', em:'⛴️', city:'Croacia', name:'Ferry Hvar → Split · 5 Sep (mañana)', date:'5 Sep ~9:00 · ~1h', deadline:'🟠 Reservar online — en ago-sep se llena', cat:'Transporte', done:false,
+    note:'Catamarán matinal Hvar→Split (Krilo/Jadrolinija/TP Line, ~1h, 10+ salidas en verano). Es la pieza que conecta con el vuelo a Estambul: reservar el de ~9:00 para tener el día en Split. Maletas en bodega.', link:'https://krilo.hr/en/' },
   { id:'flight-ist', em:'✈️', city:'Türkiye', name:'Hvar → Split → Estambul · 5 Sep (sáb)', date:'5 Sep · ferry + día en Split + vuelo 21:10', deadline:'🟠 Croatia Airlines vuela mar/jue/sáb — tomamos el sábado', cat:'Transporte', done:false,
     note:'Sáb 5 sep: ferry matinal Hvar→Split (Krilo/Jadrolinija, ~1h), día en Split (Palacio de Diocleciano) y vuelo directo Croatia Airlines Split (SPU) → Estambul (IST), ~2h. Único directo, opera mar/jue/sáb hasta mediados de octubre. OJO: en la ruta hay dos vuelos — OU4352 (21:10→00:10) y OU4356 (12:55→15:50) — CONFIRMAR cuál opera el sábado al reservar; si toca el del mediodía, primer ferry y saltarse Split. ~2,500-4,000 MXN pp. Alternativa: escala vía Múnich/Viena (~6-7h).', link:'https://www.google.com/travel/flights?q=Flights%20from%20SPU%20to%20IST%20on%202026-09-05' },
   { id:'flight-madret', em:'👋', city:'Vuelos', name:'Salidas de Estambul · 10 Sep — cada quien su vuelo', date:'10 Sep · final a la carta', deadline:'🔴 Cada pareja reserva su propia salida — coordinar antes de comprar', cat:'Transporte', done:false,
@@ -668,6 +674,10 @@ const RESERVATIONS = [
     note:'Frente al casco viejo cruzando el puerto: alberca infinity de agua de mar en la azotea, el mejor spa de la isla y vista de postal a la Pjaca/fortaleza. A 5 min a pie del muelle del catamarán. Tarifa web verificada para estas fechas: €445/noche Superior (quedan 5 — justo para las 3 dobles), €552 sea view (~8,900-11,000 MXN). PEDIR piso medio lejos de la marina (ni top: bar en azotea; ni 1º: ruido de desayuno) + aviso: baños de mampara semi-abierta. El plan anterior (Palace Elisabeth) cotiza €650-1,130/noche en estas fechas — 3× presupuesto; su romance se visita, no se duerme.', link:'https://www.suncanihvar.com/adriana' },
   { id:'hotel-ist', em:'🏨', city:'Türkiye', name:'JW Marriott Istanbul Bosphorus (Karaköy) · 5 noches', date:'5–10 Sep (5 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
     note:'Banco del s. XIX convertido en hotel (2020) en Karaköy: cuartos impecables y modernos, spa con hammam propio, a 2 min del tranvía T1 a Sultanahmet y de los ferrys a Kadıköy — el barrio bueno de noche. ~€340-450/hab/noche (~7,000-9,000 MXN). PEDIR piso medio vista al Bósforo — ni el último (bar Sky Karaköy hasta 2am) ni los bajos a la calle. Sustituye al Pera Palace (cuartos renovación 2010, baños chicos, ruido del bulevar; responde a la duda de mamá: Karaköy es mejor ubicación). La romance del Pera queda agendada: cóctel en el Orient Bar el 8 sep antes de Mikla.', link:'https://www.marriott.com/en-us/hotels/istjb-jw-marriott-istanbul-bosphorus/overview/' },
+  { id:'tix-sagrada', em:'⛪', city:'Barcelona', name:'Sagrada Família · entradas 31 Ago 9:00', date:'31 Ago 9:00 (franja horaria)', deadline:'🔴 Se agota DÍAS antes — comprar en cuanto haya fechas', cat:'Tickets', done:false,
+    note:'~26 EUR pp (+10 la torre) en sagradafamilia.org, franja de 9:00 para la luz de la mañana. En la misma sentada: Casa Batlló con hora (casabatllo.es) para las 11:30. Son las dos entradas que de verdad se agotan.', link:'https://sagradafamilia.org' },
+  { id:'tix-mad', em:'🖼️', city:'Madrid', name:'Prado + Palacio Real · 27 Ago', date:'27 Ago (jue)', deadline:'🟢 Online para saltar filas', cat:'Tickets', done:false,
+    note:'Prado ~15 EUR con franja (museodelprado.es) · Palacio Real ~14 EUR (patrimonionacional.es). Las murallas de Dubrovnik no necesitan anticipación: se compran en la puerta llegando a las 8:00.', link:'https://www.museodelprado.es' },
   { id:'hammam', em:'♨️', city:'Türkiye', name:'Hammam Hürrem Sultan (Ayasofya) · 7 Sep', date:'7 Sep 10:00', deadline:'🟠 Reservar online', cat:'Tickets', done:false,
     note:'Alas simultáneas hombres/mujeres: los 6 a la misma hora. Ritual ~2,500-3,200 MXN pp. (Kılıç Ali Paşa separa por horarios: mujeres de día, hombres de noche — por eso no.)', link:'https://www.hurremsultanhamami.com/en' },
   { id:'resto-maruja', em:'⭐', city:'Galicia', name:'Maruja Limón (1★) · cena bienvenida 28 Ago', date:'28 Ago 21:30', deadline:'🟠 Agosto se llena', cat:'Restaurantes', done:false,
@@ -818,6 +828,15 @@ let TAB = lsGet('vb_tab','itin');
 if(!['itin','resv','budget','pack','words'].includes(TAB)) TAB='itin';
 let DAY = lsGet('vb_day',1);
 if(typeof DAY!=='number'||DAY<0||DAY>AGENDA.length) DAY=1;
+// Durante el viaje: al abrir la app cada día nuevo, saltar al día de hoy
+(function(){
+  const now=new Date(); const start=new Date(2026,7,27);
+  const idx=Math.floor((now-start)/86400000);
+  if(idx>=0&&idx<AGENDA.length){
+    const stamp=now.getFullYear()+'-'+now.getMonth()+'-'+now.getDate();
+    if(lsGet('vb_autoday','')!==stamp){ DAY=idx+1; lsSet('vb_day',DAY); lsSet('vb_autoday',stamp); }
+  }
+})();
 let map=null;
 let mapOpen = lsGet('vb_mapopen', true);
 let mapFullView = lsGet('vb_mapfull', false);
@@ -871,6 +890,8 @@ function renderDaybar(){
     const bg = split ? 'linear-gradient(90deg,'+startC+' 0 50%,'+endC+' 50% 100%)' : endC;
     return '<button id="dp-'+d.day+'" class="daypill'+(on?' on':'')+'" style="background:'+bg+';border-color:'+endC+'" onclick="setDay('+d.day+')"><span class="dow">'+esc(p[0])+' '+esc(p[2]||'')+'</span><span class="dnum">'+esc(p[1])+'</span></button>';
   }).join('')+'</div>';
+  const act=document.getElementById('dp-'+DAY);
+  if(act&&act.scrollIntoView) act.scrollIntoView({inline:'center',block:'nearest'});
 }
 
 function renderItin(){
@@ -953,7 +974,7 @@ function renderOverview(){
     h += '<button class="ovl-row" onclick="setDay('+first.day+')">'
       + '<span class="ovl-dot" style="background:'+a.color+'"></span>'
       + '<span class="ovl-em">'+a.emoji+'</span>'
-      + '<span class="ovl-name">'+esc(place)+'</span>'
+      + '<span class="ovl-name">'+esc(place)+(HOTELS[a.cityId]?'<span class="ovl-hotel">🏨 '+esc(HOTELS[a.cityId].name)+'</span>':'')+'</span>'
       + '<span class="ovl-dates">'+esc(range)+(NIGHTS[a.cityId]?' · '+NIGHTS[a.cityId]:'')+'</span>'
       + '</button>';
   });
@@ -1063,7 +1084,7 @@ function renderResv(){
   const cats=[]; RESERVATIONS.forEach(r=>{ if(cats.indexOf(r.cat)<0) cats.push(r.cat); });
   cats.forEach(cat=>{
     h+='<div class="seclbl">'+esc(cat)+'</div>';
-    RESERVATIONS.filter(r=>r.cat===cat).forEach(r=>{
+    RESERVATIONS.filter(r=>r.cat===cat).sort((a,b)=>(a.done?1:0)-(b.done?1:0)).forEach(r=>{
       h+='<div class="resv '+(r.done?'done':'')+'"><div class="chk" onclick="toggleResv(\''+r.id+'\')">'+(r.done?'✓':'')+'</div>'
         + '<div class="em">'+r.em+'</div><div class="b"><div class="nm">'+esc(r.name)+'</div>'
         + '<div class="meta">'+esc(r.city)+' · '+esc(r.date)+' · '+esc(r.deadline)+'</div>'
@@ -1079,7 +1100,7 @@ function renderBudget(){
   const s=lsGet('vb_budget',{});
   let total=0;
   let h='<div class="wrap"><div class="card"><div class="h3">Presupuesto detallado</div>'
-    + '<p class="note" style="margin-top:6px">Para 6 personas · 14 días compartidos (27 ago–9 sep) · en MXN. Precios estimados jul 2026 (vuelos, ferries dálmatas, hoteles). Hotel de Vigo ya CONFIRMADO ($22,596). Tipo de cambio: 1 EUR ≈ 20 MXN · 1 USD ≈ 17.5 MXN. Los hoteles son estimados de temporada — toca cualquier cifra para editarla.</p></div>';
+    + '<p class="note" style="margin-top:6px">Para 6 personas · 15 días compartidos (27 ago–10 sep) · en MXN. Precios estimados jul 2026 (vuelos, ferries dálmatas, hoteles). Hotel de Vigo ya CONFIRMADO ($22,596). Tipo de cambio: 1 EUR ≈ 20 MXN · 1 USD ≈ 17.5 MXN. Los hoteles son estimados de temporada — toca cualquier cifra para editarla.</p></div>';
   BUDGET.forEach((g,gi)=>{
     let sub=0;
     h+='<div class="seclbl">'+esc(g.cat)+'</div><div class="card">';
@@ -1110,13 +1131,30 @@ function renderPack(){
   return h+'</div>';
 }
 
+function copyPhrase(el,txt){
+  if(navigator.clipboard) navigator.clipboard.writeText(txt);
+  el.classList.add('copied');
+  setTimeout(function(){ el.classList.remove('copied'); },900);
+}
 function renderWords(){
   let h='<div class="wrap"><div class="card"><div class="h3">Frases útiles</div>'
     + '<p class="note" style="margin-top:6px">Toca una frase para copiarla.</p></div>';
   PHRASES.forEach(g=>{
     h+='<div class="seclbl">'+esc(g.cat)+'</div>';
-    g.items.forEach(p=>{ h+='<div class="ph" onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+esc(p.nat).replace(/'/g,"\\'")+'\')"><div class="nat">'+esc(p.nat)+'</div><div style="flex:1"><div class="py">'+esc(p.py)+'</div><div class="es">'+esc(p.es)+'</div></div></div>'; });
+    g.items.forEach(p=>{ h+='<div class="ph" onclick="copyPhrase(this,\''+esc(p.nat).replace(/'/g,"\\'")+'\')"><div class="nat">'+esc(p.nat)+'</div><div style="flex:1"><div class="py">'+esc(p.py)+'</div><div class="es">'+esc(p.es)+'</div></div><span class="copyok">✓</span></div>'; });
   });
+  h+='<div class="seclbl">ℹ️ Info práctica</div><div class="card">';
+  [
+    '🚨 Emergencias: 112 — el mismo número en España, Croacia y Türkiye',
+    '🕐 Horas: Türkiye va 1h ADELANTE de España/Croacia — ajustar al aterrizar el 5 sep',
+    '💶 Moneda: EUR en España y Croacia · liras (TRY) en Türkiye — cajero en llegadas y avisar al banco del viaje',
+    '💳 Propina: España, redondear · Croacia ~10% · Türkiye 5-10% en efectivo',
+    '🔌 Enchufes: tipo C/F europeo y 220V en los 3 países — un solo adaptador',
+    '🚰 Agua de grifo: bien en España y Croacia · en Estambul, embotellada',
+    '🚐 Somos 6: no cabemos en un taxi — van/transfer o 2 taxis · apps: FreeNow (ES), Uber (HR), BiTaksi/Uber (TR)',
+    '🛂 Türkiye NO es Schengen: control de pasaporte al entrar y salir + e-visa impresa a la mano'
+  ].forEach(t=>{ h+='<div class="note" style="padding:6px 0;border-bottom:1px solid var(--divider)">'+esc(t)+'</div>'; });
+  h+='</div>';
   return h+'</div>';
 }
 
