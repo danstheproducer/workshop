@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Viaje">
+<link rel="manifest" href="viaje-manifest.json">
+<link rel="apple-touch-icon" href="viaje-icon-180.png">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f1629">
 <title>Boda + Viaje · Madrid · Galicia · Barcelona · Croacia · Türkiye · 2026</title>
@@ -1119,7 +1122,7 @@ function renderBudget(){
   });
   h+='<div class="btotal"><span>Total del viaje</span><span>$'+total.toLocaleString('es-MX')+' MXN</span></div>'
     + '<p class="note" style="margin-top:10px;text-align:center">≈ $'+Math.round(total/6).toLocaleString('es-MX')+' MXN por persona · ≈ '+Math.round(total/20/6).toLocaleString('es-MX')+' EUR pp</p>'
-    + '<p class="note" style="margin-top:6px;text-align:center;font-size:11px;color:var(--tx-dim)">Dónde recortar sin perder magia: hoteles 4★ con carácter (−25%), menos cenas estrella, apartamentos en vez de hotel en Croacia. Dónde NO recortar: las murallas de Dubrovnik, la Sagrada Família, el hammam Hürrem Sultan.</p></div>';
+    + '<p class="note" style="margin-top:6px;text-align:center;font-size:11px;color:var(--tx-dim)">Dónde recortar sin perder magia: H10 Casa Mimosa en vez del Grand Hotel Central (−€600 el grupo), categoría base en vez de sea view en el Excelsior, una cena estrella menos. Dónde NO recortar: la tarifa web del Adriana (ya es la ganga verificada), las murallas de Dubrovnik, la Sagrada Família y el hammam Hürrem Sultan.</p></div>';
   return h;
 }
 
