@@ -167,7 +167,7 @@
   [data-theme="light"] .leaflet-container { background: #ded2da !important; }
   .city-tooltip { background: rgba(20,15,24,0.9) !important; color: #fff !important; border: none !important; border-radius: 5px !important; font-family: 'Archivo', sans-serif !important; font-weight: 700 !important; font-size: 9px !important; letter-spacing: .3px !important; padding: 2px 6px !important; box-shadow: 0 1px 4px rgba(0,0,0,.35) !important; }
   .seg-label { background: none !important; border: none !important; }
-  .seglab { display: inline-block; transform: translate(-50%,-50%); white-space: nowrap; font-family: 'Archivo', sans-serif; font-size: 10px; font-weight: 700; color: #0f1629; padding: 2px 7px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .seglab { display: inline-block; transform: translate(-50%,-50%); white-space: nowrap; font-family: 'Archivo', sans-serif; font-size: 8.5px; font-weight: 700; color: #0f1629; padding: 1px 5px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.35); opacity: .92; }
   .seglab.clickable { cursor: pointer; }
   .resv { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--bd); background: var(--bg-card); margin-bottom: 8px; }
   .resv .em { font-size: 18px; flex-shrink: 0; }
@@ -239,8 +239,8 @@
       <div class="brand">
         <span class="em" onclick="ringTap()" title="Toca el sol"><svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E7C7B"/><circle cx="32" cy="26" r="11" fill="#F4C15D"/><path d="M6 42 q6.5 -7 13 0 t13 0 t13 0 t13 0" fill="none" stroke="#FDF0D5" stroke-width="3.4" stroke-linecap="round"/><path d="M6 51 q6.5 -7 13 0 t13 0 t13 0 t13 0" fill="none" stroke="#FDF0D5" stroke-width="3.4" stroke-linecap="round"/></svg></span>
         <div>
-          <div class="t1">Boda + Viaje · 14 días</div>
-          <div class="t2">🇪🇸 Madrid · Galicia · Barcelona · 🇭🇷 Croacia · 🇹🇷 Türkiye · 6 viajeros · Ago 27 – Sep 9</div>
+          <div class="t1">Boda + Viaje · 15 días</div>
+          <div class="t2">🇪🇸 Madrid · Galicia · Barcelona · 🇭🇷 Croacia · 🇹🇷 Türkiye · 6 viajeros · Ago 27 – Sep 10</div>
         </div>
       </div>
       <div class="topbtns">
@@ -280,20 +280,20 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const TAG = { transporte:'#60A5FA', hotel:'#F97316', atracción:'#8B5CF6', comida:'#34D399', compras:'#F59E0B', espectáculo:'#EC4899', logística:'#94a3b8', descanso:'#818CF8', mar:'#22D3EE' };
-const ACC = { 'vuelo-ida':'#94A3B8', madrid:'#F59E0B', galicia:'#F97316', barcelona:'#F43F5E', dubrovnik:'#0EA5E9', hvar:'#06B6D4', estambul:'#EF4444' };
+const ACC = { madrid:'#F59E0B', galicia:'#F97316', barcelona:'#F43F5E', dubrovnik:'#0EA5E9', hvar:'#06B6D4', estambul:'#EF4444' };
 
 const HOTELS = {
-  madrid:   { name:'Hotel Urban 5★ GL', sub:'Carrera de San Jerónimo 34 · azotea con alberca · arte de Papúa en el lobby · cada quien entra según su llegada; el 27 ya estamos todos', alt:'Alt: Palacio de los Duques Gran Meliá — más palaciego, junto al Palacio Real (~€380/n)', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
+  madrid:   { name:'CoolRooms Palacio de Atocha', sub:'Calle Atocha 34 · palacete de 1852 renacido en 2019 · patio-jardín secreto con alberca · borde del Barrio de las Letras, todo a pie · cada quien entra según su llegada; el 27 ya estamos todos', alt:'9.5/10 y cuartos enormes (tinas exentas) por MENOS que el Urban — pero son solo 34 habitaciones: reservar YA. Alt: Thompson Madrid (2022, ultra-moderno ~€290) · el Urban tiene gran lobby pero cuartos con años encima', link:'https://coolrooms.com/palaciodeatocha/en/' },
   galicia:  { name:'AC Hotel Palacio Universal (Marriott) ✓', sub:'Cánovas del Castillo 28, Vigo · frente al puerto, habitaciones con vista al mar · a ~30 min del Pazo de Cea', alt:'RESERVA CONFIRMADA · Amex Viajes #31094043 · entrada vie 28 ago 15:00, salida dom 30 ago 12:00 · 3 hab (2 con ocean view)', link:'https://www.google.com/maps/search/AC+Hotel+Palacio+Universal+Vigo' },
-  barcelona:{ name:'Hotel 1898 5★', sub:'La Rambla 109 · azotea con alberca y vista a la ciudad · edificio histórico de la Compañía de Tabacos de Filipinas · a pie del Barrio Gótico', alt:'Alt: Cotton House Hotel (Autograph) — palacete señorial en el Eixample (~€300/n)', link:'https://www.booking.com/hotel/es/1898.html?checkin=2026-08-30&checkout=2026-09-01&group_adults=6&no_rooms=3&group_children=0' },
-  dubrovnik:{ name:'Hotel Excelsior 5★', sub:'Frente al Adriático, a 10 min a pie de la Ciudad Vieja · terrazas sobre el mar y vista a la isla de Lokrum', alt:'Alt: Villa Dubrovnik — boutique sobre el acantilado, solo adultos (~€450/n). Dentro de murallas: Prijeko Palace', link:'https://www.booking.com/hotel/hr/excelsior-dubrovnik.html?checkin=2026-09-01&checkout=2026-09-03&group_adults=6&no_rooms=3&group_children=0' },
-  hvar:     { name:'Palace Elisabeth Hvar Heritage Hotel 5★', sub:'En la plaza central (Pjaca) de Hvar, frente al puerto · el hotel más histórico de la isla, junto a la Catedral · 2 noches (3–5 sep)', alt:'Alt: Adriana Hvar Spa Hotel — azotea con alberca infinity frente al casco viejo (~€320/n)', link:'https://www.booking.com/hotel/hr/palace-hvar.html?checkin=2026-09-03&checkout=2026-09-05&group_adults=6&no_rooms=3&group_children=0' },
-  estambul: { name:'Pera Palace 1892', sub:'Mesrutiyet Cd. 52, Pera · el hotel-museo del Orient Express · alberca interior + hammam · 4 noches (5–9 sep)', alt:'Sobre la ubicación: los monumentos (Santa Sofía, bazares) quedan a 15-20 min de tranvía — pero ahí queda igual de lejos la buena mesa. Pera tiene los barrios de comer (Karaköy, Asmalımescit, Cihangir) a pie; la cuadra de atrás (Tarlabaşı) es fea de noche, se rodea por İstiklal. Alt mismo rango: Ajwa Sultanahmet (junto a monumentos, pero muerto de noche) · Alt lujo pleno: The Peninsula, Karaköy (~2×, la mejor ubicación de la ciudad)', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-05&checkout=2026-09-09&group_adults=6&no_rooms=3&group_children=0' },
+  barcelona:{ name:'Grand Hotel Central 5★', sub:'Via Laietana 30, borde del Born · renovado de arriba a abajo en 2023 · alberca INFINITY en la azotea con vista a la Catedral · Born, Gótico y Picasso a 3-5 min a pie', alt:'Reservar UNA categoría arriba de la entrada (los cuartos base son chicos) + piso alto interior/trasero. Buena noticia verificada: las obras de Via Laietana terminaron en jun 2025 — la calle quedó a 3 carriles, mucho más tranquila. Alt valor: H10 Casa Mimosa — 9.4/10 junto a La Pedrera (~€250). El 1898 quedó fuera: su puerta da a La Rambla, el corredor más carterista de Europa', link:'https://www.grandhotelcentral.com/en/' },
+  dubrovnik:{ name:'Hotel Excelsior 5★', sub:'Frente al Adriático, a 10 min a pie de la Ciudad Vieja · terrazas sobre el mar y vista a la isla de Lokrum', alt:'OJO al reservar: pedir categoría SEA VIEW y cuartos en la misma ala — las habitaciones de entrada son chicas y oscuras; la vista al mar ES el hotel. Alt sibarita: Villa Dubrovnik (~€900+, el más bello pero 2.5× presupuesto)', link:'https://www.adriaticluxuryhotels.com/hotel-excelsior-dubrovnik/' },
+  hvar:     { name:'Adriana Hvar Spa Hotel', sub:'Fabrika bb, frente al casco viejo cruzando el puerto · alberca infinity de agua de mar en la AZOTEA + el mejor spa de la isla · vista de postal a la Pjaca y la fortaleza · a 5 min a pie del muelle del catamarán · 2 noches (3–5 sep)', alt:'🔴 Tarifa web €445/n con solo 5 cuartos Superior — reservar YA en suncanihvar.com. Pedir PISO MEDIO lado tranquilo (ni el último —el bar de la azotea suena— ni el primero), lejos de la marina; baños con mampara de vidrio semi-abierta: aviso a las parejas. (El Palace Elisabeth, el plan anterior, cuesta €650-1,130/n en estas fechas — 3× presupuesto)', link:'https://www.suncanihvar.com/adriana' },
+  estambul: { name:'JW Marriott Istanbul Bosphorus', sub:'Kemankeş Cd, Karaköy · banco del s. XIX convertido en hotel en 2020, cuartos impecables · spa con hammam propio · a 2 min del tranvía T1 (Sultanahmet) y de los ferrys a Kadıköy · el barrio que come y vive de noche · 5 noches (5–10 sep)', alt:'Pedir PISO MEDIO con vista al Bósforo — ni el último (el bar Sky Karaköy suena hasta las 2am, sobre todo sábado) ni los bajos a la calle Kemankeş. La romance del Pera Palace no se pierde: té en el Kubbeli Saloon antes de Mikla (agendado 8 sep). Alt lujo pleno: The Peninsula, a 3 cuadras (~2×). El Pera Palace quedó fuera: cuartos de renovación 2010, baños chicos y ruido del bulevar', link:'https://www.marriott.com/en-us/hotels/istjb-jw-marriott-istanbul-bosphorus/overview/' },
 };
 
 const CITIES = [
   { id:'madrid', city:'Madrid', region:'España', emoji:'🇪🇸', color:ACC.madrid, coords:[40.4168,-3.7038],
-    desc:'La puerta de entrada a Europa y el punto de encuentro: cada quien llega a Madrid por su lado (Daniel aterriza el 26 a las 5:50) y el jueves 27 arranca el viaje con el grupo completo en el Hotel Urban (5★ GL), en plena Carrera de San Jerónimo, con todo el centro a pie. Un día de greatest hits — del Palacio Real al Prado y del Templo de Debod a la Cava Baja. Aún caluroso a finales de agosto: mañana activa, siesta sagrada, y la ciudad revive de noche. El 28, a mediodía, se vuela a la boda.',
+    desc:'La puerta de entrada a Europa y el punto de encuentro: cada quien llega a Madrid por su lado (Daniel aterriza el 26 a las 5:50) y el jueves 27 arranca el viaje con el grupo completo en CoolRooms Palacio de Atocha, un palacete de 1852 al borde del Barrio de las Letras, con todo el centro a pie. Un día de greatest hits — del Palacio Real al Prado y del Templo de Debod a la Cava Baja. Aún caluroso a finales de agosto: mañana activa, siesta sagrada, y la ciudad revive de noche. El 28, a mediodía, se vuela a la boda.',
     days:[
       { events:[
         { time:'9:00', title:'Churros con chocolate en San Ginés', icon:'☕', tag:'comida', dur:'45 min',
@@ -308,8 +308,8 @@ const CITIES = [
         { time:'14:30', title:'Comida en el Mercado de San Miguel', icon:'🥘', tag:'comida', dur:'1.5h',
           desc:'Mercado de hierro de 1916 convertido en templo del picoteo: ostras, jamón ibérico, croquetas, vermut. Turístico pero delicioso.',
           tips:['💰 15-25 EUR pp picando bien','🥟 No perderse: croquetas de jamón y la barra de ostras'] },
-        { time:'17:00', title:'Siesta o alberca en la azotea del Urban', icon:'🏖️', tag:'descanso', dur:'2h',
-          desc:'La hora más caliente del día es para el hotel. La alberca de la azotea con vista a los tejados es el plan.',
+        { time:'17:00', title:'Siesta o alberca en el patio de CoolRooms', icon:'🏖️', tag:'descanso', dur:'2h',
+          desc:'La hora más caliente del día es para el hotel: el patio-jardín secreto del palacete, con su alberca entre vegetación, es el plan.',
           tips:['😴 La siesta española: 30-45 min y la tarde renace'] },
         { time:'20:15', title:'Atardecer en el Templo de Debod', icon:'🌇', tag:'atracción', dur:'1h',
           desc:'Un templo egipcio auténtico del siglo II a.C., regalado a España en 1968, sobre una colina con el mejor atardecer de Madrid.',
@@ -375,15 +375,15 @@ const CITIES = [
     links:[{label:'Pazo de Cea',url:'https://pazodecea.com/en/'},{label:'Maruja Limón',url:'https://marujalimon.es'},{label:'Renfe (tren)',url:'https://www.renfe.com/es/en'}] },
 
   { id:'barcelona', city:'Barcelona', region:'España', emoji:'🎨', color:ACC.barcelona, coords:[41.3874,2.1686],
-    desc:'De las rías gallegas al Mediterráneo: la ciudad de Gaudí, el Gótico y la playa. Se vuela desde Vigo la mañana después de la boda. Dos noches en el Hotel 1898, sobre La Rambla, con todo el casco antiguo a pie. Un día completo para lo imperdible — la Sagrada Família, el modernismo y el mar — antes de saltar al Adriático.',
+    desc:'De las rías gallegas al Mediterráneo: la ciudad de Gaudí, el Gótico y la playa. Se vuela desde Vigo la mañana después de la boda. Dos noches en el Grand Hotel Central, al borde del Born, con todo el casco antiguo a pie y alberca infinity en la azotea. Un día completo para lo imperdible — la Sagrada Família, el modernismo y el mar — antes de saltar al Adriático.',
     days:[
       { events:[
         { time:'10:00', title:'Checkout Vigo + vuelo Vigo → Barcelona', icon:'✈️', tag:'transporte', dur:'~1h45m',
           desc:'La mañana después de la boda, con calma: checkout del AC Palacio Universal y vuelo directo Vigo (Peinador) → Barcelona (Vueling, ~1h45m). Se llega a media tarde al Mediterráneo.',
           tips:['🎟️ Vueling VGO→BCN directo · reservar pronto, es la mejor conexión','😴 Vuelo perfecto para recuperar la fiesta de anoche','🚕 Aeropuerto BCN → centro: Aerobús a Plaça Catalunya (~6 EUR, 35 min) o taxi ~35 EUR'] },
-        { time:'16:00', title:'Check-in Hotel 1898 (La Rambla)', icon:'🏨', tag:'hotel',
-          desc:'5★ en el antiguo edificio de la Compañía de Tabacos de Filipinas, sobre La Rambla. Azotea con alberca y vista a la ciudad. A pie del Barrio Gótico y del Born.',
-          tips:['🏊 Subir a la azotea a ver el atardecer sobre los tejados','📍 A 5 min de la Catedral y del Born'] },
+        { time:'16:00', title:'Check-in Grand Hotel Central (Born)', icon:'🏨', tag:'hotel',
+          desc:'5★ renovado por completo en 2023 en Via Laietana, al borde del Born: cuartos impecables y una alberca infinity en la azotea con la Catedral de fondo. El Gótico de un lado, el Born del otro.',
+          tips:['🏊 La infinity de la azotea al atardecer: la mejor postal del casco antiguo','🛏️ Reservar una categoría arriba de la base (las entry son chicas) · piso alto interior o trasero','📍 A 3-5 min del Born, la Catedral y el Museo Picasso'] },
         { time:'17:30', title:'Barrio Gótico + Catedral', icon:'⛪', tag:'atracción', dur:'2h',
           desc:'El laberinto medieval de Barcelona: la Catedral con sus gárgolas, la Plaça del Rei, el Pont del Bisbe y callejones que desembocan en plazas escondidas. La Barcelona antes de Gaudí.',
           tips:['🚶 Perderse a propósito es el plan — todo está cerca','🎸 Suele haber músicos en la Plaça de Sant Felip Neri al atardecer'] },
@@ -467,15 +467,15 @@ const CITIES = [
     links:[{label:'Murallas de Dubrovnik',url:'https://www.wallsofdubrovnik.com'},{label:'Reservar Nautika',url:'https://nautikarestaurants.com'},{label:'Vuelos BCN→DBV 1 sep',url:'https://www.google.com/travel/flights?q=Flights%20from%20BCN%20to%20DBV%20on%202026-09-01'}] },
 
   { id:'hvar', city:'Hvar', region:'Croacia', emoji:'🏝️', color:ACC.hvar, coords:[43.1729,16.4413],
-    desc:'La isla más soleada de Croacia (2,800 horas de sol al año): campos de lavanda, un puerto de yates elegante, una fortaleza veneciana sobre el pueblo y las islas Pakleni a un salto en lancha. Se llega en catamarán por la costa dálmata desde Dubrovnik. Una noche relajada en el Palace Elisabeth, en plena plaza central, para bajar el ritmo entre la ciudad amurallada y el gran final en Estambul.',
+    desc:'La isla más soleada de Croacia (2,800 horas de sol al año): campos de lavanda, un puerto de yates elegante, una fortaleza veneciana sobre el pueblo y las islas Pakleni a un salto en lancha. Se llega en catamarán por la costa dálmata desde Dubrovnik. Dos noches en el Adriana, con su alberca infinity en la azotea mirando el casco viejo cruzando el puerto — para bajar el ritmo entre la ciudad amurallada y el gran final en Estambul.',
     days:[
       { events:[
         { time:'9:00', title:'Catamarán Dubrovnik → Hvar (por la costa)', icon:'⛴️', tag:'transporte', dur:'~3h45m',
           desc:'El ferry rápido Kapetan Luka (Krilo) o Jadrolinija remonta la costa dálmata de Dubrovnik a Hvar, con parada en Korčula. Mar adentro pasando islas y penínsulas de viñedos: la travesía es parte del paisaje. Se llega a Hvar a primera hora de la tarde.',
           tips:['🎟️ RESERVAR online con antelación (krilo.hr / jadrolinija.hr / TP Line) — en verano se llena · ~35-45 EUR pp','⏰ Las salidas matinales de Dubrovnik varían por operador (~6:00-9:30) — revisar el horario exacto del 3 sep al reservar','🧳 El catamarán deja las maletas en bodega; llevar solo lo del día a cubierta','🪑 Asiento en cubierta exterior para la costa — dentro va con aire pero sin vista'] },
-        { time:'14:00', title:'Check-in Palace Elisabeth + comida en el puerto', icon:'🏨', tag:'hotel', dur:'1.5h',
-          desc:'El hotel histórico de Hvar, en la plaza central (Pjaca) frente al puerto y junto a la Catedral de San Esteban. Dejar maletas y comida ligera con vista a los yates: pescado del día y vino blanc de la isla.',
-          tips:['🌊 Pedir habitación con vista a la Pjaca o al puerto','🦑 Los calamares a la parrilla y el pršut (jamón dálmata) frente al agua'] },
+        { time:'14:00', title:'Check-in Adriana + comida en el puerto', icon:'🏨', tag:'hotel', dur:'1.5h',
+          desc:'El Adriana, en el paseo del puerto frente al casco viejo: desde la azotea (alberca infinity de agua de mar) se mira la Pjaca, la Catedral y la fortaleza al otro lado del agua. A 5 min a pie del muelle. Dejar maletas y comida ligera con vista a los yates.',
+          tips:['🌊 Pedir PISO MEDIO alejado de la marina — ni el último (bar en azotea hasta tarde) ni el primero (montaje del desayuno 6am) · tapones de oídos: Hvar de noche es Hvar','🚿 Aviso: baños con mampara de vidrio semi-abierta — moderna pero poco pudorosa','🦑 Los calamares a la parrilla y el pršut (jamón dálmata) frente al agua'] },
         { time:'16:00', title:'Tarde de baño: islas Pakleni (opcional)', icon:'🏊', tag:'descanso', dur:'2.5h',
           desc:'Tarde tranquila a elegir: un taxi-boat (15 min) a las islas Pakleni —calas de agua transparente frente a Hvar, como Palmižana— o simplemente nadar cerca del pueblo y pasear el casco viejo de mármol.',
           tips:['🛥️ Taxi-boats salen del puerto de Hvar todo el día · ~10-15 EUR i/v a Palmižana','🏖️ Si se quedan en el pueblo: la playa de rocas bajo el hotel Amfora'] },
@@ -509,11 +509,11 @@ const CITIES = [
     links:[{label:'Ferry Krilo (Dubrovnik→Hvar)',url:'https://krilo.hr/en/'},{label:'Jadrolinija (ferries)',url:'https://www.jadrolinija.hr/en'},{label:'Fortaleza de Hvar',url:'https://www.google.com/maps/search/Fortica+Hvar'}] },
 
   { id:'estambul', city:'Estambul', region:'Türkiye', emoji:'🕌', color:ACC.estambul, coords:[41.0082,28.9784],
-    desc:'El gran final, hecho a fondo: la ciudad de dos continentes y tres imperios. Base cuatro noches en el Pera Palace (1892), el hotel construido para los pasajeros del Orient Express donde escribía Agatha Christie. Cuatro días para exprimirla: Sultanahmet imperial, el lado asiático con el Bósforo y el hammam, y el gran día de bazares y alfombras. Septiembre: 26°C y luz perfecta. Se llega desde Hvar vía Split el sábado 5 de septiembre —con el día para ver el Palacio de Diocleciano antes del vuelo de la noche— en el directo Split→Estambul de Croatia Airlines (opera mar/jue/sáb; el OU4352 sale 21:10 y aterriza 00:10). Y aquí termina el viaje compartido: el 9 de septiembre cada quien vuela por su lado — el final es a la carta.',
+    desc:'El gran final, hecho a fondo: la ciudad de dos continentes y tres imperios. Base cinco noches en el JW Marriott Bosphorus, un banco del s. XIX convertido en hotel (2020) en Karaköy — el barrio que come y vive de noche, con el tranvía a Sultanahmet y los ferrys a Kadıköy en la puerta. (El mito del Pera Palace no se pierde: té y cóctel ahí el día de bazares.) Cinco días para exprimirla: Sultanahmet imperial, el lado asiático con el Bósforo y el hammam, el gran día de bazares y alfombras, y el día de las Islas Príncipe. Septiembre: 26°C y luz perfecta. Se llega desde Hvar vía Split el sábado 5 de septiembre —con el día para ver el Palacio de Diocleciano antes del vuelo de la noche— en el directo Split→Estambul de Croatia Airlines (opera mar/jue/sáb; el OU4352 sale 21:10 y aterriza 00:10). Y aquí termina el viaje compartido: el 10 de septiembre cada quien vuela por su lado — el final es a la carta.',
     days:[
       { events:[
         { time:'9:00', title:'Checkout + ferry Hvar → Split', icon:'⛴️', tag:'transporte', dur:'~1h',
-          desc:'Catamarán rápido de la mañana de Hvar a Split (Krilo/Jadrolinija, ~1h · 10+ salidas diarias en verano). Checkout del Palace Elisabeth y a bordo. Se llega al puerto de Split, en pleno centro, a un paso del Palacio de Diocleciano.',
+          desc:'Catamarán rápido de la mañana de Hvar a Split (Krilo/Jadrolinija, ~1h · 10+ salidas diarias en verano). Checkout del Adriana y a bordo. Se llega al puerto de Split, en pleno centro, a un paso del Palacio de Diocleciano.',
           tips:['🎟️ Reservar el ferry Hvar→Split con antelación (krilo.hr / jadrolinija.hr) — en ago-sep se llena','🧳 El puerto está a 5 min a pie del casco antiguo — dejar maletas en consigna y explorar'] },
         { time:'10:30', title:'Split: Palacio de Diocleciano (medio día)', icon:'🏛️', tag:'atracción', dur:'2.5h',
           desc:'El regalo de este itinerario: el palacio-fortaleza que el emperador Diocleciano se construyó en el año 305 d.C., y dentro del cual vive hoy media ciudad. Los sótanos abovedados, el Peristilo, el Mausoleo convertido en catedral y el campanario. Patrimonio de la Humanidad, de camino al aeropuerto.',
@@ -527,9 +527,9 @@ const CITIES = [
         { time:'18:15', title:'Aeropuerto de Split (SPU) + vuelo OU4352 a Estambul', icon:'✈️', tag:'transporte', dur:'~2h de vuelo',
           desc:'Traslado al aeropuerto de Split (~25 min del centro) y vuelo directo Croatia Airlines OU4352 → Estambul (IST, lado europeo): sale 21:10 y aterriza 00:10. Opera mar/jue/sáb hasta mediados de octubre; tomamos el del sábado, y por eso hay día completo en Split antes.',
           tips:['⏰ OJO al reservar: en la ruta hay dos vuelos — OU4352 (21:10→00:10) y OU4356 (12:55→15:50). CONFIRMAR cuál opera el sáb 5 sep: si toca el del mediodía, primer ferry (~6:00-7:30) y saltarse Split','🛂 La e-visa turca es OBLIGATORIA para mexicanos (~50 USD pp): tramitar en evisa.gov.tr y llevarla impresa','💱 Sacar liras (TRY) del cajero en llegadas: mejor tasa que casas de cambio'] },
-        { time:'0:30', title:'Llegada de madrugada + check-in Pera Palace', icon:'🏨', tag:'hotel', dur:'1h',
-          desc:'Aterrizaje 00:10 y traslado al hotel-museo de 1892: el cuarto 411 de Agatha Christie, el elevador de hierro original, el bar Orient. Directo a dormir — Estambul empieza mañana.',
-          tips:['🚕 Taxi IST → Pera: ~45-60 min · ~25-35 EUR (de madrugada casi sin tráfico)','📧 Avisar al hotel del late check-in al reservar','😴 Noche corta: el arranque de mañana puede correrse una hora sin culpa'] },
+        { time:'0:30', title:'Llegada de madrugada + check-in JW Marriott (Karaköy)', icon:'🏨', tag:'hotel', dur:'1h',
+          desc:'Aterrizaje 00:10 y traslado al JW Marriott Bosphorus: un banco del siglo XIX convertido en hotel (2020) en Karaköy, con cuartos impecables y hammam propio en el spa. Directo a dormir — Estambul empieza mañana.',
+          tips:['🚕 Taxi IST → Karaköy: ~45-60 min · ~25-35 EUR (de madrugada casi sin tráfico)','📧 Avisar al hotel del late check-in al reservar','😴 Noche corta: el arranque de mañana puede correrse una hora sin culpa'] },
       ]},
       { events:[
         { time:'8:45', title:'Santa Sofía al abrir', icon:'🕌', tag:'atracción', dur:'1.5h',
@@ -554,7 +554,7 @@ const CITIES = [
       { events:[
         { time:'10:00', title:'Hammam Hürrem Sultan (Ayasofya, 1556)', icon:'♨️', tag:'atracción', dur:'2h',
           desc:'El baño de Sinan construido para la esposa de Solimán el Magnífico, entre Santa Sofía y la Mezquita Azul. Dos alas gemelas simultáneas (hombres y mujeres) — los 6 al mismo tiempo. Mármol caliente, espuma, exfoliación kese y té. Sales siendo otra persona.',
-          tips:['📞 RESERVAR online (ayasofyahamami.com) · rituales de 35-110 min · ~85-185 EUR pp','✅ A diferencia de Kılıç Ali Paşa (mujeres de día, hombres de noche), aquí van todos a la misma hora','🚋 Tranvía T1 desde Karaköy a Sultanahmet · 15 min'] },
+          tips:['📞 RESERVAR online (hurremsultanhamami.com) · rituales de 35-110 min · ~85-185 EUR pp','✅ A diferencia de Kılıç Ali Paşa (mujeres de día, hombres de noche), aquí van todos a la misma hora','🚋 Tranvía T1 desde Karaköy a Sultanahmet · 15 min'] },
         { time:'13:00', title:'Ferry a Kadıköy (lado asiático)', icon:'⛴️', tag:'transporte', dur:'25 min',
           desc:'El ferry público por el Bósforo: gaviotas, té en vaso de tulipán, y cruzar de Europa a Asia por 1 euro. El mejor "tour" de la ciudad es el transporte público.',
           tips:['🚶 Del hammam a Eminönü son 12 min cuesta abajo — el ferry sale de ahí cada 15-20 min · pagar con Istanbulkart','☕ El té a bordo: 15 liras y panorámica incluida'] },
@@ -593,16 +593,39 @@ const CITIES = [
         { time:'17:30', title:'Última tarde: cerámica de Iznik + envío de alfombras', icon:'🫙', tag:'compras', dur:'2h',
           desc:'Cerrar la misión: confirmar con el comerciante el envío puerta a puerta de las alfombras (con seguro y factura para la aduana) y una última vuelta por cerámica de Iznik, lámparas y toallas peshtemal antes de despedir Estambul.',
           tips:['📦 Guardar SIEMPRE la factura detallada para la aduana mexicana','🫙 Iznik auténtico: pintado a mano, el rojo coral es la firma','🍯 Karaköy Güllüoğlu: baklava de pistache al vacío para llevar a México'] },
-        { time:'21:00', title:'LA CENA DE DESPEDIDA · Mikla', icon:'⭐', tag:'comida', dur:'2.5h',
-          desc:'La azotea del Marmara Pera: alta cocina turco-escandinava de Mehmet Gürs con vista de 360° a toda la ciudad. La última cena del grupo completo — mañana cada quien vuela por su lado, así que el brindis grande es hoy.',
-          tips:['📞 RESERVAR con semanas (miklarestaurant.com) · mesa de terraza','💰 Menú degustación ~100-120 EUR pp · a la carta ~70-80','👔 Elegante-casual · a 5 min a pie del Pera Palace','🥂 El brindis del viaje: de Vigo a Estambul, por los novios'] },
+        { time:'21:00', title:'Cena de mezedes en Asmalımescit o Cihangir', icon:'🍽️', tag:'comida', dur:'2h',
+          desc:'Después del día de bazares, cena relajada en los barrios bohemios de Pera: mezedes, rakı y buena mesa sin turistas. Las alfombras ya están comprando su boleto a México.',
+          tips:['📞 Reservar si es fin de semana · ~25-35 EUR pp','🧿 Brindis por la misión cumplida de mamá'] },
       ]},
       { events:[
-        { time:'9:30', title:'Desayuno largo + última vuelta por Pera', icon:'☕', tag:'descanso', dur:'2h',
-          desc:'La mañana final, sin plan: desayuno turco largo en el hotel o en Karaköy, una última baklava de Güllüoğlu, y las fotos que faltan de la Torre de Gálata. El viaje compartido termina hoy — cada quien tiene su vuelo a su hora.',
+        { time:'9:30', title:'Ferry a las Islas Príncipe (Büyükada)', icon:'⛴️', tag:'transporte', dur:'~1h20m',
+          desc:'El regalo de la noche extra: ferry por el Mar de Mármara al archipiélago de las Islas Príncipe. Büyükada, la mayor, es un pueblo de mansiones otomanas de madera SIN coches — solo bicis, carros eléctricos y caminata. El respiro perfecto antes de las despedidas.',
+          tips:['⛴️ Şehir Hatları desde Eminönü (a 10 min del JW cruzando el puente) · ~1h20m · pagar con Istanbulkart','🪑 Cubierta trasera con té para ver la ciudad alejándose','🍢 Alt del día: Bursa en ferry+coche (~2h) para el iskender kebab original — más pesado; Büyükada gana en calma'] },
+        { time:'11:00', title:'Büyükada en bici + mansiones de madera', icon:'🚲', tag:'atracción', dur:'2h',
+          desc:'Recorrer la isla en bicicleta: pinares, villas victorianas de madera en tonos pastel, la casa donde Trotsky vivió exiliado, y calas de agua clara. Ni un solo coche.',
+          tips:['🚲 Renta de bicis junto al muelle · ~€8-10 el día','🥵 Con calor, un carro eléctrico turístico da la vuelta a la isla sin pedalear'] },
+        { time:'13:30', title:'Comida de mariscos frente al mar', icon:'🦐', tag:'comida', dur:'1.5h',
+          desc:'Meze y pescado fresco en una terraza del malecón de Büyükada, viendo los barcos. El ritmo isleño, a una hora de la megalópolis.',
+          tips:['🐟 Pescado del día al peso · confirmar el precio antes','🍧 De postre, un dondurma (helado turco elástico) en el paseo'] },
+        { time:'15:00', title:'Subida a Aya Yorgi (San Jorge)', icon:'⛪', tag:'atracción', dur:'2h',
+          desc:'Caminata (o carro) a la colina más alta: la iglesia ortodoxa de San Jorge, con hilos de deseos atados en el sendero y la vista del Mármara y de Estambul entera a lo lejos.',
+          tips:['🥾 Subida de ~25 min a pie desde la plaza de los carros — vale cada paso','⏰ Bajar a tiempo para el ferry de ~17:30'] },
+        { time:'17:30', title:'Ferry de regreso al atardecer', icon:'🌇', tag:'transporte', dur:'~1h20m',
+          desc:'Vuelta a Europa con el sol cayendo sobre la silueta de minaretes y la Torre de Gálata. La mejor postal de Estambul es desde el agua — y directo a la gran noche final.',
+          tips:['📷 Estribor a la vuelta para la ciudad vieja a contraluz'] },
+        { time:'19:45', title:'Cóctel en el Pera Palace (1892): Orient Bar', icon:'🍸', tag:'atracción', dur:'1h',
+          desc:'La romance del Orient Express, en dosis perfecta: el hotel-museo donde escribía Agatha Christie (cuarto 411), el elevador de hierro de 1892 y un cóctel en el Orient Bar. A 3 min a pie de Mikla.',
+          tips:['🛗 Pedir ver el elevador histórico y el lobby — son museo vivo','🫖 Si se prefiere té: el Kubbeli Saloon sirve hasta ~19h'] },
+        { time:'21:15', title:'LA CENA DE DESPEDIDA · Mikla', icon:'⭐', tag:'comida', dur:'2.5h',
+          desc:'La azotea del Marmara Pera: alta cocina turco-escandinava de Mehmet Gürs con vista de 360° a toda la ciudad. La última cena del grupo completo, en la última noche — mañana cada quien vuela por su lado, así que el brindis grande es hoy.',
+          tips:['📞 RESERVAR con semanas (miklarestaurant.com) · mesa de terraza','💰 Menú degustación ~100-120 EUR pp · a la carta ~70-80','👔 Elegante-casual · a 5 min en taxi (o 15 a pie, cuesta arriba) desde el JW','🥂 El brindis del viaje: de Vigo a Estambul, por los novios'] },
+      ]},
+      { events:[
+        { time:'9:30', title:'Desayuno largo + última vuelta por Karaköy', icon:'☕', tag:'descanso', dur:'2h',
+          desc:'La mañana final, sin plan: desayuno turco largo en el hotel o en los cafés de Karaköy a la vuelta, una última baklava de Güllüoğlu (a 3 min), y las fotos que faltan de la Torre de Gálata. El viaje compartido termina hoy — cada quien tiene su vuelo a su hora.',
           tips:['🍯 Karaköy Güllüoğlu: baklava al vacío para la maleta, de una vez','📷 Última subida a la Torre de Gálata o café con vista en Pera'] },
         { time:'12:00', title:'Checkout + despedidas: fin del viaje compartido', icon:'👋', tag:'logística',
-          desc:'Checkout del Pera Palace y el final a la carta: cada quien sale a su aeropuerto según su vuelo. Los del vuelo tarde dejan maletas en consigna del hotel y exprimen unas horas más. El hermano y su esposa siguen a Madrid unos días (Botín y Toledo los esperan); los demás, rumbo a casa.',
+          desc:'Checkout del JW Marriott y el final a la carta: cada quien sale a su aeropuerto según su vuelo. Los del vuelo tarde dejan maletas en consigna del hotel y exprimen unas horas más. El hermano y su esposa siguen a Madrid unos días (Botín y Toledo los esperan); los demás, rumbo a casa.',
           tips:['🧳 El hotel guarda maletas después del checkout — exprimir hasta la última hora','✈️ Al aeropuerto IST: salir 3.5-4h antes del vuelo (45-60 min de camino + filas de migración)','🚕 Confirmar de qué aeropuerto sale cada vuelo: IST (europeo) o Sabiha Gökçen (SAW, asiático — queda a 1h+)','📱 Grupo de WhatsApp del viaje: avisar al aterrizar cada quien'] },
       ]},
     ],
@@ -614,13 +637,13 @@ const CITIES = [
       '🍲 Matbah / Deraliye (Sultanahmet) — cocina otomana de palacio · abren a diario',
       '🍽️ Karaköy Lokantası — el clásico moderno de mezedes',
       '🍯 Karaköy Güllüoğlu — la baklava definitiva, de pie con café' ],
-    links:[{label:'Reservar Mikla',url:'https://www.miklarestaurant.com'},{label:'Hammam Hürrem Sultan',url:'https://ayasofyahamami.com'},{label:'E-visa Türkiye',url:'https://www.evisa.gov.tr'}] },
+    links:[{label:'Reservar Mikla',url:'https://www.miklarestaurant.com'},{label:'Hammam Hürrem Sultan',url:'https://www.hurremsultanhamami.com/en'},{label:'E-visa Türkiye',url:'https://www.evisa.gov.tr'}] },
 
 ];
 
 const RESERVATIONS = [
   { id:'flight-main', em:'✅', city:'Vuelos', name:'Ida: México → Madrid ✓ (vuelo de Daniel)', date:'25 Ago 11:15 → 26 Ago 5:50', deadline:'✅ CONFIRMADO — cada quien llega a Madrid por su lado', cat:'Transporte', done:true,
-    note:'CONFIRMADO (a nombre de Daniel): MEX → MAD directo, mar 25 ago 11:15 → mié 26 ago 5:50 (10h35m). Llegada de madrugada: pedir early check-in en el Urban. El grupo converge en Madrid: cada quien reserva su propia llegada — punto de encuentro, Hotel Urban, mié 26 ago. La salida es desde Estambul, cada quien la suya (ver "Salidas de Estambul").', link:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-25' },
+    note:'CONFIRMADO (a nombre de Daniel): MEX → MAD directo, mar 25 ago 11:15 → mié 26 ago 5:50 (10h35m). Llegada de madrugada: pedir early check-in en CoolRooms. El grupo converge en Madrid: cada quien reserva su propia llegada — punto de encuentro, CoolRooms Palacio de Atocha, mié 26 ago. La salida es desde Estambul, cada quien la suya (ver "Salidas de Estambul").', link:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-25' },
   { id:'flight-vgo', em:'✈️', city:'España', name:'Vuelo Madrid → Vigo · 28 Ago', date:'28 Ago ~12:00 · ~1h15m', deadline:'🟢 Reservar pronto (pocas frecuencias)', cat:'Transporte', done:false,
     note:'Iberia/Air Nostrum MAD (Barajas) → VGO (Peinador), directo ~1h15m. Sale a mediodía del viernes para llegar a media tarde a Vigo (ostras + Maruja Limón). ~1,500-2,800 MXN pp. Facturar maletas de boda. Peinador → centro: taxi ~20-25 EUR.', link:'https://www.google.com/travel/flights?q=Flights%20from%20MAD%20to%20VGO%20on%202026-08-28' },
   { id:'flight-bcn', em:'✈️', city:'España', name:'Vuelo Vigo → Barcelona · 30 Ago', date:'30 Ago (mañana) · ~1h45m', deadline:'🟠 Reservar pronto', cat:'Transporte', done:false,
@@ -631,34 +654,34 @@ const RESERVATIONS = [
     note:'Catamarán rápido Kapetan Luka (Krilo) o Jadrolinija por la costa dálmata, con parada en Korčula. ~35-45 EUR pp. Reservar en krilo.hr / jadrolinija.hr con antelación. Asiento en cubierta exterior para la costa.', link:'https://krilo.hr/en/' },
   { id:'flight-ist', em:'✈️', city:'Türkiye', name:'Hvar → Split → Estambul · 5 Sep (sáb)', date:'5 Sep · ferry + día en Split + vuelo 21:10', deadline:'🟠 Croatia Airlines vuela mar/jue/sáb — tomamos el sábado', cat:'Transporte', done:false,
     note:'Sáb 5 sep: ferry matinal Hvar→Split (Krilo/Jadrolinija, ~1h), día en Split (Palacio de Diocleciano) y vuelo directo Croatia Airlines Split (SPU) → Estambul (IST), ~2h. Único directo, opera mar/jue/sáb hasta mediados de octubre. OJO: en la ruta hay dos vuelos — OU4352 (21:10→00:10) y OU4356 (12:55→15:50) — CONFIRMAR cuál opera el sábado al reservar; si toca el del mediodía, primer ferry y saltarse Split. ~2,500-4,000 MXN pp. Alternativa: escala vía Múnich/Viena (~6-7h).', link:'https://www.google.com/travel/flights?q=Flights%20from%20SPU%20to%20IST%20on%202026-09-05' },
-  { id:'flight-madret', em:'👋', city:'Vuelos', name:'Salidas de Estambul · 9 Sep — cada quien su vuelo', date:'9 Sep · final a la carta', deadline:'🔴 Cada pareja reserva su propia salida — coordinar antes de comprar', cat:'Transporte', done:false,
-    note:'El viaje compartido termina en Estambul el 9 sep: cada quien vuela por su lado. Hermano + esposa: IST→MAD directo (Turkish/Iberia, ~4h30m) para su coda madrileña (Botín, Toledo). A México: Turkish Airlines IST→MEX (con escala en Cancún) o vía Europa. OJO: confirmar de qué aeropuerto sale cada vuelo — IST (europeo) o Sabiha Gökçen (SAW, lado asiático, a 1h+). El hotel guarda maletas para los vuelos de la tarde.', link:'https://www.google.com/travel/flights?q=Flights%20from%20IST%20on%202026-09-09' },
+  { id:'flight-madret', em:'👋', city:'Vuelos', name:'Salidas de Estambul · 10 Sep — cada quien su vuelo', date:'10 Sep · final a la carta', deadline:'🔴 Cada pareja reserva su propia salida — coordinar antes de comprar', cat:'Transporte', done:false,
+    note:'El viaje compartido termina en Estambul el 10 sep: cada quien vuela por su lado. Hermano + esposa: IST→MAD directo (Turkish/Iberia, ~4h30m) para su coda madrileña (Botín, Toledo). A México: Turkish Airlines IST→MEX (con escala en Cancún) o vía Europa. OJO: confirmar de qué aeropuerto sale cada vuelo — IST (europeo) o Sabiha Gökçen (SAW, lado asiático, a 1h+). El hotel guarda maletas para los vuelos de la tarde.', link:'https://www.google.com/travel/flights?q=Flights%20from%20IST%20on%202026-09-10' },
   { id:'hotel-vigo', em:'✅', city:'Galicia', name:'AC Hotel Palacio Universal (Marriott) · 2 noches', date:'28–30 Ago · CONFIRMADO', deadline:'✅ COMPRADO — Amex Viajes #31094043', cat:'Hoteles', done:true,
     note:'RESERVA CONFIRMADA (comprada 12 jul, en mensualidades). Compra #31094043 · $22,595.70 MXN · 3 habitaciones (2 con ocean view) · entrada vie 28/08 15:00, salida dom 30/08 12:00 · Cánovas del Castillo 28, Vigo · tel 986 449 250 · reembolsable antes del 28/08.', link:'https://www.google.com/maps/search/AC+Hotel+Palacio+Universal+Vigo' },
-  { id:'hotel-mad', em:'🏨', city:'Madrid', name:'Hotel Urban 5★ GL · llegada · 2 noches', date:'26–28 Ago (2 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
-    note:'El punto de encuentro del grupo: cada quien reserva sus noches según su llegada (Daniel entra el 26 de madrugada — pedir early check-in; el vuelo aterriza 5:50). La noche del 27 ya están todos. 3 habitaciones · ~6,000 MXN/hab/noche. Carrera de San Jerónimo, azotea con alberca, todo el centro a pie.', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
-  { id:'hotel-bcn', em:'🏨', city:'Barcelona', name:'Hotel 1898 5★ (La Rambla) · 2 noches', date:'30 Ago–1 Sep (2 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
-    note:'Sobre La Rambla, azotea con alberca, a pie del Barrio Gótico y del Born. 3 habitaciones · ~6,500 MXN/hab/noche. Alt: Cotton House Hotel en el Eixample.', link:'https://www.booking.com/hotel/es/1898.html?checkin=2026-08-30&checkout=2026-09-01&group_adults=6&no_rooms=3&group_children=0' },
+  { id:'hotel-mad', em:'🏨', city:'Madrid', name:'CoolRooms Palacio de Atocha · llegada · 2 noches', date:'26–28 Ago (2 noches)', deadline:'🔴 Solo 34 habitaciones — reservar YA las 3 dobles', cat:'Hoteles', done:false,
+    note:'El punto de encuentro del grupo: palacete de 1852 rehecho en 2019, 9.5/10, cuartos enormes con tinas exentas, patio-jardín con alberca, borde del Barrio de las Letras. ~€210-290/hab/noche (~4,500-5,800 MXN) — MEJOR y más barato que el Urban (cuartos 2004 ya cansados). Cada quien reserva sus noches según su llegada (Daniel entra el 26 de madrugada — pedir early check-in; aterriza 5:50). La noche del 27 ya están todos. Pedir cuartos al patio-jardín, lejos de las áreas de servicio.', link:'https://coolrooms.com/palaciodeatocha/en/' },
+  { id:'hotel-bcn', em:'🏨', city:'Barcelona', name:'Grand Hotel Central 5★ (Born) · 2 noches', date:'30 Ago–1 Sep (2 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
+    note:'Via Laietana 30, al borde del Born: renovación total 2023, alberca infinity en la azotea con vista a la Catedral. ~€330-400/hab/noche (~7,000 MXN). Reservar UNA categoría arriba de la base (los cuartos de entrada son chicos — la queja #1) y piso alto interior/trasero. Las obras de Laietana terminaron jun 2025: la calle quedó a 3 carriles y en calma. Sustituye al 1898: su puerta daba a La Rambla — el corredor más carterista de Europa — y cuartos de 2005. Alt valor: H10 Casa Mimosa (9.4/10, junto a La Pedrera, ~€250).', link:'https://www.grandhotelcentral.com/en/' },
   { id:'hotel-dbv', em:'🏨', city:'Croacia', name:'Hotel Excelsior, Dubrovnik · 2 noches', date:'1–3 Sep (2 noches)', deadline:'🟠 Reservar pronto (se agota en temporada)', cat:'Hoteles', done:false,
-    note:'5★ frente al Adriático, a 10 min a pie de la Ciudad Vieja, con plataforma de baño al mar. 3 habitaciones · ~7,000 MXN/hab/noche. Pedir vista al mar y a las murallas. Alt: Villa Dubrovnik.', link:'https://www.booking.com/hotel/hr/excelsior-dubrovnik.html?checkin=2026-09-01&checkout=2026-09-03&group_adults=6&no_rooms=3&group_children=0' },
-  { id:'hotel-hvar', em:'🏨', city:'Croacia', name:'Palace Elisabeth, Hvar · 2 noches', date:'3–5 Sep (2 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
-    note:'El hotel histórico de Hvar, en la plaza central (Pjaca) frente al puerto. 3 habitaciones · ~7,500 MXN/hab/noche. Dos noches relajadas (día de islas Pakleni) antes del salto a Estambul. Alt: Adriana Hvar Spa Hotel.', link:'https://www.booking.com/hotel/hr/palace-hvar.html?checkin=2026-09-03&checkout=2026-09-05&group_adults=6&no_rooms=3&group_children=0' },
-  { id:'hotel-ist', em:'🏨', city:'Türkiye', name:'Pera Palace 1892 · 4 noches', date:'5–9 Sep (4 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
-    note:'3 habitaciones · ~6,400 MXN/hab/noche. Pedir cuarto con vista al Cuerno de Oro. 4 noches: Sultanahmet, lado asiático con el Bósforo y el gran día de bazares/alfombras.', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-05&checkout=2026-09-09&group_adults=6&no_rooms=3&group_children=0' },
+    note:'5★ frente al Adriático, a 10 min a pie (plano) de la Puerta de Ploče — el lado tranquilo, lejos del embudo de cruceros. Renovación completa 2017, plataforma de baño al mar + alberca interior. IMPORTANTE: reservar categoría SEA VIEW (~€400/hab/noche, ~8,000 MXN) — las habitaciones de entrada son chicas y oscuras; la vista al Old Town/Lokrum ES el hotel. Confirmado por research: mejor 5★ de Dubrovnik en presupuesto para estas fechas.', link:'https://www.adriaticluxuryhotels.com/hotel-excelsior-dubrovnik/' },
+  { id:'hotel-hvar', em:'🏨', city:'Croacia', name:'Adriana Hvar Spa Hotel · 2 noches', date:'3–5 Sep (2 noches)', deadline:'🔴 Tarifa web €445 con SOLO 5 cuartos — reservar YA', cat:'Hoteles', done:false,
+    note:'Frente al casco viejo cruzando el puerto: alberca infinity de agua de mar en la azotea, el mejor spa de la isla y vista de postal a la Pjaca/fortaleza. A 5 min a pie del muelle del catamarán. Tarifa web verificada para estas fechas: €445/noche Superior (quedan 5 — justo para las 3 dobles), €552 sea view (~8,900-11,000 MXN). PEDIR piso medio lejos de la marina (ni top: bar en azotea; ni 1º: ruido de desayuno) + aviso: baños de mampara semi-abierta. El plan anterior (Palace Elisabeth) cotiza €650-1,130/noche en estas fechas — 3× presupuesto; su romance se visita, no se duerme.', link:'https://www.suncanihvar.com/adriana' },
+  { id:'hotel-ist', em:'🏨', city:'Türkiye', name:'JW Marriott Istanbul Bosphorus (Karaköy) · 5 noches', date:'5–10 Sep (5 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
+    note:'Banco del s. XIX convertido en hotel (2020) en Karaköy: cuartos impecables y modernos, spa con hammam propio, a 2 min del tranvía T1 a Sultanahmet y de los ferrys a Kadıköy — el barrio bueno de noche. ~€340-450/hab/noche (~7,000-9,000 MXN). PEDIR piso medio vista al Bósforo — ni el último (bar Sky Karaköy hasta 2am) ni los bajos a la calle. Sustituye al Pera Palace (cuartos renovación 2010, baños chicos, ruido del bulevar; responde a la duda de mamá: Karaköy es mejor ubicación). La romance del Pera queda agendada: cóctel en el Orient Bar el 8 sep antes de Mikla.', link:'https://www.marriott.com/en-us/hotels/istjb-jw-marriott-istanbul-bosphorus/overview/' },
   { id:'hammam', em:'♨️', city:'Türkiye', name:'Hammam Hürrem Sultan (Ayasofya) · 7 Sep', date:'7 Sep 10:00', deadline:'🟠 Reservar online', cat:'Tickets', done:false,
-    note:'Alas simultáneas hombres/mujeres: los 6 a la misma hora. Ritual ~2,500-3,200 MXN pp. (Kılıç Ali Paşa separa por horarios: mujeres de día, hombres de noche — por eso no.)', link:'https://ayasofyahamami.com' },
+    note:'Alas simultáneas hombres/mujeres: los 6 a la misma hora. Ritual ~2,500-3,200 MXN pp. (Kılıç Ali Paşa separa por horarios: mujeres de día, hombres de noche — por eso no.)', link:'https://www.hurremsultanhamami.com/en' },
   { id:'resto-maruja', em:'⭐', city:'Galicia', name:'Maruja Limón (1★) · cena bienvenida 28 Ago', date:'28 Ago 21:30', deadline:'🟠 Agosto se llena', cat:'Restaurantes', done:false,
     note:'Mesa para 5. Cena la noche de llegada a Vigo, antes de la boda. Menú ~2,200 MXN pp.', link:'https://marujalimon.es' },
   { id:'resto-nautika', em:'🍽️', city:'Croacia', name:'Nautika, Dubrovnik · cena 2 Sep', date:'2 Sep 20:00', deadline:'🟠 Semanas de anticipación', cat:'Restaurantes', done:false,
     note:'El clásico de alta cocina de Dubrovnik, junto a la Puerta de Pile con vista a los fuertes iluminados. Terraza baja. ~1,600-2,000 MXN pp.', link:'https://nautikarestaurants.com' },
-  { id:'resto-mikla', em:'🌃', city:'Türkiye', name:'Mikla · LA cena de despedida del grupo · 8 Sep', date:'8 Sep 21:00', deadline:'🟠 Semanas de anticipación', cat:'Restaurantes', done:false,
-    note:'Mesa de terraza. Degustación ~2,400 MXN pp. La última cena del grupo completo: al día siguiente cada quien vuela por su lado.', link:'https://www.miklarestaurant.com' },
+  { id:'resto-mikla', em:'🌃', city:'Türkiye', name:'Mikla · LA cena de despedida del grupo · 9 Sep', date:'9 Sep 21:15', deadline:'🟠 Semanas de anticipación', cat:'Restaurantes', done:false,
+    note:'Mesa de terraza. Degustación ~2,400 MXN pp. La última noche del viaje (9 sep, tras el día en Büyükada): al día siguiente cada quien vuela por su lado. Antes, cóctel en el Orient Bar del Pera Palace, a 3 min.', link:'https://www.miklarestaurant.com' },
   { id:'visa-tr', em:'🛂', city:'Türkiye', name:'E-visa Türkiye (obligatoria · ~50 USD pp) × 5', date:'Antes del viaje', deadline:'🔴 Obligatoria — 5 min en línea', cat:'Documentos', done:false,
     note:'Los mexicanos SÍ requieren e-visa: ~50 USD pp en evisa.gov.tr (el ÚNICO sitio oficial — ojo con imitaciones que cobran de más), pago con tarjeta, trámite de 5 min. Pasaporte con 6+ meses de vigencia. Solicitar mínimo 3 días hábiles antes y llevar el PDF impreso + en el celular. Válida 180 días, estancia hasta 30. (Croacia y España: Schengen, sin visa para mexicanos.)', link:'https://www.evisa.gov.tr' },
   { id:'alfombras', em:'🧶', city:'Türkiye', name:'Alfombras de mamá: presupuesto + envío', date:'Estambul · 8 Sep (día de bazares)', deadline:'🟢 Decidir antes: presupuesto y método de envío', cat:'Compras', done:false,
     note:'Definir presupuesto (lana buena: ~€800-3,000) y si se envía puerta a puerta con seguro (~€150-350) o se lleva como equipaje documentado. Llevar EUR/USD en efectivo para regatear. Pedir SIEMPRE factura detallada (material, origen, medidas, "hecho a mano") para la aduana mexicana. Zonas serias: alfombreros del Gran Bazar (Halıcılar) y Arasta Bazaar. Evitar piezas antiguas de 100+ años (requieren permiso de exportación).', link:'' },
   { id:'seguro', em:'🏥', city:'General', name:'Seguro de viaje (6 personas)', date:'Antes del viaje', deadline:'🟠 No negociable', cat:'Documentos', done:false,
-    note:'Cobertura médica + cancelación. El tramo compartido es 25 ago–9 sep (~16 días, España/Croacia/Türkiye) — cada quien extiende su póliza hasta su fecha real de regreso. ~900-1,300 MXN pp.', link:'' },
+    note:'Cobertura médica + cancelación. El tramo compartido es 25 ago–10 sep (~17 días, España/Croacia/Türkiye) — cada quien extiende su póliza hasta su fecha real de regreso. ~900-1,300 MXN pp.', link:'' },
 ];
 
 const BUDGET = [
@@ -671,17 +694,17 @@ const BUDGET = [
     { k:'v_madret', label:'Salida IST → MAD (hermano + esposa) · tramo extra', def:10000 },
     { k:'v_extra', label:'Equipaje documentado + asientos', def:12000 } ]},
   { cat:'🏨 Hoteles (3 habitaciones)', items:[
-    { k:'h_mad', label:'Hotel Urban, Madrid · llegada · 2 noches', def:36000 },
+    { k:'h_mad', label:'CoolRooms Palacio de Atocha · llegada · 2 noches', def:30000 },
     { k:'h_vgo', label:'AC Palacio Universal, Vigo · 2 noches ✅', def:22596 },
-    { k:'h_bcn', label:'Hotel 1898, Barcelona · 2 noches', def:39000 },
-    { k:'h_dbv', label:'Excelsior, Dubrovnik · 2 noches', def:42000 },
-    { k:'h_hvar', label:'Palace Elisabeth, Hvar · 2 noches', def:45000 },
-    { k:'h_ist', label:'Pera Palace, Estambul · 4 noches', def:76800 } ]},
+    { k:'h_bcn', label:'Grand Hotel Central, Barcelona · 2 noches', def:42000 },
+    { k:'h_dbv', label:'Excelsior (sea view), Dubrovnik · 2 noches', def:48000 },
+    { k:'h_hvar', label:'Adriana Hvar Spa (tarifa web €445), Hvar · 2 noches', def:53000 },
+    { k:'h_ist', label:'JW Marriott Bosphorus, Estambul · 5 noches', def:115000 } ]},
   { cat:'⛴️ Ferries de Croacia', items:[
     { k:'f_hvar', label:'Ferry Dubrovnik → Hvar (6p)', def:2400 },
     { k:'f_split', label:'Ferry Hvar → Split (6p)', def:1800 } ]},
-  { cat:'🍽️ Comida (~14 días)', items:[
-    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:88000 },
+  { cat:'🍽️ Comida (~15 días)', items:[
+    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:94000 },
     { k:'c_esp', label:'Cenas especiales: Maruja Limón, Nautika, Mikla', def:24000 },
     { k:'c_vino', label:'Vinos, cafés, helados, antojos', def:10000 } ]},
   { cat:'🚕 Transporte local', items:[
@@ -906,6 +929,7 @@ const TRAVELIN = {
   'hvar':         { ic:'⛴️', mode:'Ferry Dubrovnik → Hvar', dur:'~3h45m' },
   'estambul':     { ic:'✈️', mode:'Hvar → Split → Estambul (ferry + vuelo directo)', dur:'~5h' },
 };
+const NIGHTS = { madrid:'2 noches', galicia:'2 noches', barcelona:'2 noches', dubrovnik:'2 noches', hvar:'2 noches', estambul:'5 noches' };
 function renderOverview(){
   const seen=[], legs=[];
   AGENDA.forEach(function(a){ if(seen.indexOf(a.cityId)<0){ seen.push(a.cityId); legs.push(a); } });
@@ -916,8 +940,9 @@ function renderOverview(){
     return p[1]+' '+p[2]+' – '+q[1]+' '+q[2];
   }
   let h='<div class="wrap">';
-  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 9 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div></div>';
+  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 10 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div></div>';
   h += '<div class="ovl">';
+  h += '<div class="ovl-move"><span class="ovl-mi">✈️</span>Vuelo de Daniel ✓ CONFIRMADO: MEX mar 25 · 11:15 → MAD mié 26 · 5:50 am (10h35m) · los demás llegan por su lado</div>';
   legs.forEach(function(a){
     const inCity=AGENDA.filter(function(x){ return x.cityId===a.cityId; });
     const first=inCity[0], last=inCity[inCity.length-1];
@@ -929,7 +954,7 @@ function renderOverview(){
       + '<span class="ovl-dot" style="background:'+a.color+'"></span>'
       + '<span class="ovl-em">'+a.emoji+'</span>'
       + '<span class="ovl-name">'+esc(place)+'</span>'
-      + '<span class="ovl-dates">'+esc(range)+'</span>'
+      + '<span class="ovl-dates">'+esc(range)+(NIGHTS[a.cityId]?' · '+NIGHTS[a.cityId]:'')+'</span>'
       + '</button>';
   });
   h += '</div></div>';
@@ -974,7 +999,7 @@ function ensureMap(){
   ];
   LEGINFO=[];
   const OCEAN=[
-    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.82, dur:'10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo CONFIRMADO ✓ · 10h35m','Sale mar 25 ago 11:15, aterriza mié 26 a las 5:50 am']},
+    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.62, dur:'10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo CONFIRMADO ✓ · 10h35m','Sale mar 25 ago 11:15, aterriza mié 26 a las 5:50 am']},
   ];
   OCEAN.forEach(function(o){
     L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
@@ -983,10 +1008,11 @@ function ensureMap(){
     L.marker(q,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:#F59E0B" onclick="showLeg(LEGINFO['+idx+'])">✈️ '+o.dur+'</span>',iconSize:[0,0]})}).addTo(map);
   });
   L.circleMarker(MX,{radius:7,color:'#fff',weight:2,fillColor:'#EF4444',fillOpacity:1}).addTo(map).bindTooltip('México · inicio',{className:'city-tooltip',direction:'top'});
+  const LABEL_AT=[0.5,0.72,0.5,0.42,0.56]; // fracción del arco donde vive cada pastilla — esquiva los nombres de ciudad
   for(let i=0;i<route.length-1;i++){
     const m=MODE[legs[i].mode], pts=arcPts(route[i].coords,route[i+1].coords,m.bend);
     L.polyline(pts,{color:m.c,weight:2.2,opacity:.9,dashArray:m.dash}).addTo(map);
-    const mid=pts[Math.floor(pts.length/2)];
+    const mid=pts[Math.floor(pts.length*(LABEL_AT[i]!==undefined?LABEL_AT[i]:0.5))];
     const idx=LEGINFO.push({name:legs[i].name,detail:legs[i].detail})-1;
     L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:'+m.c+'" onclick="showLeg(LEGINFO['+idx+'])">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
   }
@@ -999,7 +1025,7 @@ function ensureMap(){
     plotted[ck]=true;
     const nm=({madrid:'Madrid',galicia:'Vigo',barcelona:'Barcelona',dubrovnik:'Dubrovnik',hvar:'Hvar',estambul:'Estambul'})[c.id]||c.city.replace('✈️ ','').split(' · ')[0];
     const dir=({madrid:'left',galicia:'top',barcelona:'bottom',dubrovnik:'left',hvar:'bottom',estambul:'top'})[c.id]||'left';
-    const off=dir==='right'?[10,0]:dir==='left'?[-10,0]:dir==='top'?[0,-8]:[0,8];
+    const off=dir==='right'?[13,0]:dir==='left'?[-13,0]:dir==='top'?[0,-11]:[0,11];
     const mk=L.circleMarker(c.coords,{radius:6,color:'#fff',weight:2,fillColor:c.color,fillOpacity:1}).addTo(map);
     mk.bindTooltip(nm,{className:'city-tooltip',permanent:true,direction:dir,offset:off});
     mk.on('click',function(){ const fd=AGENDA.find(a=>a.cityId===c.id); if(fd) setDay(fd.day); });
