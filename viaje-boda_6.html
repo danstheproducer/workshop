@@ -239,8 +239,8 @@
       <div class="brand">
         <span class="em" onclick="ringTap()" title="Toca el sol"><svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E7C7B"/><circle cx="32" cy="26" r="11" fill="#F4C15D"/><path d="M6 42 q6.5 -7 13 0 t13 0 t13 0 t13 0" fill="none" stroke="#FDF0D5" stroke-width="3.4" stroke-linecap="round"/><path d="M6 51 q6.5 -7 13 0 t13 0 t13 0 t13 0" fill="none" stroke="#FDF0D5" stroke-width="3.4" stroke-linecap="round"/></svg></span>
         <div>
-          <div class="t1">Boda + Viaje · 19 días</div>
-          <div class="t2">🇪🇸 Madrid · Galicia · Barcelona · 🇭🇷 Croacia · 🇹🇷 Türkiye · 6 viajeros · Ago 25 – Sep 12</div>
+          <div class="t1">Boda + Viaje · 14 días</div>
+          <div class="t2">🇪🇸 Madrid · Galicia · Barcelona · 🇭🇷 Croacia · 🇹🇷 Türkiye · 6 viajeros · Ago 27 – Sep 9</div>
         </div>
       </div>
       <div class="topbtns">
@@ -283,54 +283,22 @@ const TAG = { transporte:'#60A5FA', hotel:'#F97316', atracción:'#8B5CF6', comid
 const ACC = { 'vuelo-ida':'#94A3B8', madrid:'#F59E0B', galicia:'#F97316', barcelona:'#F43F5E', dubrovnik:'#0EA5E9', hvar:'#06B6D4', estambul:'#EF4444' };
 
 const HOTELS = {
-  madrid:   { name:'Hotel Urban 5★ GL', sub:'Carrera de San Jerónimo 34 · azotea con alberca · arte de Papúa en el lobby · llegada 26 ago (2 noches)', alt:'Alt: Palacio de los Duques Gran Meliá — más palaciego, junto al Palacio Real (~€380/n)', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
+  madrid:   { name:'Hotel Urban 5★ GL', sub:'Carrera de San Jerónimo 34 · azotea con alberca · arte de Papúa en el lobby · cada quien entra según su llegada; el 27 ya estamos todos', alt:'Alt: Palacio de los Duques Gran Meliá — más palaciego, junto al Palacio Real (~€380/n)', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
   galicia:  { name:'AC Hotel Palacio Universal (Marriott) ✓', sub:'Cánovas del Castillo 28, Vigo · frente al puerto, habitaciones con vista al mar · a ~30 min del Pazo de Cea', alt:'RESERVA CONFIRMADA · Amex Viajes #31094043 · entrada vie 28 ago 15:00, salida dom 30 ago 12:00 · 3 hab (2 con ocean view)', link:'https://www.google.com/maps/search/AC+Hotel+Palacio+Universal+Vigo' },
   barcelona:{ name:'Hotel 1898 5★', sub:'La Rambla 109 · azotea con alberca y vista a la ciudad · edificio histórico de la Compañía de Tabacos de Filipinas · a pie del Barrio Gótico', alt:'Alt: Cotton House Hotel (Autograph) — palacete señorial en el Eixample (~€300/n)', link:'https://www.booking.com/hotel/es/1898.html?checkin=2026-08-30&checkout=2026-09-01&group_adults=6&no_rooms=3&group_children=0' },
   dubrovnik:{ name:'Hotel Excelsior 5★', sub:'Frente al Adriático, a 10 min a pie de la Ciudad Vieja · terrazas sobre el mar y vista a la isla de Lokrum', alt:'Alt: Villa Dubrovnik — boutique sobre el acantilado, solo adultos (~€450/n). Dentro de murallas: Prijeko Palace', link:'https://www.booking.com/hotel/hr/excelsior-dubrovnik.html?checkin=2026-09-01&checkout=2026-09-03&group_adults=6&no_rooms=3&group_children=0' },
   hvar:     { name:'Palace Elisabeth Hvar Heritage Hotel 5★', sub:'En la plaza central (Pjaca) de Hvar, frente al puerto · el hotel más histórico de la isla, junto a la Catedral · 2 noches (3–5 sep)', alt:'Alt: Adriana Hvar Spa Hotel — azotea con alberca infinity frente al casco viejo (~€320/n)', link:'https://www.booking.com/hotel/hr/palace-hvar.html?checkin=2026-09-03&checkout=2026-09-05&group_adults=6&no_rooms=3&group_children=0' },
-  estambul: { name:'Pera Palace 1892', sub:'Mesrutiyet Cd. 52, Pera · el hotel-museo del Orient Express · alberca interior + hammam · 4 noches (5–9 sep)', alt:'Alt: 10 Karaköy — diseño contemporáneo junto al agua (~€200/n). Pera > Sultanahmet como base: de noche Sultanahmet muere y se come mal', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-05&checkout=2026-09-09&group_adults=6&no_rooms=3&group_children=0' },
+  estambul: { name:'Pera Palace 1892', sub:'Mesrutiyet Cd. 52, Pera · el hotel-museo del Orient Express · alberca interior + hammam · 4 noches (5–9 sep)', alt:'Sobre la ubicación: los monumentos (Santa Sofía, bazares) quedan a 15-20 min de tranvía — pero ahí queda igual de lejos la buena mesa. Pera tiene los barrios de comer (Karaköy, Asmalımescit, Cihangir) a pie; la cuadra de atrás (Tarlabaşı) es fea de noche, se rodea por İstiklal. Alt mismo rango: Ajwa Sultanahmet (junto a monumentos, pero muerto de noche) · Alt lujo pleno: The Peninsula, Karaköy (~2×, la mejor ubicación de la ciudad)', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-05&checkout=2026-09-09&group_adults=6&no_rooms=3&group_children=0' },
 };
 
 const CITIES = [
-  { id:'vuelo-ida', city:'México → Madrid', region:'Vuelo', emoji:'✈️', color:ACC['vuelo-ida'], coords:[40.4168,-3.7038],
-    desc:'El arranque: vuelo directo CDMX → Madrid ✓ CONFIRMADO. Sale el martes 25 a las 11:15 de la mañana y aterriza el miércoles 26 a las 5:50 de la madrugada (10h35m). La estrategia: al despegar ya son ~19:15 en Madrid — comer, película y a dormir la segunda mitad del vuelo, que es la noche madrileña. Se llega al amanecer con un día completo por delante: caminar suave y aguantar hasta la noche rompe el jet lag en un día. Este es el vuelo de Daniel — cada quien llega a Madrid por su lado, y el grupo completo converge en el Hotel Urban el miércoles 26. Dos noches en Madrid para aclimatar antes de volar a la boda.',
-    days:[{ events:[
-      { time:'7:45', title:'Camino al aeropuerto (CDMX)', icon:'🧳', tag:'logística',
-        desc:'Salida temprano: maletas listas desde anoche, e-visa de Türkiye impresa, y al AICM con margen — el vuelo sale 11:15.',
-        tips:['⏰ 3h antes para un vuelo internacional en el AICM: llegar ~8:15','🛂 Llevar impresa la e-visa turca y las reservas de hotel offline','📱 eSIM Europa (Holafly/Airalo) comprada de una vez, se activa al aterrizar'] },
-      { time:'11:15', title:'Vuelo CDMX → Madrid ✓ (11:15 → 5:50 +1)', icon:'✈️', tag:'transporte', dur:'10h35m',
-        desc:'CONFIRMADO: directo sobre el Atlántico, sale 11:15 y aterriza en Madrid a las 5:50 de la madrugada del 26. Truco de reloj: al despegar ya son ~19:15 en Madrid — comer, una película y dormir la segunda mitad del vuelo como si fuera la noche madrileña.',
-        tips:['💺 Ventanilla y antifaz — dormir la segunda mitad del vuelo ES la jugada','💧 Hidratar y nada de alcohol para llegar enteros','🍿 Madrid va 8h por delante de CDMX en verano'] },
-    ]}],
-    links:[{label:'Vuelos MEX→MAD 25 ago',url:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-25'}] },
-
   { id:'madrid', city:'Madrid', region:'España', emoji:'🇪🇸', color:ACC.madrid, coords:[40.4168,-3.7038],
-    desc:'La puerta de entrada a Europa y el punto de encuentro: aquí converge todo el grupo — cada quien llega por su lado y nos reunimos en el Hotel Urban el 26. Dos noches para romper el jet lag antes de la boda. Base en el Hotel Urban (5★ GL), en plena Carrera de San Jerónimo, con todo el centro a pie. Día 1 suave para aclimatar; día 2 de greatest hits — del Palacio Real al Prado y del Templo de Debod a la Cava Baja. Aún caluroso a finales de agosto: mañana activa, siesta sagrada, y la ciudad revive de noche.',
+    desc:'La puerta de entrada a Europa y el punto de encuentro: cada quien llega a Madrid por su lado (Daniel aterriza el 26 a las 5:50) y el jueves 27 arranca el viaje con el grupo completo en el Hotel Urban (5★ GL), en plena Carrera de San Jerónimo, con todo el centro a pie. Un día de greatest hits — del Palacio Real al Prado y del Templo de Debod a la Cava Baja. Aún caluroso a finales de agosto: mañana activa, siesta sagrada, y la ciudad revive de noche. El 28, a mediodía, se vuela a la boda.',
     days:[
       { events:[
-        { time:'5:50', title:'Aterrizaje en Madrid-Barajas T4S (madrugada)', icon:'🛬', tag:'transporte', dur:'migración ~40m',
-          desc:'Aterrizaje al amanecer (vuelo confirmado: llega 5:50). T4S es el satélite: tren interno a T4, migración y maletas. Bienvenidos a España — con la ciudad todavía dormida y el día entero por delante.',
-          tips:['🚕 Taxi al centro: tarifa fija ~33-35 EUR · ~30 min, sin tráfico a esta hora','📱 Activar la eSIM Europa al aterrizar','🕶️ Buscar la luz del día apenas se pueda — es el mejor reset del reloj interno'] },
-        { time:'7:30', title:'Dejar maletas en el Urban + churros del amanecer', icon:'☕', tag:'comida', dur:'1.5h',
-          desc:'El cuarto no estará listo tan temprano: dejar maletas en el Urban (pedir early check-in) y a desayunar como Dios manda — churros con chocolate en San Ginés (1894), a 12 min a pie, recién abierto y sin filas.',
-          tips:['🏨 Pedir early check-in al reservar — llegamos 6:45-7:00 al hotel','⛪ San Ginés a primera hora: la institución de 1894 casi vacía','💰 ~6 EUR por ración de churros + chocolate'] },
-        { time:'9:30', title:'Mañana suave: Plaza Mayor + Madrid despertando', icon:'🚶', tag:'atracción', dur:'2h',
-          desc:'El casco antiguo con la mejor luz y sin gente: Plaza Mayor vacía, Puerta del Sol, calle Arenal, un vistazo a la Plaza de Oriente. Caminar despacio, sin exigirse — la misión de hoy es solo aguantar despiertos.',
-          tips:['📷 La Plaza Mayor sin gente solo existe a esta hora','☕ Otro café a media mañana no es traición, es supervivencia'] },
-        { time:'13:00', title:'Check-in + siesta corta en el Urban', icon:'🏨', tag:'hotel', dur:'2.5h',
-          desc:'5★ Gran Lujo en plena Carrera de San Jerónimo, entre Sol y el Paseo del Prado. Ducha, y la siesta permitida: corta y con alarma — dormir de más ahora alarga el jet lag.',
-          tips:['⏰ Siesta máx 1.5h y CON ALARMA — la regla de oro del primer día','🏊 Alt: un rato de alberca en la azotea en vez de cama','📍 Todo el centro queda a pie desde aquí'] },
-        { time:'18:00', title:'Paseo suave: Barrio de las Letras', icon:'🚶', tag:'atracción', dur:'1.5h',
-          desc:'El barrio de Cervantes y Lope de Vega: calles peatonales con versos incrustados en el suelo, terrazas, librerías. Perfecto para mover el cuerpo sin exigirle y aguantar despiertos.',
-          tips:['☀️ A las 18h todavía hay sol pleno en agosto — el paseo bueno empieza ~19h','🍺 Caña + aceitunas en la Plaza de Santa Ana'] },
-        { time:'20:30', title:'Cena ligera y a dormir temprano', icon:'🌙', tag:'descanso',
-          desc:'Primera noche: algo sencillo cerca del hotel. La misión es llegar a las 22:30 con sueño y rendirse para resetear el reloj.',
-          tips:['🥘 Opción a 5 min: tapas en Casa Alberto (Huertas 18, de 1827)','😴 Mañana: el Madrid de greatest hits'] },
-      ]},
-      { events:[
-        { time:'9:00', title:'Desayuno en La Mallorquina (Puerta del Sol)', icon:'☕', tag:'comida', dur:'45 min',
-          desc:'La pastelería de 1894 en plena Puerta del Sol: napolitanas de crema, ensaimadas y café en la barra. (Los churros ya cayeron ayer al amanecer — hoy toca dulce de barra madrileña.)',
-          tips:['🥐 La napolitana de crema es la firma de la casa','⏰ En la barra de abajo se desayuna rápido y barato'] },
+        { time:'9:00', title:'Churros con chocolate en San Ginés', icon:'☕', tag:'comida', dur:'45 min',
+          desc:'La chocolatería de 1894, institución absoluta. A 12 min a pie del hotel, junto a la Puerta del Sol. El arranque oficial del viaje.',
+          tips:['💰 ~6 EUR por ración de churros + chocolate','⏰ Antes de las 10 casi no hay fila'] },
         { time:'10:00', title:'Palacio Real + Catedral de la Almudena', icon:'🏰', tag:'atracción', dur:'1.5h',
           desc:'El palacio real más grande de Europa occidental (3,418 habitaciones). Las salas de gala, la armería y las vistas al Campo del Moro.',
           tips:['🎟️ Entrada 14 EUR · comprar online para saltar fila (patrimonionacional.es)','📸 La foto clásica: desde la Plaza de la Almudena hacia la fachada sur'] },
@@ -668,7 +636,7 @@ const RESERVATIONS = [
   { id:'hotel-vigo', em:'✅', city:'Galicia', name:'AC Hotel Palacio Universal (Marriott) · 2 noches', date:'28–30 Ago · CONFIRMADO', deadline:'✅ COMPRADO — Amex Viajes #31094043', cat:'Hoteles', done:true,
     note:'RESERVA CONFIRMADA (comprada 12 jul, en mensualidades). Compra #31094043 · $22,595.70 MXN · 3 habitaciones (2 con ocean view) · entrada vie 28/08 15:00, salida dom 30/08 12:00 · Cánovas del Castillo 28, Vigo · tel 986 449 250 · reembolsable antes del 28/08.', link:'https://www.google.com/maps/search/AC+Hotel+Palacio+Universal+Vigo' },
   { id:'hotel-mad', em:'🏨', city:'Madrid', name:'Hotel Urban 5★ GL · llegada · 2 noches', date:'26–28 Ago (2 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
-    note:'Las 2 noches de aclimatación al llegar de México, antes de volar a la boda. 3 habitaciones · ~6,000 MXN/hab/noche. Carrera de San Jerónimo, azotea con alberca, todo el centro a pie. IMPORTANTE: pedir early check-in — el vuelo aterriza 5:50 am y llegamos al hotel ~7:00.', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
+    note:'El punto de encuentro del grupo: cada quien reserva sus noches según su llegada (Daniel entra el 26 de madrugada — pedir early check-in; el vuelo aterriza 5:50). La noche del 27 ya están todos. 3 habitaciones · ~6,000 MXN/hab/noche. Carrera de San Jerónimo, azotea con alberca, todo el centro a pie.', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
   { id:'hotel-bcn', em:'🏨', city:'Barcelona', name:'Hotel 1898 5★ (La Rambla) · 2 noches', date:'30 Ago–1 Sep (2 noches)', deadline:'🟠 Reservar pronto', cat:'Hoteles', done:false,
     note:'Sobre La Rambla, azotea con alberca, a pie del Barrio Gótico y del Born. 3 habitaciones · ~6,500 MXN/hab/noche. Alt: Cotton House Hotel en el Eixample.', link:'https://www.booking.com/hotel/es/1898.html?checkin=2026-08-30&checkout=2026-09-01&group_adults=6&no_rooms=3&group_children=0' },
   { id:'hotel-dbv', em:'🏨', city:'Croacia', name:'Hotel Excelsior, Dubrovnik · 2 noches', date:'1–3 Sep (2 noches)', deadline:'🟠 Reservar pronto (se agota en temporada)', cat:'Hoteles', done:false,
@@ -712,8 +680,8 @@ const BUDGET = [
   { cat:'⛴️ Ferries de Croacia', items:[
     { k:'f_hvar', label:'Ferry Dubrovnik → Hvar (6p)', def:2400 },
     { k:'f_split', label:'Ferry Hvar → Split (6p)', def:1800 } ]},
-  { cat:'🍽️ Comida (~15 días)', items:[
-    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:94000 },
+  { cat:'🍽️ Comida (~14 días)', items:[
+    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:88000 },
     { k:'c_esp', label:'Cenas especiales: Maruja Limón, Nautika, Mikla', def:24000 },
     { k:'c_vino', label:'Vinos, cafés, helados, antojos', def:10000 } ]},
   { cat:'🚕 Transporte local', items:[
@@ -806,7 +774,7 @@ const WISDOM = [
 const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
 const AGENDA = (function(){
-  const out=[]; let cur=new Date(2026,7,25); let n=1;
+  const out=[]; let cur=new Date(2026,7,27); let n=1;
   CITIES.forEach(city=>{
     (city.days||[]).forEach((d,di)=>{
       const dd=new Date(cur);
@@ -934,8 +902,7 @@ function renderItin(){
 }
 
 const TRAVELIN = {
-  'vuelo-ida':    { ic:'✈️', mode:'Vuelo México → Madrid', dur:'~10h35m' },
-  'madrid':       { ic:'🛬', mode:'Llegada a Madrid',       dur:'2 noches' },
+  'madrid':       { ic:'🤝', mode:'Punto de encuentro del grupo', dur:'llegadas escalonadas' },
   'galicia':      { ic:'✈️', mode:'Vuelo Madrid → Vigo',    dur:'~1h15m' },
   'barcelona':    { ic:'✈️', mode:'Vuelo Vigo → Barcelona', dur:'~1h45m' },
   'dubrovnik':    { ic:'✈️', mode:'Vuelo Barcelona → Dubrovnik', dur:'~2h20m' },
@@ -952,7 +919,7 @@ function renderOverview(){
     return p[1]+' '+p[2]+' – '+q[1]+' '+q[2];
   }
   let h='<div class="wrap">';
-  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">25 Ago – 9 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div></div>';
+  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 9 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div></div>';
   h += '<div class="ovl">';
   legs.forEach(function(a){
     const inCity=AGENDA.filter(function(x){ return x.cityId===a.cityId; });
@@ -1089,7 +1056,7 @@ function renderBudget(){
   const s=lsGet('vb_budget',{});
   let total=0;
   let h='<div class="wrap"><div class="card"><div class="h3">Presupuesto detallado</div>'
-    + '<p class="note" style="margin-top:6px">Para 6 personas · ~18 días · en MXN. Precios estimados jul 2026 (vuelos, ferries dálmatas, hoteles). Hotel de Vigo ya CONFIRMADO ($22,596). Tipo de cambio: 1 EUR ≈ 20 MXN · 1 USD ≈ 17.5 MXN. Los hoteles son estimados de temporada — toca cualquier cifra para editarla.</p></div>';
+    + '<p class="note" style="margin-top:6px">Para 6 personas · 14 días compartidos (27 ago–9 sep) · en MXN. Precios estimados jul 2026 (vuelos, ferries dálmatas, hoteles). Hotel de Vigo ya CONFIRMADO ($22,596). Tipo de cambio: 1 EUR ≈ 20 MXN · 1 USD ≈ 17.5 MXN. Los hoteles son estimados de temporada — toca cualquier cifra para editarla.</p></div>';
   BUDGET.forEach((g,gi)=>{
     let sub=0;
     h+='<div class="seclbl">'+esc(g.cat)+'</div><div class="card">';
