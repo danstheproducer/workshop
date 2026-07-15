@@ -166,8 +166,9 @@
   #mapbox { padding: 2px 14px 12px; }
   .leaflet-container { background: #0f1629 !important; font-family: 'Archivo', sans-serif !important; }
   [data-theme="light"] .leaflet-container { background: #ded2da !important; }
-  .city-tooltip { background: rgba(20,15,24,0.9) !important; color: #fff !important; border: none !important; border-radius: 5px !important; font-family: 'Archivo', sans-serif !important; font-weight: 700 !important; font-size: 9px !important; letter-spacing: .3px !important; padding: 2px 6px !important; box-shadow: 0 1px 4px rgba(0,0,0,.35) !important; }
+  .city-tooltip { background: rgba(20,15,24,0.82) !important; color: #fff !important; border: none !important; border-radius: 4px !important; font-family: 'Archivo', sans-serif !important; font-weight: 700 !important; font-size: 8px !important; letter-spacing: .2px !important; padding: 1px 5px !important; box-shadow: 0 1px 3px rgba(0,0,0,.3) !important; }
   .seg-label { background: none !important; border: none !important; }
+  #map.lowzoom .seg-label { display: none; }
   .seglab { display: inline-block; transform: translate(-50%,-50%); white-space: nowrap; font-family: 'Archivo', sans-serif; font-size: 8.5px; font-weight: 700; color: #0f1629; padding: 1px 5px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.35); opacity: .92; }
   .seglab.clickable { cursor: pointer; }
   .resv { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--bd); background: var(--bg-card); margin-bottom: 8px; }
@@ -1009,6 +1010,8 @@ function ensureMap(){
   const el=document.getElementById('map'); if(!el || map) return;
   const dark=lsGet('vb_theme','light')==='dark';
   map=L.map('map',{ scrollWheelZoom:false, attributionControl:false });
+  const segVis=function(){ el.classList.toggle('lowzoom', map.getZoom()<6); };
+  map.on('zoomend', segVis); map.whenReady(segVis);
   L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
   const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, ferry:{c:'#22D3EE',i:'⛴️',dash:'2,7',bend:0.12} };
   const MX=[19.4326,-99.1332];
@@ -1047,7 +1050,7 @@ function ensureMap(){
     if(plotted[ck]) return; // Madrid llegada y cierre comparten coordenadas: un solo pin
     plotted[ck]=true;
     const nm=({madrid:'Madrid',galicia:'Vigo',barcelona:'Barcelona',dubrovnik:'Dubrovnik',hvar:'Hvar',estambul:'Estambul'})[c.id]||c.city.replace('✈️ ','').split(' · ')[0];
-    const dir=({madrid:'left',galicia:'top',barcelona:'bottom',dubrovnik:'left',hvar:'bottom',estambul:'top'})[c.id]||'left';
+    const dir=({madrid:'left',galicia:'top',barcelona:'bottom',dubrovnik:'top',hvar:'bottom',estambul:'top'})[c.id]||'left';
     const off=dir==='right'?[13,0]:dir==='left'?[-13,0]:dir==='top'?[0,-11]:[0,11];
     const mk=L.circleMarker(c.coords,{radius:6,color:'#fff',weight:2,fillColor:c.color,fillOpacity:1}).addTo(map);
     mk.bindTooltip(nm,{className:'city-tooltip',permanent:true,direction:dir,offset:off});
@@ -1058,7 +1061,7 @@ function ensureMap(){
 function cityZoom(id){ return ({madrid:7.5, galicia:8, barcelona:8, dubrovnik:9, hvar:9.5, estambul:8})[id] || 6.5; }
 function focusMap(){
   if(!map) return;
-  if(mapFullView){ map.fitBounds(euroBounds,{padding:[38,38],animate:false}); return; }
+  if(mapFullView || DAY===0){ map.fitBounds(euroBounds,{padding:[38,38],animate:false}); return; }
   const d=AGENDA.find(x=>x.day===DAY)||AGENDA[0];
   const node=mapNodes.find(n=>n.id===d.cityId);
   if(node){ map.setView(node.coords, cityZoom(d.cityId), {animate:false}); }
