@@ -280,7 +280,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const TAG = { transporte:'#60A5FA', hotel:'#F97316', atracción:'#8B5CF6', comida:'#34D399', compras:'#F59E0B', espectáculo:'#EC4899', logística:'#94a3b8', descanso:'#818CF8', mar:'#22D3EE' };
-const ACC = { 'vuelo-ida':'#94A3B8', madrid:'#F59E0B', galicia:'#F97316', barcelona:'#F43F5E', dubrovnik:'#0EA5E9', hvar:'#06B6D4', estambul:'#EF4444', 'madrid-fin':'#F59E0B', 'vuelo-vuelta':'#94A3B8' };
+const ACC = { 'vuelo-ida':'#94A3B8', madrid:'#F59E0B', galicia:'#F97316', barcelona:'#F43F5E', dubrovnik:'#0EA5E9', hvar:'#06B6D4', estambul:'#EF4444' };
 
 const HOTELS = {
   madrid:   { name:'Hotel Urban 5★ GL', sub:'Carrera de San Jerónimo 34 · azotea con alberca · arte de Papúa en el lobby · llegada 26 ago (2 noches)', alt:'Alt: Palacio de los Duques Gran Meliá — más palaciego, junto al Palacio Real (~€380/n)', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-08-26&checkout=2026-08-28&group_adults=6&no_rooms=3&group_children=0' },
@@ -289,12 +289,11 @@ const HOTELS = {
   dubrovnik:{ name:'Hotel Excelsior 5★', sub:'Frente al Adriático, a 10 min a pie de la Ciudad Vieja · terrazas sobre el mar y vista a la isla de Lokrum', alt:'Alt: Villa Dubrovnik — boutique sobre el acantilado, solo adultos (~€450/n). Dentro de murallas: Prijeko Palace', link:'https://www.booking.com/hotel/hr/excelsior-dubrovnik.html?checkin=2026-09-01&checkout=2026-09-03&group_adults=6&no_rooms=3&group_children=0' },
   hvar:     { name:'Palace Elisabeth Hvar Heritage Hotel 5★', sub:'En la plaza central (Pjaca) de Hvar, frente al puerto · el hotel más histórico de la isla, junto a la Catedral · 2 noches (3–5 sep)', alt:'Alt: Adriana Hvar Spa Hotel — azotea con alberca infinity frente al casco viejo (~€320/n)', link:'https://www.booking.com/hotel/hr/palace-hvar.html?checkin=2026-09-03&checkout=2026-09-05&group_adults=6&no_rooms=3&group_children=0' },
   estambul: { name:'Pera Palace 1892', sub:'Mesrutiyet Cd. 52, Pera · el hotel-museo del Orient Express · alberca interior + hammam · 4 noches (5–9 sep)', alt:'Alt: 10 Karaköy — diseño contemporáneo junto al agua (~€200/n). Pera > Sultanahmet como base: de noche Sultanahmet muere y se come mal', link:'https://www.booking.com/hotel/tr/pera-palace.html?checkin=2026-09-05&checkout=2026-09-09&group_adults=6&no_rooms=3&group_children=0' },
-  'madrid-fin':{ name:'Hotel Urban 5★ GL', sub:'De vuelta a la Carrera de San Jerónimo para el cierre del viaje · 3 noches (9–12 sep) · misma azotea, mismo centro', alt:'Alt: Palacio de los Duques Gran Meliá, junto al Palacio Real (~€380/n)', link:'https://www.booking.com/hotel/es/urban.html?checkin=2026-09-09&checkout=2026-09-12&group_adults=6&no_rooms=3&group_children=0' },
 };
 
 const CITIES = [
   { id:'vuelo-ida', city:'México → Madrid', region:'Vuelo', emoji:'✈️', color:ACC['vuelo-ida'], coords:[40.4168,-3.7038],
-    desc:'El arranque: vuelo directo CDMX → Madrid ✓ CONFIRMADO. Sale el martes 25 a las 11:15 de la mañana y aterriza el miércoles 26 a las 5:50 de la madrugada (10h35m). La estrategia: al despegar ya son ~19:15 en Madrid — comer, película y a dormir la segunda mitad del vuelo, que es la noche madrileña. Se llega al amanecer con un día completo por delante: caminar suave y aguantar hasta la noche rompe el jet lag en un día. Dos noches en Madrid para aclimatar antes de volar a la boda.',
+    desc:'El arranque: vuelo directo CDMX → Madrid ✓ CONFIRMADO. Sale el martes 25 a las 11:15 de la mañana y aterriza el miércoles 26 a las 5:50 de la madrugada (10h35m). La estrategia: al despegar ya son ~19:15 en Madrid — comer, película y a dormir la segunda mitad del vuelo, que es la noche madrileña. Se llega al amanecer con un día completo por delante: caminar suave y aguantar hasta la noche rompe el jet lag en un día. Este es el vuelo de Daniel — cada quien llega a Madrid por su lado, y el grupo completo converge en el Hotel Urban el miércoles 26. Dos noches en Madrid para aclimatar antes de volar a la boda.',
     days:[{ events:[
       { time:'7:45', title:'Camino al aeropuerto (CDMX)', icon:'🧳', tag:'logística',
         desc:'Salida temprano: maletas listas desde anoche, e-visa de Türkiye impresa, y al AICM con margen — el vuelo sale 11:15.',
@@ -306,7 +305,7 @@ const CITIES = [
     links:[{label:'Vuelos MEX→MAD 25 ago',url:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-25'}] },
 
   { id:'madrid', city:'Madrid', region:'España', emoji:'🇪🇸', color:ACC.madrid, coords:[40.4168,-3.7038],
-    desc:'La puerta de entrada a Europa: dos noches para romper el jet lag antes de la boda. Base en el Hotel Urban (5★ GL), en plena Carrera de San Jerónimo, con todo el centro a pie. Día 1 suave para aclimatar; día 2 de greatest hits — del Palacio Real al Prado y del Templo de Debod a la Cava Baja. Aún caluroso a finales de agosto: mañana activa, siesta sagrada, y la ciudad revive de noche.',
+    desc:'La puerta de entrada a Europa y el punto de encuentro: aquí converge todo el grupo — cada quien llega por su lado y nos reunimos en el Hotel Urban el 26. Dos noches para romper el jet lag antes de la boda. Base en el Hotel Urban (5★ GL), en plena Carrera de San Jerónimo, con todo el centro a pie. Día 1 suave para aclimatar; día 2 de greatest hits — del Palacio Real al Prado y del Templo de Debod a la Cava Baja. Aún caluroso a finales de agosto: mañana activa, siesta sagrada, y la ciudad revive de noche.',
     days:[
       { events:[
         { time:'5:50', title:'Aterrizaje en Madrid-Barajas T4S (madrugada)', icon:'🛬', tag:'transporte', dur:'migración ~40m',
@@ -348,12 +347,12 @@ const CITIES = [
           desc:'Un templo egipcio auténtico del siglo II a.C., regalado a España en 1968, sobre una colina con el mejor atardecer de Madrid.',
           tips:['🆓 Gratis · el sol cae ~20:50 a finales de agosto','🚕 Taxi desde el centro: 8-10 EUR'] },
         { time:'21:45', title:'Cena de tapas por la Cava Baja', icon:'🍷', tag:'comida', dur:'2h',
-          desc:'300 metros de tabernas de tapas en La Latina: Txakolina, Casa Lucas, La Perejila, Juana la Loca. OJO: Casa Lucio cierra TODO agosto por vacaciones — sus huevos rotos quedan para la vuelta en septiembre. (El Botín también queda para el cierre del viaje.)',
-          tips:['⚠️ Casa Lucio cierra en agosto — apuntarlo para el regreso (9-12 sep)','🍷 Ruta de vinos y raciones sin plan fijo — así se hace · varias tabernas también descansan en agosto: tener plan B'] },
+          desc:'300 metros de tabernas de tapas en La Latina: Txakolina, Casa Lucas, La Perejila, Juana la Loca. OJO: Casa Lucio cierra TODO agosto por vacaciones — sus huevos rotos legendarios quedan pendientes para otra visita.',
+          tips:['⚠️ Casa Lucio cierra en agosto — varias tabernas clásicas también descansan: tener plan B','🍷 Ruta de vinos y raciones sin plan fijo — así se hace'] },
       ]},
     ],
     restaurants:[
-      '⚠️ Casa Lucio cierra todo agosto — sus huevos rotos, a la vuelta en septiembre',
+      '⚠️ Casa Lucio cierra todo agosto — sus huevos rotos quedan pendientes',
       '🥘 Mercado de San Miguel — picoteo de lujo en mercado histórico',
       '🍷 Ruta de tapas por la Cava Baja — Txakolina, Casa Lucas, La Perejila',
       '☕ Chocolatería San Ginés (1894) — churros con chocolate' ],
@@ -696,12 +695,12 @@ const RESERVATIONS = [
 
 const BUDGET = [
   { cat:'✈️ Vuelos', items:[
-    { k:'v_main', label:'Redondo MEX⇄MAD (6p)', def:144000 },
+    { k:'v_main', label:'Trasatlánticos (cada quien): llegada a Madrid + regreso a casa (6p)', def:144000 },
     { k:'v_vgo', label:'Madrid → Vigo · vuelo (6p)', def:12000 },
     { k:'v_bcn', label:'Vigo → Barcelona · vuelo (6p)', def:15000 },
     { k:'v_dbv', label:'Barcelona → Dubrovnik · vuelo (6p)', def:21000 },
     { k:'v_ist', label:'Split → Estambul · vuelo directo (6p)', def:18000 },
-    { k:'v_madret', label:'Estambul → Madrid · vuelo (6p)', def:27000 },
+    { k:'v_madret', label:'Salida IST → MAD (hermano + esposa) · tramo extra', def:10000 },
     { k:'v_extra', label:'Equipaje documentado + asientos', def:12000 } ]},
   { cat:'🏨 Hoteles (3 habitaciones)', items:[
     { k:'h_mad', label:'Hotel Urban, Madrid · llegada · 2 noches', def:36000 },
@@ -709,21 +708,19 @@ const BUDGET = [
     { k:'h_bcn', label:'Hotel 1898, Barcelona · 2 noches', def:39000 },
     { k:'h_dbv', label:'Excelsior, Dubrovnik · 2 noches', def:42000 },
     { k:'h_hvar', label:'Palace Elisabeth, Hvar · 2 noches', def:45000 },
-    { k:'h_ist', label:'Pera Palace, Estambul · 4 noches', def:76800 },
-    { k:'h_madfin', label:'Hotel Urban, Madrid · cierre · 3 noches', def:54000 } ]},
+    { k:'h_ist', label:'Pera Palace, Estambul · 4 noches', def:76800 } ]},
   { cat:'⛴️ Ferries de Croacia', items:[
     { k:'f_hvar', label:'Ferry Dubrovnik → Hvar (6p)', def:2400 },
     { k:'f_split', label:'Ferry Hvar → Split (6p)', def:1800 } ]},
-  { cat:'🍽️ Comida (~17 días)', items:[
-    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:107000 },
-    { k:'c_esp', label:'Cenas especiales: Maruja Limón, Nautika, Botín, Mikla', def:30000 },
+  { cat:'🍽️ Comida (~15 días)', items:[
+    { k:'c_diaria', label:'Comidas diarias (6p × ~1,050 MXN/día)', def:94000 },
+    { k:'c_esp', label:'Cenas especiales: Maruja Limón, Nautika, Mikla', def:24000 },
     { k:'c_vino', label:'Vinos, cafés, helados, antojos', def:10000 } ]},
   { cat:'🚕 Transporte local', items:[
     { k:'t_taxi', label:'Taxis y traslados aeropuerto', def:15000 },
-    { k:'t_pub', label:'Metro, tranvía, ferries del Bósforo, teleféricos', def:6000 },
-    { k:'t_toledo', label:'Tren AVE a Toledo i/v (6p)', def:3000 } ]},
+    { k:'t_pub', label:'Metro, tranvía, ferries del Bósforo, teleféricos', def:6000 } ]},
   { cat:'🎁 Extras y experiencias', items:[
-    { k:'e_tickets', label:'Entradas: Prado, Reina Sofía, Sagrada Família, Murallas Dubrovnik, Sta. Sofía', def:16000 },
+    { k:'e_tickets', label:'Entradas: Prado, Sagrada Família, Murallas Dubrovnik, Sta. Sofía', def:14000 },
     { k:'e_hammam', label:'Hammam Hürrem Sultan Ayasofya (6p)', def:18000 },
     { k:'e_regalo', label:'Regalo de boda', def:10000 },
     { k:'e_alfombra', label:'🧶 Alfombras de mamá (lana, Estambul)', def:40000 },
@@ -874,7 +871,7 @@ function renderDaybar(){
   el.style.display='block'; el.className='daybar';
   // ends[i] = color de la región donde se DUERME esa noche
   const ends = AGENDA.map((d,i)=>{
-    if(d.cityId==='vuelo-ida') return ACC.madrid;                                             // vuelo nocturno desde México → se despierta en Madrid
+    if(d.cityId==='vuelo-ida') return ACC.madrid;                                             // vuelo desde México → se amanece en Madrid
     return d.color;                                                                            // se duerme en la ciudad del segmento (boda: noche en Vigo, y el 30 se vuela a Barcelona)
   });
   const ovPill = '<button id="dp-0" class="daypill ov'+(DAY===0?' on':'')+'" onclick="setDay(0)"><span class="dow">Resumen</span><span class="dnum">🗺️</span></button>';
@@ -944,8 +941,6 @@ const TRAVELIN = {
   'dubrovnik':    { ic:'✈️', mode:'Vuelo Barcelona → Dubrovnik', dur:'~2h20m' },
   'hvar':         { ic:'⛴️', mode:'Ferry Dubrovnik → Hvar', dur:'~3h45m' },
   'estambul':     { ic:'✈️', mode:'Hvar → Split → Estambul (ferry + vuelo directo)', dur:'~5h' },
-  'madrid-fin':   { ic:'✈️', mode:'Vuelo Estambul → Madrid', dur:'~4h30m' },
-  'vuelo-vuelta': { ic:'✈️', mode:'Vuelo Madrid → México', dur:'~11-12h' },
 };
 function renderOverview(){
   const seen=[], legs=[];
@@ -957,7 +952,7 @@ function renderOverview(){
     return p[1]+' '+p[2]+' – '+q[1]+' '+q[2];
   }
   let h='<div class="wrap">';
-  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">25 Ago – 12 Sep 2026 · '+AGENDA.length+' días · 6 viajeros</div></div>';
+  h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">25 Ago – 9 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div></div>';
   h += '<div class="ovl">';
   legs.forEach(function(a){
     const inCity=AGENDA.filter(function(x){ return x.cityId===a.cityId; });
@@ -1005,19 +1000,17 @@ function ensureMap(){
   L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
   const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, ferry:{c:'#22D3EE',i:'⛴️',dash:'2,7',bend:0.12} };
   const MX=[19.4326,-99.1332];
-  const route=['madrid','galicia','barcelona','dubrovnik','hvar','estambul','madrid-fin'].map(id=>CITIES.find(c=>c.id===id));
+  const route=['madrid','galicia','barcelona','dubrovnik','hvar','estambul'].map(id=>CITIES.find(c=>c.id===id));
   const legs=[
     {mode:'flight',dur:'~1h15m', name:'Madrid → Vigo', detail:['✈️ Madrid-Barajas → Vigo (Peinador)','Vuelo directo ~1h15m (Iberia/Air Nostrum)','La mañana del viernes, rumbo a la boda']},
     {mode:'flight',dur:'~1h45m', name:'Vigo → Barcelona', detail:['✈️ Vigo → Barcelona','Vuelo directo ~1h45m (Vueling)','La mañana después de la boda']},
     {mode:'flight',dur:'~2h20m', name:'Barcelona → Dubrovnik', detail:['✈️ Barcelona → Dubrovnik','Vuelo directo ~2h20m (Vueling/Croatia Airlines, temporada)','Del Mediterráneo al Adriático']},
     {mode:'ferry', dur:'~3h45m', name:'Dubrovnik → Hvar', detail:['⛴️ Catamarán Krilo/Jadrolinija por la costa dálmata','~3h45m con parada en Korčula','Reservar online, se llena en verano']},
     {mode:'flight',dur:'~5h', name:'Hvar → Estambul', detail:['⛴️ Ferry Hvar → Split · ~1h','🏛️ Medio día en Split (Palacio de Diocleciano)','✈️ Vuelo directo Split → Estambul · ~2h (Croatia Airlines, sáb 5 sep)']},
-    {mode:'flight',dur:'~4h30m', name:'Estambul → Madrid', detail:['✈️ Estambul (IST) → Madrid (MAD)','Vuelo directo ~4h30m (Turkish/Iberia)','De vuelta a Madrid para el cierre del viaje']},
   ];
   LEGINFO=[];
   const OCEAN=[
     {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.82, dur:'10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo CONFIRMADO ✓ · 10h35m','Sale mar 25 ago 11:15, aterriza mié 26 a las 5:50 am']},
-    {name:'Madrid → México', pts:arcPts(route[route.length-1].coords,MX,0.20), at:0.18, dur:'~11-12h', detail:['✈️ Madrid (MAD) → CDMX (MEX)','Vuelo directo ~11-12h (Iberia / Aeroméxico)','Sale a mediodía del 12 sep, aterriza la misma tarde']},
   ];
   OCEAN.forEach(function(o){
     L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
@@ -1025,7 +1018,7 @@ function ensureMap(){
     const q=o.pts[Math.round(o.pts.length*o.at)];
     L.marker(q,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:#F59E0B" onclick="showLeg(LEGINFO['+idx+'])">✈️ '+o.dur+'</span>',iconSize:[0,0]})}).addTo(map);
   });
-  L.circleMarker(MX,{radius:7,color:'#fff',weight:2,fillColor:'#EF4444',fillOpacity:1}).addTo(map).bindTooltip('México · inicio y fin',{className:'city-tooltip',direction:'top'});
+  L.circleMarker(MX,{radius:7,color:'#fff',weight:2,fillColor:'#EF4444',fillOpacity:1}).addTo(map).bindTooltip('México · inicio',{className:'city-tooltip',direction:'top'});
   for(let i=0;i<route.length-1;i++){
     const m=MODE[legs[i].mode], pts=arcPts(route[i].coords,route[i+1].coords,m.bend);
     L.polyline(pts,{color:m.c,weight:2.2,opacity:.9,dashArray:m.dash}).addTo(map);
@@ -1040,8 +1033,8 @@ function ensureMap(){
     const ck=c.coords[0].toFixed(3)+','+c.coords[1].toFixed(3);
     if(plotted[ck]) return; // Madrid llegada y cierre comparten coordenadas: un solo pin
     plotted[ck]=true;
-    const nm=({madrid:'Madrid',galicia:'Vigo',barcelona:'Barcelona',dubrovnik:'Dubrovnik',hvar:'Hvar',estambul:'Estambul','madrid-fin':'Madrid'})[c.id]||c.city.replace('✈️ ','').split(' · ')[0];
-    const dir=({madrid:'left',galicia:'top',barcelona:'bottom',dubrovnik:'left',hvar:'bottom',estambul:'top','madrid-fin':'right'})[c.id]||'left';
+    const nm=({madrid:'Madrid',galicia:'Vigo',barcelona:'Barcelona',dubrovnik:'Dubrovnik',hvar:'Hvar',estambul:'Estambul'})[c.id]||c.city.replace('✈️ ','').split(' · ')[0];
+    const dir=({madrid:'left',galicia:'top',barcelona:'bottom',dubrovnik:'left',hvar:'bottom',estambul:'top'})[c.id]||'left';
     const off=dir==='right'?[10,0]:dir==='left'?[-10,0]:dir==='top'?[0,-8]:[0,8];
     const mk=L.circleMarker(c.coords,{radius:6,color:'#fff',weight:2,fillColor:c.color,fillOpacity:1}).addTo(map);
     mk.bindTooltip(nm,{className:'city-tooltip',permanent:true,direction:dir,offset:off});
@@ -1049,7 +1042,7 @@ function ensureMap(){
   });
   map.fitBounds(euroBounds,{padding:[38,38]});
 }
-function cityZoom(id){ return ({madrid:7.5, galicia:8, barcelona:8, dubrovnik:9, hvar:9.5, estambul:8, 'madrid-fin':7.5})[id] || 6.5; }
+function cityZoom(id){ return ({madrid:7.5, galicia:8, barcelona:8, dubrovnik:9, hvar:9.5, estambul:8})[id] || 6.5; }
 function focusMap(){
   if(!map) return;
   if(mapFullView){ map.fitBounds(euroBounds,{padding:[38,38],animate:false}); return; }
