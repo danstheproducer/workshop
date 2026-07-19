@@ -85,12 +85,12 @@
   .stage svg.dragging { transition: none; }
 
   .link {
-    fill: none; stroke: var(--line); stroke-width: 1.2;
+    fill: none; stroke: var(--ink-soft); stroke-width: 1.8;
     transition: stroke 0.2s ease, stroke-width 0.2s ease, opacity 0.2s ease;
   }
-  .link.highlight { stroke: var(--accent); stroke-width: 2; opacity: 1; }
-  .link.dim { opacity: 0.15; }
-  .link.dashed { stroke-dasharray: 4 3; }
+  .link.highlight { stroke: var(--accent); stroke-width: 3; opacity: 1; }
+  .link.dim { opacity: 0.12; }
+  .link.dashed { stroke-dasharray: 5 4; }
 
   .node-group { cursor: pointer; }
   .node-circle {
@@ -102,11 +102,12 @@
   .node-group.dim { opacity: 0.2; }
 
   .node-label {
-    font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 500;
-    fill: var(--ink-soft); text-anchor: middle; pointer-events: none;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+    fill: var(--ink); text-anchor: middle; pointer-events: none;
+    text-shadow: 0 1px 3px rgba(247,244,237,0.9), 0 0 2px rgba(247,244,237,0.9);
     transition: opacity 0.2s ease, fill 0.2s ease;
   }
-  .node-group:hover .node-label, .node-group.selected .node-label { fill: var(--ink); font-weight: 600; }
+  .node-group:hover .node-label, .node-group.selected .node-label { fill: var(--accent); font-weight: 700; }
 
   .time-axis {
     stroke: var(--line-light); stroke-width: 1; stroke-dasharray: 2 4;
@@ -166,6 +167,25 @@
     text-align: center; color: var(--ink-faint); max-width: 300px;
   }
 
+  .diagram-caption {
+    position: fixed; bottom: 1.25rem; left: 1.25rem;
+    max-width: 420px;
+    background: rgba(255,253,248,0.94);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--line-light);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+    z-index: 90;
+  }
+  .diagram-caption h4 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600;
+    margin-bottom: 0.35rem; color: var(--ink);
+  }
+  .diagram-caption p {
+    font-size: 0.82rem; line-height: 1.55; color: var(--ink-soft); margin: 0;
+  }
+
   @media (max-width: 640px) {
     .toolbar input[type="search"] { width: 100%; order: 2; }
     .brand-title { font-size: 1.3rem; }
@@ -199,6 +219,11 @@
     <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 
+  <div class="diagram-caption" id="diagramCaption">
+    <h4 id="captionTitle"></h4>
+    <p id="captionText"></p>
+  </div>
+
   <div class="zoom-controls">
     <button onclick="setZoom(0.2)" title="Zoom in">+</button>
     <button onclick="setZoom(-0.2)" title="Zoom out">−</button>
@@ -212,6 +237,8 @@
   <h2 id="panelTitle"></h2>
   <div class="meta" id="panelMeta"></div>
   <p id="panelNotes"></p>
+  <h3>Context</h3>
+  <p id="panelContext"></p>
   <h3>Connections</h3>
   <div id="panelConnections"></div>
 </aside>
@@ -228,6 +255,8 @@ const stage = document.getElementById('stage');
 
 const SAMPLES = {
   family: {
+    captionTitle: 'Presumed conclusion',
+    caption: 'A single Sephardic-Portuguese lineage survives across fourteen generations of New-Spain families, moving from converso origins in Extremadura and Andalucía through Guadalajara and Jalostotitlán, then into Mexico City industry via La Corona, and finally into the present day through documented Portuguese-Jewish descent.',
     nodes: [
       { id: 'pedro', label: 'Pedro Pacho', year: 1500, group: 'Sephardic', notes: 'Earliest known ancestor; judeoconverso from Fregenal de la Sierra, Spain. Died before 1547 in Nueva España.' },
       { id: 'mariana1', label: 'Mariana Temiño de Velasco', year: 1510, group: 'Sephardic', notes: 'Wife of Pedro Pacho. Born c. 1510 in Sevilla, Spain.' },
@@ -297,6 +326,8 @@ const SAMPLES = {
     ]
   },
   bcci: {
+    captionTitle: 'Presumed conclusion',
+    caption: 'BCCI operated as a shadow banking nexus: a Pakistani-owned institution secretly acquiring an American bank, laundering Saudi capital, and channeling Gulf money into U.S. political and business circles — including the Bush family orbit — through a small set of intermediaries.',
     nodes: [
       { id: 'bcci', label: 'BCCI', year: 1972, group: 'bank', notes: 'Bank of Credit and Commerce International. Pakistani-owned bank involved in massive money laundering, arms brokering, and bribery before its 1991 collapse.' },
       { id: 'icic', label: 'ICIC', year: 1972, group: 'bank', notes: 'International Credit and Investment Corporation, BCCI holding company.' },
@@ -337,6 +368,8 @@ function loadDataset(name) {
   links = data.links;
   selectedId = null;
   closePanel();
+  document.getElementById('captionTitle').textContent = data.captionTitle || '';
+  document.getElementById('captionText').textContent = data.caption || '';
   layout();
   render();
   fitToScreen();
@@ -460,7 +493,7 @@ function render() {
     group.addEventListener('mouseenter', () => highlightConnections(n.id));
     group.addEventListener('mouseleave', () => resetHighlight());
 
-    const r = n.group === 'bank' || n.group === 'corp' ? 10 : 6;
+    const r = n.group === 'bank' || n.group === 'corp' ? 12 : 8;
     const circle = document.createElementNS(ns, 'circle');
     circle.setAttribute('r', r);
     circle.setAttribute('class', 'node-circle');
@@ -468,7 +501,7 @@ function render() {
 
     if (showLabels) {
       const label = document.createElementNS(ns, 'text');
-      label.setAttribute('y', r + 14);
+      label.setAttribute('y', r + 18);
       label.setAttribute('class', 'node-label');
       label.textContent = n.label;
       group.appendChild(label);
@@ -515,6 +548,13 @@ function openPanel(id) {
   document.getElementById('panelTitle').textContent = n.label;
   document.getElementById('panelMeta').textContent = (n.year ? n.year + ' · ' : '') + n.group;
   document.getElementById('panelNotes').textContent = n.notes || 'No notes.';
+
+  const degree = links.filter(l => l.source === id || l.target === id).length;
+  const inCount = links.filter(l => l.target === id).length;
+  const outCount = links.filter(l => l.source === id).length;
+  document.getElementById('panelContext').textContent =
+    `${n.label} appears ${degree === 0 ? 'isolated in this diagram' : `with ${degree} connection${degree === 1 ? '' : 's'} (${outCount} outgoing, ${inCount} incoming)`}. ` +
+    (n.group === 'bank' || n.group === 'corp' ? 'Treated here as an institutional actor.' : 'Treated here as an individual actor.');
 
   const conns = [];
   links.forEach(l => {
