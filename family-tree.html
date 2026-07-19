@@ -378,6 +378,7 @@
 
 <script>
   const STORAGE_KEY = 'dzr-family-tree-data';
+  const AUTOLOAD_FLAG = 'dzr-family-tree-autoloaded';
   const DARK_KEY = 'dzr-workshop-dark';
 
   let people = [];
@@ -385,10 +386,21 @@
   let editingId = null;
 
   // — Data helpers —
-  function load() {
+  async function load() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) people = JSON.parse(raw);
+      if (raw) {
+        people = JSON.parse(raw);
+      } else if (!localStorage.getItem(AUTOLOAD_FLAG)) {
+        try {
+          const res = await fetch('family-tree-starter.json');
+          if (res.ok) {
+            people = await res.json();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(people));
+            localStorage.setItem(AUTOLOAD_FLAG, '1');
+          }
+        } catch(e) {}
+      }
     } catch(e) { people = []; }
     render();
   }
