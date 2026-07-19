@@ -534,23 +534,31 @@
   const MARGIN = 100;
 
   // — Data —
+  // The source of truth is family-tree-starter.json, edited via terminal.
+  // localStorage is only used for view/focus preferences.
   async function load() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        people = JSON.parse(raw);
-      } else if (!localStorage.getItem(AUTOLOAD_FLAG)) {
-        try {
-          const res = await fetch('family-tree-starter.json');
-          if (res.ok) {
-            people = await res.json();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(people));
-            localStorage.setItem(AUTOLOAD_FLAG, '1');
-          }
-        } catch(e) {}
+      const res = await fetch('family-tree-starter.json');
+      if (res.ok) {
+        people = await res.json();
+      } else {
+        throw new Error('fetch failed');
       }
-    } catch(e) { people = []; }
-    try { focusId = localStorage.getItem(FOCUS_KEY); } catch(e) {}
+    } catch(e) {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) people = JSON.parse(raw);
+      } catch(e2) { people = []; }
+    }
+    try {
+      focusId = localStorage.getItem(FOCUS_KEY);
+      if (!focusId || !getPerson(focusId)) {
+        focusId = getPerson('p-daniel-martinez-del-campo-melgarejo')?.id
+               || getPerson('p-lusana-marina-melgarejo-gonzalez')?.id
+               || people[0]?.id
+               || null;
+      }
+    } catch(e) { focusId = people[0]?.id || null; }
     render();
   }
   function save() {
