@@ -21,11 +21,11 @@
   },
   {
     "id": "p-sostenes-melgarejo",
-    "name": "Sóstenes Melgarejo y Velasco",
+    "name": "Sostenes Gustavo Melgarejo y Velasco",
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Husband of Rosa Martha González Ortiz. From Veracruz. Co-owned rancho 'La Alameda' in Xalapa, Veracruz, from 1917; the land was later used for Estadio Xalapeño. Source: Redalyc article on Estadio Xalapeño.",
+    "notes": "Husband of Rosa Martha González Ortiz. Father of Lusana Marina Melgarejo González. From Veracruz. Co-owned rancho 'La Alameda' in Xalapa, Veracruz, from 1917; the land was later used for Estadio Xalapeño. Source: Redalyc article on Estadio Xalapeño. Full name confirmed by Jewish Community of Lisbon certificate 111852/07-2022 for his daughter Lusana.",
     "parentId": "p-melgarejo-padre",
     "partnerId": "p-rosa-martha-gonzalez-ortiz"
   },
@@ -35,7 +35,7 @@
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Brother of Sóstenes Melgarejo y Velasco. Co-owner of rancho 'La Alameda' in Xalapa, Veracruz.",
+    "notes": "Brother of Sostenes Gustavo Melgarejo y Velasco. Co-owner of rancho 'La Alameda' in Xalapa, Veracruz.",
     "parentId": "p-melgarejo-padre"
   },
   {
@@ -156,7 +156,7 @@
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Daughter of Esteban González Padilla and María Isabel Mendoza Pardo. Grandmother on the Melgarejo side. Married Sóstenes Melgarejo y Velasco. One of six daughters.",
+    "notes": "Daughter of Esteban González Padilla and María Isabel Mendoza Pardo. Grandmother on the Melgarejo side. Married Sostenes Gustavo Melgarejo y Velasco. Mother of Lusana Marina Melgarejo González. One of six daughters.",
     "parentId": "p-esteban-gonzalez-padilla",
     "partnerId": "p-sostenes-melgarejo"
   },
@@ -188,12 +188,12 @@
     "parentId": "p-esteban-gonzalez-padilla"
   },
   {
-    "id": "p-marina-melgarejo-gonzalez",
-    "name": "Marina Melgarejo González",
-    "birth": null,
+    "id": "p-lusana-marina-melgarejo-gonzalez",
+    "name": "Lusana Marina Melgarejo González",
+    "birth": "1968",
     "death": null,
     "photo": null,
-    "notes": "Daughter of Rosa Martha González Ortiz and Sóstenes Melgarejo y Velasco. Mother on the Melgarejo side.",
+    "notes": "Daughter of Rosa Martha González Ortiz and Sostenes Gustavo Melgarejo y Velasco. Mother of Daniel Martínez del Campo Melgarejo. Born 18 July 1968 in Distrito Federal, México. Certificate 111852/07-2022 from Comunidade Israelita de Lisboa certifies her as a descendant of Sephardic Jews of Portuguese origin.",
     "parentId": "p-rosa-martha-gonzalez-ortiz"
   },
   {
@@ -202,7 +202,7 @@
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Son of Marina Melgarejo González. Built this family tree app.",
-    "parentId": "p-marina-melgarejo-gonzalez"
+    "notes": "Son of Lusana Marina Melgarejo González. Built this family tree app.",
+    "parentId": "p-lusana-marina-melgarejo-gonzalez"
   }
 ]
