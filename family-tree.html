@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="family tree">
+<meta name="theme-color" content="#f5f5f4">
+<title>family tree</title>
+<link rel="icon" type="image/svg+xml" href="family-tree-icon.svg">
+<link rel="apple-touch-icon" href="family-tree-icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f5f4;
+    --ink: #0c0a09;
+    --ink-soft: #57534e;
+    --ink-faint: #a8a29e;
+    --line: rgba(12, 10, 9, 0.14);
+    --accent: #0c0a09;
+    --accent-text: #f5f5f4;
+  }
+  body.dark {
+    --bg: #0c0a09;
+    --ink: #f5f5f4;
+    --ink-soft: #a8a29e;
+    --ink-faint: #57534e;
+    --line: rgba(245, 245, 244, 0.16);
+    --accent: #f5f5f4;
+    --accent-text: #0c0a09;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    line-height: 1.55;
+    min-height: 100vh;
+    min-height: 100dvh;
+    transition: background 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: max(2rem, env(safe-area-inset-top) + 1.5rem) 1.25rem max(2rem, env(safe-area-inset-bottom) + 1.5rem);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* — Top bar — */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .brand { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
+  .brand a { color: inherit; text-decoration: none; }
+  .brand a:hover { color: var(--ink); }
+  .brand-sep { color: var(--ink-faint); }
+  .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+
+  hr { border: none; border-top: 1px solid var(--line); }
+
+  /* — Intro / controls — */
+  .intro h1 {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 5.5vw, 2.4rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .intro p {
+    margin-top: 0.45rem;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .btn {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    padding: 0.55rem 0.9rem;
+    font-family: inherit;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn.secondary:hover { background: var(--ink); color: var(--bg); opacity: 1; }
+
+  /* — Tree — */
+  .tree-stage {
+    overflow-x: auto;
+    padding: 1rem 0.25rem 2rem;
+    min-height: 220px;
+  }
+  .tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.2rem;
+  }
+  .generation {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 132px;
+    cursor: pointer;
+  }
+  .node-card {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    padding: 0.8rem 0.6rem;
+    text-align: center;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+  .node:hover .node-card { border-color: var(--ink); }
+  .node.selected .node-card { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .node-photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin: 0 auto 0.55rem;
+    background: var(--line);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    font-size: 1.1rem;
+  }
+  .node-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .node-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+  .node-years {
+    margin-top: 0.25rem;
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+  }
+
+  /* vertical connector above each node */
+  .node::before {
+    content: "";
+    position: absolute;
+    top: -1.1rem;
+    left: 50%;
+    width: 1px;
+    height: 1.1rem;
+    background: var(--line);
+  }
+  /* first generation has no connector */
+  .generation:first-child .node::before { display: none; }
+
+  .empty-state {
+    text-align: center;
+    color: var(--ink-faint);
+    padding: 3rem 1rem;
+    border: 1px dashed var(--line);
+  }
+  .empty-state p { margin-bottom: 1rem; }
+
+  /* — Panel — */
+  .panel {
+    border: 1px solid var(--line);
+    padding: 1.1rem;
+  }
+  .panel h2 {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.85rem;
+  }
+  .field label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    border-radius: 0;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus { outline: none; border-color: var(--ink); }
+  .field textarea { min-height: 70px; resize: vertical; }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .hint {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    margin-top: 0.75rem;
+    line-height: 1.5;
+  }
+
+  footer {
+    margin-top: auto;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    padding-top: 1.5rem;
+  }
+
+  @media (max-width: 560px) {
+    .field-row { grid-template-columns: 1fr; }
+    .node { width: 118px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="topbar">
+    <div class="brand">
+      <a href="index.html">dead zero records</a>
+      <span class="brand-sep">/</span>
+      <span>family tree</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="importBtn" title="Import JSON" aria-label="Import JSON">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <button class="icon-btn" id="exportBtn" title="Export JSON" aria-label="Export JSON">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="icon-btn" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <hr>
+
+  <section class="intro">
+    <h1>family tree</h1>
+    <p>Add people, link generations, and keep it saved in this browser.</p>
+  </section>
+
+  <div class="toolbar">
+    <button class="btn" id="addPersonBtn">+ Add person</button>
+    <button class="btn secondary" id="addRootBtn">+ Root person</button>
+    <button class="btn secondary" id="clearBtn">Clear all</button>
+  </div>
+
+  <div class="tree-stage" id="treeStage">
+    <div class="empty-state" id="emptyState">
+      <p>No family members yet.</p>
+      <button class="btn" id="emptyAddBtn">Add the first person</button>
+    </div>
+    <div class="tree" id="tree"></div>
+  </div>
+
+  <div class="panel" id="editPanel" style="display:none;">
+    <h2 id="panelTitle">Edit person</h2>
+    <div class="field">
+      <label for="pName">Name</label>
+      <input type="text" id="pName" placeholder="e.g. María Elena">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="pBirth">Birth year</label>
+        <input type="number" id="pBirth" placeholder="1950">
+      </div>
+      <div class="field">
+        <label for="pDeath">Death year</label>
+        <input type="number" id="pDeath" placeholder="leave blank if alive">
+      </div>
+    </div>
+    <div class="field">
+      <label for="pPhoto">Photo URL</label>
+      <input type="text" id="pPhoto" placeholder="https://…">
+    </div>
+    <div class="field">
+      <label for="pParent">Parent in this tree</label>
+      <select id="pParent"><option value="">— none —</option></select>
+    </div>
+    <div class="field">
+      <label for="pNotes">Notes</label>
+      <textarea id="pNotes" placeholder="Stories, places, anything…"></textarea>
+    </div>
+    <div class="panel-actions">
+      <button class="btn" id="saveBtn">Save</button>
+      <button class="btn secondary" id="cancelBtn">Cancel</button>
+      <button class="btn secondary" id="deleteBtn" style="margin-left:auto;">Delete</button>
+    </div>
+    <p class="hint">Pick a parent to place this person one generation below them. To move someone, change their parent and save.</p>
+  </div>
+
+  <footer>guadalajara · ciudad de méxico</footer>
+</div>
+
+<input type="file" id="fileInput" accept="application/json" style="display:none;">
+
+<script>
+  const STORAGE_KEY = 'dzr-family-tree-data';
+  const DARK_KEY = 'dzr-workshop-dark';
+
+  let people = [];
+  let selectedId = null;
+  let editingId = null;
+
+  // — Data helpers —
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) people = JSON.parse(raw);
+    } catch(e) { people = []; }
+    render();
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(people)); } catch(e) {}
+    render();
+  }
+  function uid() {
+    return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+  function getPerson(id) { return people.find(p => p.id === id); }
+  function descendantsOf(id) {
+    const set = new Set();
+    function walk(pid) {
+      people.filter(p => p.parentId === pid).forEach(c => {
+        set.add(c.id);
+        walk(c.id);
+      });
+    }
+    walk(id);
+    return set;
+  }
+
+  // — Rendering —
+  function render() {
+    const tree = document.getElementById('tree');
+    const empty = document.getElementById('emptyState');
+    if (!people.length) {
+      tree.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    // group by generation depth from roots
+    const depths = {};
+    function depth(id) {
+      if (depths[id] !== undefined) return depths[id];
+      const p = getPerson(id);
+      if (!p || !p.parentId) return depths[id] = 0;
+      return depths[id] = depth(p.parentId) + 1;
+    }
+    people.forEach(p => depth(p.id));
+
+    const maxDepth = Math.max(0, ...Object.values(depths));
+    tree.innerHTML = '';
+    for (let d = 0; d <= maxDepth; d++) {
+      const gen = document.createElement('div');
+      gen.className = 'generation';
+      const members = people.filter(p => depths[p.id] === d).sort((a,b) => a.name.localeCompare(b.name));
+      members.forEach(p => {
+        const node = document.createElement('div');
+        node.className = 'node' + (p.id === selectedId ? ' selected' : '');
+        node.dataset.id = p.id;
+        const initials = p.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+        node.innerHTML = `
+          <div class="node-card">
+            <div class="node-photo">${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="">` : initials}</div>
+            <div class="node-name">${escapeHtml(p.name || 'Unnamed')}</div>
+            <div class="node-years">${yearRange(p)}</div>
+          </div>
+        `;
+        node.addEventListener('click', () => { selectedId = p.id; openEdit(p.id); });
+        gen.appendChild(node);
+      });
+      tree.appendChild(gen);
+    }
+  }
+
+  function yearRange(p) {
+    if (!p.birth && !p.death) return '';
+    if (p.birth && p.death) return `${p.birth} – ${p.death}`;
+    if (p.death) return `† ${p.death}`;
+    return `b. ${p.birth}`;
+  }
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+  }
+
+  // — Panel —
+  function openEdit(id) {
+    editingId = id || null;
+    const panel = document.getElementById('editPanel');
+    const title = document.getElementById('panelTitle');
+    const p = id ? getPerson(id) : null;
+    title.textContent = p ? 'Edit person' : 'Add person';
+    document.getElementById('pName').value = p ? p.name : '';
+    document.getElementById('pBirth').value = p ? p.birth || '' : '';
+    document.getElementById('pDeath').value = p ? p.death || '' : '';
+    document.getElementById('pPhoto').value = p ? p.photo || '' : '';
+    document.getElementById('pNotes').value = p ? p.notes || '' : '';
+    document.getElementById('deleteBtn').style.display = p ? 'inline-flex' : 'none';
+    populateParentSelect();
+    document.getElementById('pParent').value = p ? p.parentId || '' : (selectedId || '');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function closeEdit() {
+    editingId = null;
+    document.getElementById('editPanel').style.display = 'none';
+  }
+  function populateParentSelect() {
+    const sel = document.getElementById('pParent');
+    const current = editingId;
+    sel.innerHTML = '<option value="">— none —</option>';
+    people.filter(p => p.id !== current).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name || 'Unnamed';
+      sel.appendChild(opt);
+    });
+  }
+
+  document.getElementById('addPersonBtn').addEventListener('click', () => openEdit(null));
+  document.getElementById('addRootBtn').addEventListener('click', () => {
+    selectedId = null;
+    openEdit(null);
+    document.getElementById('pParent').value = '';
+  });
+  document.getElementById('emptyAddBtn').addEventListener('click', () => openEdit(null));
+  document.getElementById('cancelBtn').addEventListener('click', closeEdit);
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const name = document.getElementById('pName').value.trim();
+    if (!name) { alert('Please enter a name.'); return; }
+    const parentId = document.getElementById('pParent').value || null;
+    const data = {
+      name,
+      birth: document.getElementById('pBirth').value.trim() || null,
+      death: document.getElementById('pDeath').value.trim() || null,
+      photo: document.getElementById('pPhoto').value.trim() || null,
+      notes: document.getElementById('pNotes').value.trim() || null,
+      parentId
+    };
+    if (editingId) {
+      // prevent making someone their own descendant
+      if (parentId && (parentId === editingId || descendantsOf(editingId).has(parentId))) {
+        alert('That would create a loop — a person cannot be their own ancestor.');
+        return;
+      }
+      const p = getPerson(editingId);
+      Object.assign(p, data);
+    } else {
+      people.push({ id: uid(), ...data });
+    }
+    save();
+    closeEdit();
+  });
+  document.getElementById('deleteBtn').addEventListener('click', () => {
+    if (!editingId) return;
+    if (!confirm('Delete this person? Their children will become roots.')) return;
+    people = people.filter(p => p.id !== editingId);
+    people.forEach(p => { if (p.parentId === editingId) p.parentId = null; });
+    selectedId = null;
+    save();
+    closeEdit();
+  });
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    if (!people.length) return;
+    if (!confirm('Clear every person from the tree? This cannot be undone.')) return;
+    people = [];
+    selectedId = null;
+    save();
+    closeEdit();
+  });
+
+  // — Import / Export —
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(people, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'family-tree-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+  document.getElementById('fileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!Array.isArray(data)) throw new Error('file must contain an array');
+        if (!confirm(`Import ${data.length} people? This replaces the current tree.`)) return;
+        people = data.map(p => ({
+          id: p.id || uid(),
+          name: p.name || 'Unnamed',
+          birth: p.birth || null,
+          death: p.death || null,
+          photo: p.photo || null,
+          notes: p.notes || null,
+          parentId: p.parentId || null
+        }));
+        selectedId = null;
+        save();
+      } catch(err) { alert('Could not import: ' + err.message); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  // — Dark mode —
+  function applyDark(dark) {
+    document.body.classList.toggle('dark', dark);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', dark ? '#0c0a09' : '#f5f5f4');
+  }
+  let savedDark = null;
+  try { savedDark = localStorage.getItem(DARK_KEY); } catch(e) {}
+  if (savedDark === '1') applyDark(true);
+  else if (savedDark === '0') applyDark(false);
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
+  document.getElementById('darkToggle').addEventListener('click', () => {
+    const next = !document.body.classList.contains('dark');
+    applyDark(next);
+    try { localStorage.setItem(DARK_KEY, next ? '1' : '0'); } catch(e) {}
+  });
+
+  load();
+</script>
+</body>
+</html>
