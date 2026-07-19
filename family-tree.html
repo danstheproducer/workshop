@@ -12,25 +12,31 @@
 <link rel="apple-touch-icon" href="family-tree-icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f5f5f4;
-    --ink: #0c0a09;
+    --bg: #f8f7f5;
+    --ink: #1c1917;
     --ink-soft: #57534e;
     --ink-faint: #a8a29e;
-    --line: rgba(12, 10, 9, 0.14);
+    --line: rgba(28, 25, 23, 0.10);
+    --card: #ffffff;
     --accent: #0c0a09;
     --accent-text: #f5f5f4;
+    --danger: #b91c1c;
+    --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.06);
+    --radius: 14px;
   }
   body.dark {
     --bg: #0c0a09;
     --ink: #f5f5f4;
     --ink-soft: #a8a29e;
     --ink-faint: #57534e;
-    --line: rgba(245, 245, 244, 0.16);
+    --line: rgba(245, 245, 244, 0.12);
+    --card: #1c1917;
     --accent: #f5f5f4;
     --accent-text: #0c0a09;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -38,340 +44,452 @@
   body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.5;
     min-height: 100vh;
     min-height: 100dvh;
     transition: background 0.2s ease, color 0.2s ease;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
-  .wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: max(2rem, env(safe-area-inset-top) + 1.5rem) 1.25rem max(2rem, env(safe-area-inset-bottom) + 1.5rem);
-    min-height: 100vh;
-    min-height: 100dvh;
+  .app {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
   }
 
-  /* — Top bar — */
-  .topbar {
+  /* — Header — */
+  header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    flex-shrink: 0;
   }
-  .brand { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
-  .brand a { color: inherit; text-decoration: none; }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    min-width: 0;
+  }
+  .brand a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
   .brand a:hover { color: var(--ink); }
   .brand-sep { color: var(--ink-faint); }
-  .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+  .brand-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
   .icon-btn {
-    background: transparent;
+    background: var(--card);
     border: 1px solid var(--line);
     color: var(--ink);
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
-    flex-shrink: 0;
+    transition: all 0.15s ease;
+    box-shadow: var(--shadow);
   }
-  .icon-btn:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+  .icon-btn:hover { transform: translateY(-1px); border-color: var(--ink-soft); }
+  .icon-btn:active { transform: translateY(0); }
 
-  hr { border: none; border-top: 1px solid var(--line); }
-
-  /* — Intro / controls — */
-  .intro h1 {
-    font-family: inherit;
-    font-weight: 700;
-    font-size: clamp(1.8rem, 5.5vw, 2.4rem);
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-  }
-  .intro p {
-    margin-top: 0.45rem;
-    color: var(--ink-soft);
-    font-size: 0.85rem;
-  }
-
+  /* — Toolbar — */
   .toolbar {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 0.6rem;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    flex-shrink: 0;
+    flex-wrap: wrap;
   }
+  .toolbar input[type="search"] {
+    flex: 1;
+    min-width: 140px;
+    max-width: 280px;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+  .toolbar input[type="search"]:focus { outline: none; border-color: var(--ink-soft); }
   .btn {
     background: var(--accent);
     color: var(--accent-text);
     border: none;
-    padding: 0.55rem 0.9rem;
+    padding: 0.55rem 1rem;
+    border-radius: 10px;
     font-family: inherit;
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.15s ease;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: var(--shadow);
+    white-space: nowrap;
   }
-  .btn:hover { opacity: 0.85; }
+  .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+  .btn:active { transform: translateY(0); }
   .btn.secondary {
-    background: transparent;
+    background: var(--card);
     color: var(--ink);
     border: 1px solid var(--line);
   }
-  .btn.secondary:hover { background: var(--ink); color: var(--bg); opacity: 1; }
+  .btn.secondary:hover { border-color: var(--ink-soft); }
+  .btn.danger { background: var(--danger); color: #fff; }
 
-  /* — Tree — */
+  /* — Tree stage — */
   .tree-stage {
-    overflow-x: auto;
-    padding: 1rem 0.25rem 2rem;
-    min-height: 220px;
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    padding: 2rem;
+    cursor: grab;
   }
+  .tree-stage:active { cursor: grabbing; }
+  .tree-stage.panning { user-select: none; }
   .tree {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.2rem;
+    gap: 3.5rem;
+    min-width: max-content;
+    padding: 1rem;
   }
+
   .generation {
     display: flex;
     justify-content: center;
-    gap: 1.25rem;
-    flex-wrap: wrap;
+    gap: 1.5rem;
+    position: relative;
   }
+
   .node {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 132px;
+    width: 150px;
     cursor: pointer;
+    transition: transform 0.15s ease;
   }
+  .node:hover { transform: translateY(-3px); }
+  .node.filtered-out { opacity: 0.25; }
+
   .node-card {
     width: 100%;
+    background: var(--card);
     border: 1px solid var(--line);
-    background: var(--bg);
-    padding: 0.8rem 0.6rem;
+    border-radius: var(--radius);
+    padding: 1rem 0.75rem 0.85rem;
     text-align: center;
-    transition: border-color 0.15s ease, transform 0.1s ease;
+    box-shadow: var(--shadow);
+    transition: all 0.15s ease;
   }
-  .node:hover .node-card { border-color: var(--ink); }
-  .node.selected .node-card { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .node:hover .node-card { border-color: var(--ink-soft); }
+  .node.selected .node-card { border-color: var(--ink); ring: 2px solid var(--ink); }
+
   .node-photo {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    margin: 0 auto 0.55rem;
-    background: var(--line);
+    margin: 0 auto 0.65rem;
+    background: linear-gradient(135deg, var(--line), transparent);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--ink-faint);
-    font-size: 1.1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border: 2px solid var(--line);
   }
   .node-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .node-name {
-    font-weight: 500;
-    font-size: 0.9rem;
+    font-weight: 600;
+    font-size: 0.95rem;
     line-height: 1.25;
     word-break: break-word;
   }
   .node-years {
     margin-top: 0.25rem;
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     color: var(--ink-soft);
   }
 
-  /* vertical connector above each node */
-  .node::before {
-    content: "";
+  /* connectors */
+  .connector-svg {
     position: absolute;
-    top: -1.1rem;
-    left: 50%;
-    width: 1px;
-    height: 1.1rem;
-    background: var(--line);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
   }
-  /* first generation has no connector */
-  .generation:first-child .node::before { display: none; }
+  .connector-svg line, .connector-svg path {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
 
   .empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
-    color: var(--ink-faint);
-    padding: 3rem 1rem;
-    border: 1px dashed var(--line);
-  }
-  .empty-state p { margin-bottom: 1rem; }
-
-  /* — Panel — */
-  .panel {
-    border: 1px solid var(--line);
-    padding: 1.1rem;
-  }
-  .panel h2 {
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 1rem;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    margin-bottom: 0.85rem;
-  }
-  .field label {
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
     color: var(--ink-soft);
+    padding: 2.5rem;
+    background: var(--card);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 320px;
+  }
+  .empty-state h2 {
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .empty-state p { margin-bottom: 1.2rem; font-size: 0.9rem; }
+
+  /* — Modal — */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: modal-in 0.2s ease;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .modal-body { padding: 1.25rem; }
+  .modal-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0 1.25rem 1.25rem;
+  }
+
+  .field { margin-bottom: 1rem; }
+  .field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
   }
   .field input,
   .field select,
   .field textarea {
+    width: 100%;
     font-family: inherit;
-    font-size: 0.9rem;
-    padding: 0.55rem 0.65rem;
+    font-size: 0.95rem;
+    padding: 0.65rem 0.85rem;
     border: 1px solid var(--line);
+    border-radius: 10px;
     background: var(--bg);
     color: var(--ink);
-    border-radius: 0;
+    transition: border-color 0.15s ease;
   }
   .field input:focus,
   .field select:focus,
-  .field textarea:focus { outline: none; border-color: var(--ink); }
-  .field textarea { min-height: 70px; resize: vertical; }
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .field textarea:focus { outline: none; border-color: var(--ink-soft); }
+  .field textarea { min-height: 80px; resize: vertical; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+  .photo-field {
+    display: flex;
+    align-items: center;
     gap: 0.75rem;
   }
-
-  .panel-actions {
+  .photo-preview {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--line);
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    color: var(--ink-faint);
+    font-weight: 600;
   }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-inputs { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+  .photo-inputs input[type="file"] { font-size: 0.8rem; }
+  .photo-inputs .or { font-size: 0.7rem; color: var(--ink-faint); text-align: center; }
 
   .hint {
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     color: var(--ink-soft);
-    margin-top: 0.75rem;
     line-height: 1.5;
+    margin-top: 0.5rem;
   }
 
-  footer {
-    margin-top: auto;
-    font-size: 0.62rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    text-align: center;
-    padding-top: 1.5rem;
+  .quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
+  .quick-actions .btn { font-size: 0.78rem; padding: 0.45rem 0.7rem; }
 
-  @media (max-width: 560px) {
+  @media (max-width: 640px) {
+    .toolbar { padding: 0.75rem 1rem; }
+    .toolbar input[type="search"] { max-width: none; width: 100%; order: 3; }
+    .tree-stage { padding: 1.25rem; }
+    .node { width: 132px; }
     .field-row { grid-template-columns: 1fr; }
-    .node { width: 118px; }
+    .modal { max-height: 95vh; }
   }
 </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="app">
 
-  <div class="topbar">
+  <header>
     <div class="brand">
-      <a href="index.html">dead zero records</a>
+      <a href="index.html">workshop</a>
       <span class="brand-sep">/</span>
-      <span>family tree</span>
+      <span class="brand-title">family tree</span>
     </div>
-    <div class="topbar-actions">
+    <div class="header-actions">
       <button class="icon-btn" id="importBtn" title="Import JSON" aria-label="Import JSON">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </button>
       <button class="icon-btn" id="exportBtn" title="Export JSON" aria-label="Export JSON">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
       <button class="icon-btn" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
     </div>
-  </div>
-
-  <hr>
-
-  <section class="intro">
-    <h1>family tree</h1>
-    <p>Add people, link generations, and keep it saved in this browser.</p>
-  </section>
+  </header>
 
   <div class="toolbar">
     <button class="btn" id="addPersonBtn">+ Add person</button>
-    <button class="btn secondary" id="addRootBtn">+ Root person</button>
-    <button class="btn secondary" id="clearBtn">Clear all</button>
+    <button class="btn secondary" id="addRootBtn">+ Root</button>
+    <button class="btn secondary" id="clearBtn">Clear</button>
+    <input type="search" id="searchInput" placeholder="Find someone…">
   </div>
 
   <div class="tree-stage" id="treeStage">
     <div class="empty-state" id="emptyState">
-      <p>No family members yet.</p>
-      <button class="btn" id="emptyAddBtn">Add the first person</button>
+      <h2>No family members yet</h2>
+      <p>Add the first person to start building your tree.</p>
+      <button class="btn" id="emptyAddBtn">+ Add person</button>
     </div>
     <div class="tree" id="tree"></div>
   </div>
 
-  <div class="panel" id="editPanel" style="display:none;">
-    <h2 id="panelTitle">Edit person</h2>
-    <div class="field">
-      <label for="pName">Name</label>
-      <input type="text" id="pName" placeholder="e.g. María Elena">
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label for="pBirth">Birth year</label>
-        <input type="number" id="pBirth" placeholder="1950">
-      </div>
-      <div class="field">
-        <label for="pDeath">Death year</label>
-        <input type="number" id="pDeath" placeholder="leave blank if alive">
-      </div>
-    </div>
-    <div class="field">
-      <label for="pPhoto">Photo URL</label>
-      <input type="text" id="pPhoto" placeholder="https://…">
-    </div>
-    <div class="field">
-      <label for="pParent">Parent in this tree</label>
-      <select id="pParent"><option value="">— none —</option></select>
-    </div>
-    <div class="field">
-      <label for="pNotes">Notes</label>
-      <textarea id="pNotes" placeholder="Stories, places, anything…"></textarea>
-    </div>
-    <div class="panel-actions">
-      <button class="btn" id="saveBtn">Save</button>
-      <button class="btn secondary" id="cancelBtn">Cancel</button>
-      <button class="btn secondary" id="deleteBtn" style="margin-left:auto;">Delete</button>
-    </div>
-    <p class="hint">Pick a parent to place this person one generation below them. To move someone, change their parent and save.</p>
-  </div>
+</div>
 
-  <footer>guadalajara · ciudad de méxico</footer>
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 id="modalTitle">Edit person</h2>
+      <button class="icon-btn" id="closeModalBtn" aria-label="Close" style="width:32px;height:32px;border-radius:8px;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="quick-actions" id="quickActions"></div>
+      <div class="field">
+        <label>Photo</label>
+        <div class="photo-field">
+          <div class="photo-preview" id="photoPreview">—</div>
+          <div class="photo-inputs">
+            <input type="file" id="pPhotoFile" accept="image/*">
+            <div class="or">— or paste a URL —</div>
+            <input type="text" id="pPhoto" placeholder="https://…">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="pName">Name</label>
+        <input type="text" id="pName" placeholder="e.g. María Elena">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="pBirth">Birth year</label>
+          <input type="number" id="pBirth" placeholder="1950">
+        </div>
+        <div class="field">
+          <label for="pDeath">Death year</label>
+          <input type="number" id="pDeath" placeholder="leave blank">
+        </div>
+      </div>
+      <div class="field">
+        <label for="pParent">Parent in this tree</label>
+        <select id="pParent"><option value="">— none —</option></select>
+      </div>
+      <div class="field">
+        <label for="pNotes">Notes</label>
+        <textarea id="pNotes" placeholder="Stories, places, anything…"></textarea>
+      </div>
+      <p class="hint">Pick a parent to place this person one generation below them.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn secondary" id="cancelBtn">Cancel</button>
+      <button class="btn danger" id="deleteBtn">Delete</button>
+      <button class="btn" id="saveBtn">Save</button>
+    </div>
+  </div>
 </div>
 
 <input type="file" id="fileInput" accept="application/json" style="display:none;">
@@ -384,6 +502,7 @@
   let people = [];
   let selectedId = null;
   let editingId = null;
+  let pendingPhoto = null;
 
   // — Data helpers —
   async function load() {
@@ -428,6 +547,8 @@
   function render() {
     const tree = document.getElementById('tree');
     const empty = document.getElementById('emptyState');
+    const filter = document.getElementById('searchInput').value.trim().toLowerCase();
+
     if (!people.length) {
       tree.innerHTML = '';
       empty.style.display = 'block';
@@ -435,7 +556,6 @@
     }
     empty.style.display = 'none';
 
-    // group by generation depth from roots
     const depths = {};
     function depth(id) {
       if (depths[id] !== undefined) return depths[id];
@@ -447,14 +567,17 @@
 
     const maxDepth = Math.max(0, ...Object.values(depths));
     tree.innerHTML = '';
+
     for (let d = 0; d <= maxDepth; d++) {
       const gen = document.createElement('div');
       gen.className = 'generation';
+      gen.dataset.gen = d;
       const members = people.filter(p => depths[p.id] === d).sort((a,b) => a.name.localeCompare(b.name));
       members.forEach(p => {
         const node = document.createElement('div');
         node.className = 'node' + (p.id === selectedId ? ' selected' : '');
         node.dataset.id = p.id;
+        if (filter && !p.name.toLowerCase().includes(filter)) node.classList.add('filtered-out');
         const initials = p.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
         node.innerHTML = `
           <div class="node-card">
@@ -463,11 +586,49 @@
             <div class="node-years">${yearRange(p)}</div>
           </div>
         `;
-        node.addEventListener('click', () => { selectedId = p.id; openEdit(p.id); });
+        node.addEventListener('click', (e) => { e.stopPropagation(); selectedId = p.id; openEdit(p.id); });
         gen.appendChild(node);
       });
       tree.appendChild(gen);
     }
+
+    drawConnectors();
+  }
+
+  function drawConnectors() {
+    let svg = document.querySelector('.connector-svg');
+    if (!svg) {
+      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.classList.add('connector-svg');
+      document.getElementById('treeStage').appendChild(svg);
+    }
+    svg.innerHTML = '';
+    const stage = document.getElementById('treeStage');
+    const stageRect = stage.getBoundingClientRect();
+
+    const nodes = Array.from(document.querySelectorAll('.node'));
+    const byId = {};
+    nodes.forEach(n => byId[n.dataset.id] = n);
+
+    people.forEach(p => {
+      if (!p.parentId) return;
+      const child = byId[p.id];
+      const parent = byId[p.parentId];
+      if (!child || !parent) return;
+      const cRect = child.getBoundingClientRect();
+      const pRect = parent.getBoundingClientRect();
+      const x1 = pRect.left + pRect.width/2 - stageRect.left + stage.scrollLeft;
+      const y1 = pRect.bottom - stageRect.top + stage.scrollTop;
+      const x2 = cRect.left + cRect.width/2 - stageRect.left + stage.scrollLeft;
+      const y2 = cRect.top - stageRect.top + stage.scrollTop;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+      svg.appendChild(line);
+    });
   }
 
   function yearRange(p) {
@@ -480,62 +641,113 @@
     return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
   }
 
-  // — Panel —
+  // — Modal —
   function openEdit(id) {
     editingId = id || null;
-    const panel = document.getElementById('editPanel');
-    const title = document.getElementById('panelTitle');
+    pendingPhoto = null;
     const p = id ? getPerson(id) : null;
-    title.textContent = p ? 'Edit person' : 'Add person';
+    document.getElementById('modalTitle').textContent = p ? 'Edit person' : 'Add person';
     document.getElementById('pName').value = p ? p.name : '';
     document.getElementById('pBirth').value = p ? p.birth || '' : '';
     document.getElementById('pDeath').value = p ? p.death || '' : '';
     document.getElementById('pPhoto').value = p ? p.photo || '' : '';
     document.getElementById('pNotes').value = p ? p.notes || '' : '';
-    document.getElementById('deleteBtn').style.display = p ? 'inline-flex' : 'none';
+    document.getElementById('pPhotoFile').value = '';
+    updatePhotoPreview(p ? p.photo : null, p ? p.name : '');
+
     populateParentSelect();
     document.getElementById('pParent').value = p ? p.parentId || '' : (selectedId || '');
-    panel.style.display = 'block';
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    const quick = document.getElementById('quickActions');
+    quick.innerHTML = '';
+    if (p) {
+      const addChild = document.createElement('button');
+      addChild.className = 'btn secondary';
+      addChild.textContent = '+ Add child';
+      addChild.addEventListener('click', () => {
+        closeModal();
+        selectedId = p.id;
+        openEdit(null);
+        document.getElementById('pParent').value = p.id;
+      });
+      quick.appendChild(addChild);
+    }
+
+    document.getElementById('deleteBtn').style.display = p ? 'inline-flex' : 'none';
+    document.getElementById('modalOverlay').classList.add('open');
   }
-  function closeEdit() {
+  function closeModal() {
     editingId = null;
-    document.getElementById('editPanel').style.display = 'none';
+    pendingPhoto = null;
+    document.getElementById('modalOverlay').classList.remove('open');
   }
   function populateParentSelect() {
     const sel = document.getElementById('pParent');
-    const current = editingId;
     sel.innerHTML = '<option value="">— none —</option>';
-    people.filter(p => p.id !== current).forEach(p => {
+    people.filter(p => p.id !== editingId).forEach(p => {
       const opt = document.createElement('option');
       opt.value = p.id;
       opt.textContent = p.name || 'Unnamed';
       sel.appendChild(opt);
     });
   }
+  function updatePhotoPreview(src, name) {
+    const preview = document.getElementById('photoPreview');
+    if (src) {
+      preview.innerHTML = `<img src="${escapeHtml(src)}" alt="">`;
+    } else {
+      const initials = String(name || '').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase() || '—';
+      preview.textContent = initials;
+      preview.innerHTML = preview.textContent;
+    }
+  }
 
-  document.getElementById('addPersonBtn').addEventListener('click', () => openEdit(null));
+  document.getElementById('pPhoto').addEventListener('input', (e) => {
+    updatePhotoPreview(e.target.value, document.getElementById('pName').value);
+  });
+  document.getElementById('pName').addEventListener('input', (e) => {
+    const photo = document.getElementById('pPhoto').value || pendingPhoto;
+    if (!photo) updatePhotoPreview(null, e.target.value);
+  });
+  document.getElementById('pPhotoFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      pendingPhoto = reader.result;
+      document.getElementById('pPhoto').value = '';
+      updatePhotoPreview(pendingPhoto, document.getElementById('pName').value);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('addPersonBtn').addEventListener('click', () => { selectedId = null; openEdit(null); });
   document.getElementById('addRootBtn').addEventListener('click', () => {
     selectedId = null;
     openEdit(null);
     document.getElementById('pParent').value = '';
   });
   document.getElementById('emptyAddBtn').addEventListener('click', () => openEdit(null));
-  document.getElementById('cancelBtn').addEventListener('click', closeEdit);
+  document.getElementById('cancelBtn').addEventListener('click', closeModal);
+  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+
   document.getElementById('saveBtn').addEventListener('click', () => {
     const name = document.getElementById('pName').value.trim();
     if (!name) { alert('Please enter a name.'); return; }
     const parentId = document.getElementById('pParent').value || null;
+    const photoUrl = document.getElementById('pPhoto').value.trim() || null;
     const data = {
       name,
       birth: document.getElementById('pBirth').value.trim() || null,
       death: document.getElementById('pDeath').value.trim() || null,
-      photo: document.getElementById('pPhoto').value.trim() || null,
+      photo: pendingPhoto || photoUrl,
       notes: document.getElementById('pNotes').value.trim() || null,
       parentId
     };
     if (editingId) {
-      // prevent making someone their own descendant
       if (parentId && (parentId === editingId || descendantsOf(editingId).has(parentId))) {
         alert('That would create a loop — a person cannot be their own ancestor.');
         return;
@@ -546,8 +758,9 @@
       people.push({ id: uid(), ...data });
     }
     save();
-    closeEdit();
+    closeModal();
   });
+
   document.getElementById('deleteBtn').addEventListener('click', () => {
     if (!editingId) return;
     if (!confirm('Delete this person? Their children will become roots.')) return;
@@ -555,16 +768,43 @@
     people.forEach(p => { if (p.parentId === editingId) p.parentId = null; });
     selectedId = null;
     save();
-    closeEdit();
+    closeModal();
   });
+
   document.getElementById('clearBtn').addEventListener('click', () => {
     if (!people.length) return;
     if (!confirm('Clear every person from the tree? This cannot be undone.')) return;
     people = [];
     selectedId = null;
     save();
-    closeEdit();
+    closeModal();
   });
+
+  // — Search —
+  document.getElementById('searchInput').addEventListener('input', render);
+
+  // — Pan / drag —
+  const stage = document.getElementById('treeStage');
+  let isPanning = false;
+  let startX, startY, scrollLeft, scrollTop;
+  stage.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.node')) return;
+    isPanning = true;
+    stage.classList.add('panning');
+    startX = e.pageX - stage.offsetLeft;
+    startY = e.pageY - stage.offsetTop;
+    scrollLeft = stage.scrollLeft;
+    scrollTop = stage.scrollTop;
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    e.preventDefault();
+    const x = e.pageX - stage.offsetLeft;
+    const y = e.pageY - stage.offsetTop;
+    stage.scrollLeft = scrollLeft - (x - startX);
+    stage.scrollTop = scrollTop - (y - startY);
+  });
+  document.addEventListener('mouseup', () => { isPanning = false; stage.classList.remove('panning'); });
 
   // — Import / Export —
   document.getElementById('exportBtn').addEventListener('click', () => {
@@ -618,6 +858,8 @@
     applyDark(next);
     try { localStorage.setItem(DARK_KEY, next ? '1' : '0'); } catch(e) {}
   });
+
+  window.addEventListener('resize', drawConnectors);
 
   load();
 </script>
