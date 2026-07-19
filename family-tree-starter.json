@@ -1,12 +1,52 @@
 [
   {
+    "id": "p-melgarejo-padre",
+    "name": "Melgarejo (father, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Father of Sóstenes and Pascual Carlos Melgarejo y Velasco. Inferred from the compound surname: in 1917, 'Sóstenes y Pascual Carlos Melgarejo y Velasco' co-owned rancho La Alameda in Xalapa, Veracruz. 'y Velasco' indicates their mother's surname.",
+    "parentId": null,
+    "partnerId": "p-velasco-madre"
+  },
+  {
+    "id": "p-velasco-madre",
+    "name": "Velasco (mother, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Mother of Sóstenes and Pascual Carlos Melgarejo y Velasco. Surname inferred from 'Melgarejo y Velasco'.",
+    "parentId": null,
+    "partnerId": "p-melgarejo-padre"
+  },
+  {
+    "id": "p-sostenes-melgarejo",
+    "name": "Sóstenes Melgarejo y Velasco",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Husband of Rosa Martha González Ortiz. From Veracruz. Co-owned rancho 'La Alameda' in Xalapa, Veracruz, from 1917; the land was later used for Estadio Xalapeño. Source: Redalyc article on Estadio Xalapeño.",
+    "parentId": "p-melgarejo-padre",
+    "partnerId": "p-rosa-martha-gonzalez-ortiz"
+  },
+  {
+    "id": "p-pascual-carlos-melgarejo-velasco",
+    "name": "Pascual Carlos Melgarejo y Velasco",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Brother of Sóstenes Melgarejo y Velasco. Co-owner of rancho 'La Alameda' in Xalapa, Veracruz.",
+    "parentId": "p-melgarejo-padre"
+  },
+  {
     "id": "p-ines-gonzalez-ramirez",
     "name": "Inés González Ramírez",
     "birth": null,
     "death": null,
     "photo": null,
     "notes": "Father of Esteban González Padilla. Rural family from Los Altos de Jalisco.",
-    "parentId": null
+    "parentId": null,
+    "partnerId": "p-felicitas-padilla-aceves"
   },
   {
     "id": "p-felicitas-padilla-aceves",
@@ -15,7 +55,8 @@
     "death": null,
     "photo": null,
     "notes": "Mother of Esteban González Padilla. Rural family from Los Altos de Jalisco.",
-    "parentId": null
+    "parentId": null,
+    "partnerId": "p-ines-gonzalez-ramirez"
   },
   {
     "id": "p-esteban-gonzalez-padilla",
@@ -23,8 +64,9 @@
     "birth": "1895",
     "death": "1971",
     "photo": null,
-    "notes": "Born 26 Dec 1895 in Tepatitlán de Morelos, Jalisco. Founded Fábrica de Jabón La Corona in 1920 with brothers Loreto and Daniel. Married María Isabel Mendoza Pardo on 5 Jul 1918 in Guadalajara. Directed the company until 1950, then ceded general direction to his son Antonio. Died 10 Sep 1971 in Mexico City.",
-    "parentId": "p-ines-gonzalez-ramirez"
+    "notes": "Born 26 Dec 1895 in Tepatitlán de Morelos, Jalisco. Founded Fábrica de Jabón La Corona in 1920 with brothers Loreto and Daniel. Married María Isabel Mendoza Pardo on 5 Jul 1918 in Guadalajara. Directed the company until 1950. Died 10 Sep 1971 in Mexico City.",
+    "parentId": "p-ines-gonzalez-ramirez",
+    "partnerId": "p-maria-isabel-mendoza-pardo"
   },
   {
     "id": "p-loreto-gonzalez-padilla",
@@ -51,7 +93,8 @@
     "death": null,
     "photo": null,
     "notes": "Married Esteban González Padilla on 5 Jul 1918 in Guadalajara, Jalisco. Had four sons and six daughters.",
-    "parentId": null
+    "parentId": null,
+    "partnerId": "p-esteban-gonzalez-padilla"
   },
   {
     "id": "p-antonio-gonzalez-mendoza",
@@ -59,7 +102,7 @@
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Son of Esteban González Padilla and María Isabel Mendoza Pardo. Inherited leadership of Fábrica de Jabón La Corona in 1950. Traveled with Esteban to the United States in 1954 to study detergent processes.",
+    "notes": "Son of Esteban González Padilla and María Isabel Mendoza Pardo. Inherited leadership of Fábrica de Jabón La Corona in 1950.",
     "parentId": "p-esteban-gonzalez-padilla"
   },
   {
@@ -113,8 +156,9 @@
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Daughter of Esteban González Padilla and María Isabel Mendoza Pardo. Grandmother on the Melgarejo side. Married Sostenes Melgarejo. One of six daughters.",
-    "parentId": "p-esteban-gonzalez-padilla"
+    "notes": "Daughter of Esteban González Padilla and María Isabel Mendoza Pardo. Grandmother on the Melgarejo side. Married Sóstenes Melgarejo y Velasco. One of six daughters.",
+    "parentId": "p-esteban-gonzalez-padilla",
+    "partnerId": "p-sostenes-melgarejo"
   },
   {
     "id": "p-daughter-4-gonzalez-mendoza",
@@ -144,30 +188,12 @@
     "parentId": "p-esteban-gonzalez-padilla"
   },
   {
-    "id": "p-sostenes-melgarejo",
-    "name": "Sostenes Melgarejo",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "Husband of Rosa Martha González Ortiz. Likely from Veracruz. Possible lead: 'Sóstenes y Pascual Carlos Melgarejo y Velasco' co-owned rancho 'La Alameda' in Xalapa, Veracruz, from 1917; the government negotiated with them over those lands when building the Estadio Xalapeño in the 1920s. Source: Redalyc article on Estadio Xalapeño. The 'y Velasco' suggests their mother’s surname was Velasco. Needs confirmation that this is the same Sóstenes.",
-    "parentId": null
-  },
-  {
-    "id": "p-pascual-carlos-melgarejo-velasco",
-    "name": "Pascual Carlos Melgarejo y Velasco",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "Possible brother or relative of Sostenes Melgarejo. Co-owner of rancho 'La Alameda' in Xalapa, Veracruz, with Sóstenes Melgarejo in 1917.",
-    "parentId": null
-  },
-  {
     "id": "p-marina-melgarejo-gonzalez",
     "name": "Marina Melgarejo González",
     "birth": null,
     "death": null,
     "photo": null,
-    "notes": "Daughter of Rosa Martha González Ortiz and Sostenes Melgarejo. Mother on the Melgarejo side.",
+    "notes": "Daughter of Rosa Martha González Ortiz and Sóstenes Melgarejo y Velasco. Mother on the Melgarejo side.",
     "parentId": "p-rosa-martha-gonzalez-ortiz"
   },
   {
