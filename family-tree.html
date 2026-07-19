@@ -6,37 +6,45 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="family tree">
-<meta name="theme-color" content="#f8f7f5">
+<meta name="theme-color" content="#f4f2ed">
 <title>family tree</title>
 <link rel="icon" type="image/svg+xml" href="family-tree-icon.svg">
 <link rel="apple-touch-icon" href="family-tree-icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f8f7f5;
-    --ink: #1c1917;
-    --ink-soft: #57534e;
-    --ink-faint: #a8a29e;
-    --line: rgba(28, 25, 23, 0.10);
+    --bg: #f4f2ed;
+    --bg-soft: #ebe8e1;
     --card: #ffffff;
-    --accent: #0c0a09;
-    --accent-text: #f5f5f4;
-    --danger: #b91c1c;
-    --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.06);
-    --radius: 14px;
+    --ink: #2c2b28;
+    --ink-soft: #6b6963;
+    --ink-faint: #9a9890;
+    --line: #d9d6ce;
+    --accent: #6d7c6b;
+    --accent-soft: #8a9a88;
+    --accent-bg: #e8ece7;
+    --highlight: #c8b99a;
+    --shadow: 0 4px 20px rgba(44, 43, 40, 0.06), 0 1px 3px rgba(44, 43, 40, 0.04);
+    --shadow-lg: 0 12px 40px rgba(44, 43, 40, 0.12);
+    --radius: 18px;
+    --radius-sm: 12px;
   }
   body.dark {
-    --bg: #0c0a09;
-    --ink: #f5f5f4;
-    --ink-soft: #a8a29e;
-    --ink-faint: #57534e;
-    --line: rgba(245, 245, 244, 0.12);
-    --card: #1c1917;
-    --accent: #f5f5f4;
-    --accent-text: #0c0a09;
-    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4);
+    --bg: #1a1a17;
+    --bg-soft: #23231f;
+    --card: #2c2b28;
+    --ink: #f0efe9;
+    --ink-soft: #b9b7ae;
+    --ink-faint: #7c7a72;
+    --line: #3d3c37;
+    --accent: #8a9a88;
+    --accent-soft: #a5b4a3;
+    --accent-bg: #353a34;
+    --highlight: #9e916f;
+    --shadow: 0 4px 20px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.4);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -45,11 +53,11 @@
     background: var(--bg);
     color: var(--ink);
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.55;
     min-height: 100vh;
     min-height: 100dvh;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: background 0.3s ease, color 0.3s ease;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -67,117 +75,102 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.85rem 1.15rem;
-    border-bottom: 1px solid var(--line);
+    padding: 1rem 1.5rem;
     background: var(--bg);
     flex-shrink: 0;
   }
   .brand {
     display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    font-size: 0.92rem;
-    font-weight: 600;
+    flex-direction: column;
+    gap: 0.1rem;
     min-width: 0;
   }
-  .brand a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
-  .brand a:hover { color: var(--ink); }
-  .brand-sep { color: var(--ink-faint); }
-  .brand-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand a {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+  .brand a:hover { color: var(--ink-soft); }
+  .brand-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
   }
   .icon-btn {
     background: var(--card);
     border: 1px solid var(--line);
-    color: var(--ink);
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    color: var(--ink-soft);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     box-shadow: var(--shadow);
   }
-  .icon-btn:hover { transform: translateY(-1px); border-color: var(--ink-soft); }
-  .icon-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .icon-btn:hover { color: var(--ink); border-color: var(--accent-soft); transform: translateY(-1px); }
 
   /* — Toolbar — */
   .toolbar {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.15rem;
-    border-bottom: 1px solid var(--line);
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.5rem 1rem;
     background: var(--bg);
     flex-shrink: 0;
     flex-wrap: wrap;
   }
   .toolbar input[type="search"] {
-    flex: 1;
-    min-width: 120px;
-    max-width: 220px;
-    padding: 0.5rem 0.8rem;
+    width: 220px;
+    padding: 0.6rem 1rem;
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 999px;
     background: var(--card);
     color: var(--ink);
     font-family: inherit;
     font-size: 0.9rem;
+    box-shadow: var(--shadow);
   }
-  .toolbar input[type="search"]:focus { outline: none; border-color: var(--ink-soft); }
+  .toolbar input[type="search"]:focus { outline: none; border-color: var(--accent-soft); }
+  .toolbar input[type="search"]::placeholder { color: var(--ink-faint); }
+
   .view-toggle {
     display: flex;
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 999px;
     overflow: hidden;
     box-shadow: var(--shadow);
   }
   .view-toggle button {
     background: transparent;
     border: none;
-    padding: 0.5rem 0.9rem;
+    padding: 0.55rem 1.1rem;
     font-family: inherit;
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--ink-soft);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
   }
-  .view-toggle button.active { background: var(--ink); color: var(--bg); }
-
-  .btn {
-    background: var(--accent);
-    color: var(--accent-text);
-    border: none;
-    padding: 0.5rem 0.9rem;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    box-shadow: var(--shadow);
-    white-space: nowrap;
-  }
-  .btn:hover { transform: translateY(-1px); opacity: 0.92; }
-  .btn:active { transform: translateY(0); }
-  .btn.secondary {
-    background: var(--card);
-    color: var(--ink);
-    border: 1px solid var(--line);
-  }
-  .btn.secondary:hover { border-color: var(--ink-soft); }
-  .btn.danger { background: var(--danger); color: #fff; }
+  .view-toggle button.active { background: var(--accent-bg); color: var(--accent); }
 
   /* — Tree stage — */
   .tree-stage {
@@ -185,7 +178,7 @@
     overflow: auto;
     position: relative;
     cursor: grab;
-    background: radial-gradient(circle at center, transparent 0%, var(--bg) 100%);
+    padding: 1rem 0 3rem;
   }
   .tree-stage:active { cursor: grabbing; }
   .tree-stage.panning { user-select: none; }
@@ -193,7 +186,6 @@
     position: relative;
     min-width: 100%;
     min-height: 100%;
-    transform-origin: top left;
   }
 
   .connector-svg {
@@ -207,70 +199,78 @@
   }
   .connector-svg path {
     fill: none;
-    stroke: var(--ink-faint);
-    stroke-width: 1.5;
-    opacity: 0.55;
+    stroke: var(--line);
+    stroke-width: 2;
   }
   .connector-svg line.spouse {
-    stroke: var(--ink-faint);
-    stroke-width: 1.5;
-    opacity: 0.75;
+    stroke: var(--line);
+    stroke-width: 2;
   }
 
   .node {
     position: absolute;
-    width: 150px;
+    width: 172px;
     z-index: 1;
     cursor: pointer;
-    transition: transform 0.15s ease, opacity 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
   }
-  .node:hover { transform: translateY(-2px); }
-  .node.filtered-out { opacity: 0.18; pointer-events: none; }
-  .node.focus .node-card { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink), var(--shadow); }
-  .node.selected .node-card { border-color: var(--ink); }
+  .node:hover { transform: translateY(-4px); }
+  .node.filtered-out { opacity: 0.12; pointer-events: none; }
+  .node.focus .node-card { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent), var(--shadow-lg); }
 
   .node-card {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 0.85rem 0.7rem 0.75rem;
+    padding: 0.85rem 0.85rem 1rem;
     text-align: center;
     box-shadow: var(--shadow);
-    transition: all 0.15s ease;
+    transition: all 0.25s ease;
   }
-  .node:hover .node-card { border-color: var(--ink-soft); }
+  .node:hover .node-card { border-color: var(--accent-soft); }
 
   .node-photo {
-    width: 58px;
-    height: 58px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
-    margin: 0 auto 0.55rem;
-    background: linear-gradient(135deg, var(--line), transparent);
+    margin: 0 auto 0.85rem;
+    background: linear-gradient(135deg, var(--bg-soft), var(--bg));
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--ink-faint);
-    font-size: 1.15rem;
-    font-weight: 600;
-    border: 2px solid var(--line);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    border: 3px solid var(--bg-soft);
+    box-shadow: inset 0 0 0 1px var(--line);
   }
   .node-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .node-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.15rem;
     font-weight: 600;
-    font-size: 0.9rem;
-    line-height: 1.25;
+    line-height: 1.2;
     word-break: break-word;
+    color: var(--ink);
   }
   .node-years {
-    margin-top: 0.2rem;
-    font-size: 0.72rem;
+    margin-top: 0.25rem;
+    font-size: 0.78rem;
     color: var(--ink-soft);
+    letter-spacing: 0.02em;
   }
   .node-partner-tag {
+    display: inline-block;
+    margin-top: 0.5rem;
     font-size: 0.65rem;
-    color: var(--ink-faint);
-    margin-top: 0.25rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-bg);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
   }
 
   .empty-state {
@@ -280,135 +280,167 @@
     transform: translate(-50%, -50%);
     text-align: center;
     color: var(--ink-soft);
-    padding: 2.5rem;
+    padding: 3rem;
     background: var(--card);
     border: 1px dashed var(--line);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    max-width: 320px;
+    max-width: 360px;
   }
-  .empty-state h2 { font-size: 1.1rem; color: var(--ink); margin-bottom: 0.4rem; }
-  .empty-state p { margin-bottom: 1.2rem; font-size: 0.9rem; }
+  .empty-state h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
 
-  /* — Modal — */
-  .modal-overlay {
+  /* — Side panel — */
+  .side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 360px;
+    max-width: 90vw;
+    height: 100%;
+    background: var(--card);
+    border-left: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    transform: translateX(110%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow-y: auto;
+  }
+  .side-panel.open { transform: translateX(0); }
+
+  .panel-cover {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(4px);
-    display: none;
+    background: rgba(44, 43, 40, 0.18);
+    backdrop-filter: blur(2px);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .panel-cover.open { opacity: 1; pointer-events: auto; }
+
+  .panel-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--line);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    padding: 1rem;
+    color: var(--ink-soft);
+    transition: all 0.2s ease;
+    z-index: 10;
   }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    width: 100%;
-    max-width: 440px;
-    max-height: 90vh;
-    overflow: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    animation: modal-in 0.2s ease;
-  }
-  @keyframes modal-in {
-    from { opacity: 0; transform: translateY(12px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.1rem 1.25rem;
+  .panel-close:hover { color: var(--ink); }
+  body.dark .panel-close { background: rgba(44,43,40,0.85); }
+
+  .panel-header {
+    padding: 2.5rem 1.75rem 1.5rem;
+    text-align: center;
     border-bottom: 1px solid var(--line);
   }
-  .modal-header h2 { font-size: 1.1rem; font-weight: 600; }
-  .modal-body { padding: 1.25rem; }
-  .modal-footer {
+  .panel-photo {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin: 0 auto 1.25rem;
+    background: linear-gradient(135deg, var(--bg-soft), var(--bg));
+    overflow: hidden;
     display: flex;
-    justify-content: space-between;
-    gap: 0.6rem;
-    padding: 0 1.25rem 1.25rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    border: 4px solid var(--bg);
+    box-shadow: var(--shadow);
   }
-
-  .field { margin-bottom: 1rem; }
-  .field label {
-    display: block;
-    font-size: 0.72rem;
+  .panel-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .panel-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--ink-soft);
-    margin-bottom: 0.35rem;
-  }
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    font-family: inherit;
-    font-size: 0.95rem;
-    padding: 0.65rem 0.85rem;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--bg);
+    line-height: 1.15;
     color: var(--ink);
-    transition: border-color 0.15s ease;
   }
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus { outline: none; border-color: var(--ink-soft); }
-  .field textarea { min-height: 80px; resize: vertical; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .panel-years {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
 
-  .photo-field {
+  .panel-body {
+    padding: 1.5rem 1.75rem;
+  }
+  .panel-section {
+    margin-bottom: 1.75rem;
+  }
+  .panel-section h3 {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.6rem;
+  }
+  .panel-section p {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .panel-section .relation-link {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    padding: 0.65rem 0.8rem;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
   }
-  .photo-preview {
-    width: 56px;
-    height: 56px;
+  .panel-section .relation-link:hover { background: var(--accent-bg); }
+  .relation-link .thumb {
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: var(--line);
+    background: var(--bg-soft);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    color: var(--ink-faint);
-    font-weight: 600;
-  }
-  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-inputs { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
-  .photo-inputs input[type="file"] { font-size: 0.8rem; }
-  .photo-inputs .or { font-size: 0.7rem; color: var(--ink-faint); text-align: center; }
-
-  .hint {
-    font-size: 0.8rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
     color: var(--ink-soft);
-    line-height: 1.5;
-    margin-top: 0.5rem;
+    overflow: hidden;
   }
+  .relation-link .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .relation-link .name { font-weight: 500; font-size: 0.9rem; color: var(--ink); }
+  .relation-link .label { font-size: 0.72rem; color: var(--ink-faint); margin-top: 0.1rem; }
 
-  .quick-actions {
+  .panel-actions {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0 1.75rem 2rem;
   }
-  .quick-actions .btn { font-size: 0.78rem; padding: 0.45rem 0.7rem; }
+  .panel-actions .btn { flex: 1; justify-content: center; }
 
   @media (max-width: 640px) {
-    .toolbar { padding: 0.65rem 0.9rem; }
-    .toolbar input[type="search"] { max-width: none; width: 100%; order: 3; }
-    .node { width: 132px; }
-    .node-card { padding: 0.7rem 0.55rem 0.6rem; }
-    .node-photo { width: 48px; height: 48px; }
-    .field-row { grid-template-columns: 1fr; }
-    .modal { max-height: 95vh; }
+    .brand-title { font-size: 1.35rem; }
+    .toolbar { padding: 0.5rem 1rem 0.85rem; }
+    .toolbar input[type="search"] { width: 100%; max-width: none; order: 2; }
+    .node { width: 150px; }
+    .node-photo { width: 72px; height: 72px; }
+    .side-panel { width: 100%; max-width: 100%; }
   }
 </style>
 </head>
@@ -418,13 +450,9 @@
   <header>
     <div class="brand">
       <a href="index.html">workshop</a>
-      <span class="brand-sep">/</span>
-      <span class="brand-title">family tree</span>
+      <span class="brand-title">Melgarejo · González</span>
     </div>
     <div class="header-actions">
-      <button class="icon-btn" id="importBtn" title="Import JSON" aria-label="Import JSON">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </button>
       <button class="icon-btn" id="exportBtn" title="Export JSON" aria-label="Export JSON">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
@@ -435,8 +463,6 @@
   </header>
 
   <div class="toolbar">
-    <button class="btn" id="addPersonBtn">+ Person</button>
-    <button class="btn secondary" id="focusBtn">Set focus</button>
     <div class="view-toggle">
       <button class="active" data-view="lineage">Lineage</button>
       <button data-view="tree">Full tree</button>
@@ -447,71 +473,45 @@
   <div class="tree-stage" id="treeStage">
     <div class="empty-state" id="emptyState">
       <h2>No family members yet</h2>
-      <p>Add the first person to start building your tree.</p>
-      <button class="btn" id="emptyAddBtn">+ Add person</button>
+      <p>The tree data loads automatically. If it’s empty, check the source JSON.</p>
     </div>
     <div class="tree-canvas" id="treeCanvas"></div>
   </div>
 
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal" role="dialog" aria-modal="true">
-    <div class="modal-header">
-      <h2 id="modalTitle">Edit person</h2>
-      <button class="icon-btn" id="closeModalBtn" aria-label="Close" style="width:32px;height:32px;border-radius:8px;">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+<div class="panel-cover" id="panelCover"></div>
+<aside class="side-panel" id="sidePanel">
+  <button class="panel-close" id="closePanelBtn" aria-label="Close">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="panel-header">
+    <div class="panel-photo" id="panelPhoto">—</div>
+    <div class="panel-name" id="panelName"></div>
+    <div class="panel-years" id="panelYears"></div>
+  </div>
+  <div class="panel-body">
+    <div class="panel-section" id="notesSection" style="display:none;">
+      <h3>Notes</h3>
+      <p id="panelNotes"></p>
     </div>
-    <div class="modal-body">
-      <div class="quick-actions" id="quickActions"></div>
-      <div class="field">
-        <label>Photo</label>
-        <div class="photo-field">
-          <div class="photo-preview" id="photoPreview">—</div>
-          <div class="photo-inputs">
-            <input type="file" id="pPhotoFile" accept="image/*">
-            <div class="or">— or paste a URL —</div>
-            <input type="text" id="pPhoto" placeholder="https://…">
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <label for="pName">Name</label>
-        <input type="text" id="pName" placeholder="e.g. María Elena">
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label for="pBirth">Birth year</label>
-          <input type="number" id="pBirth" placeholder="1950">
-        </div>
-        <div class="field">
-          <label for="pDeath">Death year</label>
-          <input type="number" id="pDeath" placeholder="leave blank">
-        </div>
-      </div>
-      <div class="field">
-        <label for="pParent">Parent</label>
-        <select id="pParent"><option value="">— none —</option></select>
-      </div>
-      <div class="field">
-        <label for="pPartner">Partner / spouse</label>
-        <select id="pPartner"><option value="">— none —</option></select>
-      </div>
-      <div class="field">
-        <label for="pNotes">Notes</label>
-        <textarea id="pNotes" placeholder="Stories, places, anything…"></textarea>
-      </div>
-      <p class="hint">Parent determines generation. Partner appears beside them in the tree.</p>
+    <div class="panel-section" id="partnerSection" style="display:none;">
+      <h3>Partner</h3>
+      <div id="panelPartner"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn secondary" id="cancelBtn">Cancel</button>
-      <button class="btn danger" id="deleteBtn">Delete</button>
-      <button class="btn" id="saveBtn">Save</button>
+    <div class="panel-section" id="parentsSection" style="display:none;">
+      <h3>Parents</h3>
+      <div id="panelParents"></div>
+    </div>
+    <div class="panel-section" id="childrenSection" style="display:none;">
+      <h3>Children</h3>
+      <div id="panelChildren"></div>
     </div>
   </div>
-</div>
+  <div class="panel-actions">
+    <button class="btn secondary" id="focusThisBtn">Focus lineage</button>
+  </div>
+</aside>
 
 <input type="file" id="fileInput" accept="application/json" style="display:none;">
 
@@ -524,18 +524,16 @@
   let people = [];
   let selectedId = null;
   let focusId = null;
-  let editingId = null;
-  let pendingPhoto = null;
   let currentView = 'lineage';
 
-  const NODE_W = 150;
-  const NODE_H = 96;
-  const PARTNER_GAP = 24;
-  const GEN_GAP_Y = 140;
-  const SIBLING_GAP_X = 40;
-  const MARGIN = 80;
+  const NODE_W = 172;
+  const NODE_H = 210;
+  const PARTNER_GAP = 28;
+  const GEN_GAP_Y = 150;
+  const SIBLING_GAP_X = 48;
+  const MARGIN = 100;
 
-  // — Data helpers —
+  // — Data —
   async function load() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -559,20 +557,9 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(people)); } catch(e) {}
     render();
   }
-  function uid() {
-    return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  }
   function getPerson(id) { return people.find(p => p.id === id); }
-  function descendantsOf(id) {
-    const set = new Set();
-    function walk(pid) {
-      people.filter(p => p.parentId === pid).forEach(c => { set.add(c.id); walk(c.id); });
-    }
-    walk(id);
-    return set;
-  }
 
-  // — Layout: Lineage —
+  // — Layouts —
   function buildLineageLayout(focusId) {
     const nodes = [];
     const couples = [];
@@ -590,36 +577,20 @@
       const y = (couples.length - 1 - i) * GEN_GAP_Y;
       const pairW = NODE_W + (couple.partner ? NODE_W + PARTNER_GAP : 0);
       const x = childCenterX - pairW / 2;
-      nodes.push({
-        person: couple.person,
-        x, y,
-        isMain: true,
-        isFocus: couple.person.id === focusId
-      });
+      nodes.push({ person: couple.person, x, y, isMain: true, isFocus: couple.person.id === focusId });
       if (couple.partner) {
-        nodes.push({
-          person: couple.partner,
-          x: x + NODE_W + PARTNER_GAP, y,
-          isPartner: true,
-          partnerOf: couple.person.id
-        });
+        nodes.push({ person: couple.partner, x: x + NODE_W + PARTNER_GAP, y, isPartner: true, partnerOf: couple.person.id });
       }
       childCenterX = x + pairW / 2;
     });
-
     return nodes;
   }
 
-  // — Layout: Full descendant tree —
   function buildTreeLayout() {
     const roots = people.filter(p => !p.parentId).sort((a,b) => a.name.localeCompare(b.name));
-    if (!roots.length && people.length) {
-      // fallback: treat everyone with unknown parent as root
-      return [];
-    }
+    if (!roots.length) return [];
 
     const nodes = [];
-    const usedPartners = new Set();
 
     function subtreeWidth(person) {
       const children = people.filter(c => c.parentId === person.id).sort((a,b) => a.name.localeCompare(b.name));
@@ -639,7 +610,6 @@
 
       nodes.push({ person, x, y, isMain: true });
       if (partner) {
-        usedPartners.add(partner.id);
         nodes.push({ person: partner, x: x + NODE_W + PARTNER_GAP, y, isPartner: true, partnerOf: person.id });
       }
 
@@ -647,24 +617,21 @@
       if (!children.length) return;
 
       let childX = centerX;
+      const totalChildrenW = children.reduce((s, ch) => s + subtreeWidth(ch), 0) + SIBLING_GAP_X * (children.length - 1);
       children.forEach((c, i) => {
         const cw = subtreeWidth(c);
-        const prev = children[i-1];
-        if (prev) childX += subtreeWidth(prev) / 2 + SIBLING_GAP_X + cw / 2;
-        else childX = centerX - (children.reduce((s, ch) => s + subtreeWidth(ch), 0) + SIBLING_GAP_X * (children.length - 1)) / 2 + cw / 2;
+        if (i === 0) childX = centerX - totalChildrenW / 2 + cw / 2;
+        else childX += subtreeWidth(children[i-1]) / 2 + SIBLING_GAP_X + cw / 2;
         place(c, childX - NODE_W/2, y + GEN_GAP_Y);
       });
     }
 
     let rootX = 0;
+    const totalRootsW = roots.reduce((s, r) => s + Math.max(NODE_W, subtreeWidth(r)), 0) + SIBLING_GAP_X * 3 * (roots.length - 1);
     roots.forEach((r, i) => {
       const rw = Math.max(NODE_W, subtreeWidth(r));
-      const prev = roots[i-1];
-      if (prev) {
-        rootX += subtreeWidth(prev) / 2 + SIBLING_GAP_X * 3 + rw / 2;
-      } else {
-        rootX = rw / 2;
-      }
+      if (i === 0) rootX = -totalRootsW / 2 + rw / 2;
+      else rootX += Math.max(NODE_W, subtreeWidth(roots[i-1])) / 2 + SIBLING_GAP_X * 3 + rw / 2;
       place(r, rootX - NODE_W/2, 0);
     });
 
@@ -698,18 +665,19 @@
     const maxX = Math.max(...nodes.map(n => n.x + NODE_W)) + MARGIN;
     const maxY = Math.max(...nodes.map(n => n.y + NODE_H)) + MARGIN;
 
-    canvas.style.width = (maxX - minX) + 'px';
-    canvas.style.height = (maxY - minY) + 'px';
-    canvas.style.marginLeft = Math.max(0, (document.getElementById('treeStage').clientWidth - (maxX - minX)) / 2) + 'px';
+    const width = maxX - minX;
+    const height = maxY - minY;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
 
-    const offsetX = -minX;
-    const offsetY = -minY;
+    const stage = document.getElementById('treeStage');
+    const offsetX = -minX + Math.max(0, (stage.clientWidth - width) / 2);
+    const offsetY = -minY + 20;
 
-    // SVG connectors
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.classList.add('connector-svg');
-    svg.setAttribute('width', maxX - minX);
-    svg.setAttribute('height', maxY - minY);
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
     canvas.appendChild(svg);
 
     const nodeById = {};
@@ -719,7 +687,6 @@
       const cx = n.x + offsetX + NODE_W/2;
       const cy = n.y + offsetY + NODE_H;
 
-      // parent-to-child connector
       if (!n.isPartner) {
         const children = people.filter(c => c.parentId === n.person.id);
         children.forEach(c => {
@@ -734,7 +701,6 @@
         });
       }
 
-      // spouse connector
       if (n.isPartner) {
         const main = nodes.find(m => m.person.id === n.partnerOf && !m.isPartner);
         if (main) {
@@ -743,27 +709,24 @@
           const ex = n.x + offsetX;
           const ey = n.y + offsetY + NODE_H/2;
           const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          line.setAttribute('x1', sx);
-          line.setAttribute('y1', sy);
-          line.setAttribute('x2', ex);
-          line.setAttribute('y2', ey);
+          line.setAttribute('x1', sx); line.setAttribute('y1', sy);
+          line.setAttribute('x2', ex); line.setAttribute('y2', ey);
           line.classList.add('spouse');
           svg.appendChild(line);
         }
       }
     });
 
-    // Nodes
     nodes.forEach(n => {
       const el = document.createElement('div');
-      el.className = 'node' + (n.person.id === selectedId ? ' selected' : '') + (n.isFocus ? ' focus' : '') + (n.isPartner ? ' partner' : '');
+      el.className = 'node' + (n.person.id === selectedId ? ' selected' : '') + (n.isFocus ? ' focus' : '');
       el.dataset.id = n.person.id;
       if (filter && !n.person.name.toLowerCase().includes(filter)) el.classList.add('filtered-out');
       el.style.left = (n.x + offsetX) + 'px';
       el.style.top = (n.y + offsetY) + 'px';
 
       const initials = n.person.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-      const tag = n.isPartner ? '<div class="node-partner-tag">partner</div>' : '';
+      const tag = n.isPartner ? '<span class="node-partner-tag">Partner</span>' : '';
       el.innerHTML = `
         <div class="node-card">
           <div class="node-photo">${n.person.photo ? `<img src="${escapeHtml(n.person.photo)}" alt="">` : initials}</div>
@@ -772,15 +735,14 @@
           ${tag}
         </div>
       `;
-      el.addEventListener('click', (e) => { e.stopPropagation(); selectedId = n.person.id; openEdit(n.person.id); });
+      el.addEventListener('click', (e) => { e.stopPropagation(); selectedId = n.person.id; openPanel(n.person.id); });
       canvas.appendChild(el);
     });
 
-    centerOnFocus();
+    if (currentView === 'lineage') centerOnFocus();
   }
 
   function centerOnFocus() {
-    if (currentView !== 'lineage') return;
     const stage = document.getElementById('treeStage');
     const canvas = document.getElementById('treeCanvas');
     const focusEl = canvas.querySelector('.node.focus');
@@ -802,185 +764,71 @@
     return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
   }
 
-  // — Modal —
-  function openEdit(id) {
-    editingId = id || null;
-    pendingPhoto = null;
-    const p = id ? getPerson(id) : null;
-    document.getElementById('modalTitle').textContent = p ? 'Edit person' : 'Add person';
-    document.getElementById('pName').value = p ? p.name : '';
-    document.getElementById('pBirth').value = p ? p.birth || '' : '';
-    document.getElementById('pDeath').value = p ? p.death || '' : '';
-    document.getElementById('pPhoto').value = p ? p.photo || '' : '';
-    document.getElementById('pNotes').value = p ? p.notes || '' : '';
-    document.getElementById('pPhotoFile').value = '';
-    updatePhotoPreview(p ? p.photo : null, p ? p.name : '');
+  // — Side panel —
+  function openPanel(id) {
+    const p = getPerson(id);
+    if (!p) return;
+    selectedId = id;
 
-    populateParentSelect();
-    populatePartnerSelect();
-    document.getElementById('pParent').value = p ? p.parentId || '' : (selectedId || '');
-    document.getElementById('pPartner').value = p ? p.partnerId || '' : '';
+    const initials = p.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('panelPhoto').innerHTML = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="">` : initials;
+    document.getElementById('panelName').textContent = p.name || 'Unnamed';
+    document.getElementById('panelYears').textContent = yearRange(p) || 'Years unknown';
 
-    const quick = document.getElementById('quickActions');
-    quick.innerHTML = '';
-    if (p) {
-      const addChild = document.createElement('button');
-      addChild.className = 'btn secondary';
-      addChild.textContent = '+ Add child';
-      addChild.addEventListener('click', () => {
-        closeModal();
-        selectedId = p.id;
-        openEdit(null);
-        document.getElementById('pParent').value = p.id;
-      });
-      quick.appendChild(addChild);
-
-      const setFocus = document.createElement('button');
-      setFocus.className = 'btn secondary';
-      setFocus.textContent = 'Focus lineage';
-      setFocus.addEventListener('click', () => {
-        focusId = p.id;
-        try { localStorage.setItem(FOCUS_KEY, focusId); } catch(e) {}
-        if (currentView !== 'lineage') switchView('lineage');
-        else render();
-        closeModal();
-      });
-      quick.appendChild(setFocus);
-    }
-
-    document.getElementById('deleteBtn').style.display = p ? 'inline-flex' : 'none';
-    document.getElementById('modalOverlay').classList.add('open');
-  }
-  function closeModal() {
-    editingId = null;
-    pendingPhoto = null;
-    document.getElementById('modalOverlay').classList.remove('open');
-  }
-  function populateParentSelect() {
-    const sel = document.getElementById('pParent');
-    sel.innerHTML = '<option value="">— none —</option>';
-    people.filter(p => p.id !== editingId).forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name || 'Unnamed';
-      sel.appendChild(opt);
-    });
-  }
-  function populatePartnerSelect() {
-    const sel = document.getElementById('pPartner');
-    sel.innerHTML = '<option value="">— none —</option>';
-    people.filter(p => p.id !== editingId).forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name || 'Unnamed';
-      sel.appendChild(opt);
-    });
-  }
-  function updatePhotoPreview(src, name) {
-    const preview = document.getElementById('photoPreview');
-    if (src) {
-      preview.innerHTML = `<img src="${escapeHtml(src)}" alt="">`;
+    const notesSection = document.getElementById('notesSection');
+    if (p.notes) {
+      notesSection.style.display = 'block';
+      document.getElementById('panelNotes').textContent = p.notes;
     } else {
-      const initials = String(name || '').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase() || '—';
-      preview.textContent = initials;
-      preview.innerHTML = preview.textContent;
+      notesSection.style.display = 'none';
     }
-  }
 
-  document.getElementById('pPhoto').addEventListener('input', (e) => {
-    pendingPhoto = null;
-    updatePhotoPreview(e.target.value, document.getElementById('pName').value);
-  });
-  document.getElementById('pName').addEventListener('input', (e) => {
-    const photo = pendingPhoto || document.getElementById('pPhoto').value;
-    if (!photo) updatePhotoPreview(null, e.target.value);
-  });
-  document.getElementById('pPhotoFile').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      pendingPhoto = reader.result;
-      document.getElementById('pPhoto').value = '';
-      updatePhotoPreview(pendingPhoto, document.getElementById('pName').value);
-    };
-    reader.readAsDataURL(file);
-  });
+    showRelation('panelPartner', 'partnerSection', p.partnerId ? [p.partnerId] : [], 'Partner');
+    showRelation('panelParents', 'parentsSection', p.parentId ? [p.parentId] : [], 'Parent');
+    const children = people.filter(c => c.parentId === p.id).map(c => c.id);
+    showRelation('panelChildren', 'childrenSection', children, 'Child');
 
-  document.getElementById('addPersonBtn').addEventListener('click', () => { selectedId = null; openEdit(null); });
-  document.getElementById('emptyAddBtn').addEventListener('click', () => openEdit(null));
-  document.getElementById('focusBtn').addEventListener('click', () => {
-    if (selectedId) {
-      focusId = selectedId;
+    document.getElementById('focusThisBtn').onclick = () => {
+      focusId = p.id;
       try { localStorage.setItem(FOCUS_KEY, focusId); } catch(e) {}
-      switchView('lineage');
-    }
-  });
-  document.getElementById('cancelBtn').addEventListener('click', closeModal);
-  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-  document.getElementById('modalOverlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
-  });
-
-  document.getElementById('saveBtn').addEventListener('click', () => {
-    const name = document.getElementById('pName').value.trim();
-    if (!name) { alert('Please enter a name.'); return; }
-    const parentId = document.getElementById('pParent').value || null;
-    const partnerId = document.getElementById('pPartner').value || null;
-    const photoUrl = document.getElementById('pPhoto').value.trim() || null;
-    const data = {
-      name,
-      birth: document.getElementById('pBirth').value.trim() || null,
-      death: document.getElementById('pDeath').value.trim() || null,
-      photo: pendingPhoto || photoUrl,
-      notes: document.getElementById('pNotes').value.trim() || null,
-      parentId,
-      partnerId
+      if (currentView !== 'lineage') switchView('lineage');
+      else render();
+      closePanel();
     };
-    if (editingId) {
-      if (parentId && (parentId === editingId || descendantsOf(editingId).has(parentId))) {
-        alert('That would create a loop — a person cannot be their own ancestor.');
-        return;
-      }
-      const p = getPerson(editingId);
-      // remove old partner reference if changed
-      if (p.partnerId && p.partnerId !== partnerId) {
-        const old = getPerson(p.partnerId);
-        if (old && old.partnerId === editingId) old.partnerId = null;
-      }
-      Object.assign(p, data);
-      // sync partner's partnerId
-      if (partnerId) {
-        const partner = getPerson(partnerId);
-        if (partner && partner.partnerId !== editingId) partner.partnerId = editingId;
-      }
-    } else {
-      const newId = uid();
-      people.push({ id: newId, ...data });
-      if (partnerId) {
-        const partner = getPerson(partnerId);
-        if (partner) partner.partnerId = newId;
-      }
-    }
-    save();
-    closeModal();
-  });
 
-  document.getElementById('deleteBtn').addEventListener('click', () => {
-    if (!editingId) return;
-    if (!confirm('Delete this person?')) return;
-    const p = getPerson(editingId);
-    if (p.partnerId) {
-      const partner = getPerson(p.partnerId);
-      if (partner && partner.partnerId === editingId) partner.partnerId = null;
-    }
-    people = people.filter(x => x.id !== editingId);
-    people.forEach(x => { if (x.parentId === editingId) x.parentId = null; if (x.partnerId === editingId) x.partnerId = null; });
-    if (focusId === editingId) focusId = people[0]?.id || null;
-    selectedId = null;
-    save();
-    closeModal();
-  });
+    document.getElementById('panelCover').classList.add('open');
+    document.getElementById('sidePanel').classList.add('open');
+  }
+  function closePanel() {
+    document.getElementById('panelCover').classList.remove('open');
+    document.getElementById('sidePanel').classList.remove('open');
+  }
+  function showRelation(containerId, sectionId, ids, label) {
+    const container = document.getElementById(containerId);
+    const section = document.getElementById(sectionId);
+    container.innerHTML = '';
+    if (!ids.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    ids.forEach(id => {
+      const r = getPerson(id);
+      if (!r) return;
+      const initials = r.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+      const el = document.createElement('div');
+      el.className = 'relation-link';
+      el.innerHTML = `
+        <div class="thumb">${r.photo ? `<img src="${escapeHtml(r.photo)}" alt="">` : initials}</div>
+        <div>
+          <div class="name">${escapeHtml(r.name)}</div>
+          <div class="label">${label} · ${yearRange(r) || 'years unknown'}</div>
+        </div>
+      `;
+      el.addEventListener('click', () => openPanel(r.id));
+      container.appendChild(el);
+    });
+  }
+
+  document.getElementById('closePanelBtn').addEventListener('click', closePanel);
+  document.getElementById('panelCover').addEventListener('click', closePanel);
 
   // — View switching —
   function switchView(view) {
@@ -995,7 +843,7 @@
   // — Search —
   document.getElementById('searchInput').addEventListener('input', render);
 
-  // — Pan / drag —
+  // — Pan —
   const stage = document.getElementById('treeStage');
   let isPanning = false;
   let startX, startY, scrollLeft, scrollTop;
@@ -1018,7 +866,7 @@
   });
   document.addEventListener('mouseup', () => { isPanning = false; stage.classList.remove('panning'); });
 
-  // — Import / Export —
+  // — Export / Import —
   document.getElementById('exportBtn').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(people, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
@@ -1027,40 +875,12 @@
     a.click();
     URL.revokeObjectURL(a.href);
   });
-  document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
-  document.getElementById('fileInput').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const data = JSON.parse(reader.result);
-        if (!Array.isArray(data)) throw new Error('file must contain an array');
-        if (!confirm(`Import ${data.length} people? This replaces the current tree.`)) return;
-        people = data.map(p => ({
-          id: p.id || uid(),
-          name: p.name || 'Unnamed',
-          birth: p.birth || null,
-          death: p.death || null,
-          photo: p.photo || null,
-          notes: p.notes || null,
-          parentId: p.parentId || null,
-          partnerId: p.partnerId || null
-        }));
-        selectedId = null;
-        focusId = people[0]?.id || null;
-        save();
-      } catch(err) { alert('Could not import: ' + err.message); }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  });
 
   // — Dark mode —
   function applyDark(dark) {
     document.body.classList.toggle('dark', dark);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', dark ? '#0c0a09' : '#f8f7f5');
+    if (meta) meta.setAttribute('content', dark ? '#1a1a17' : '#f4f2ed');
   }
   let savedDark = null;
   try { savedDark = localStorage.getItem(DARK_KEY); } catch(e) {}
