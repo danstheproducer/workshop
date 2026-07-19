@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ed">
+<title>Lombardi Networks</title>
+<link rel="icon" type="image/svg+xml" href="family-tree-icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ed;
+    --bg-soft: #ece7dc;
+    --ink: #2f2d28;
+    --ink-soft: #5e5a50;
+    --ink-faint: #918a7a;
+    --line: #9b9486;
+    --line-light: #c8c2b4;
+    --accent: #a85d3c;
+    --accent-soft: #c07b5c;
+    --highlight: #d4a574;
+    --shadow: 0 2px 12px rgba(47,45,40,0.08);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    overflow: hidden;
+  }
+
+  .app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 1.25rem; background: var(--bg); border-bottom: 1px solid var(--line-light);
+    flex-shrink: 0;
+  }
+  .brand { display: flex; flex-direction: column; }
+  .brand a { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); text-decoration: none; }
+  .brand-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.55rem; font-weight: 600; }
+  .header-actions { display: flex; gap: 0.5rem; }
+
+  .toolbar {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.6rem 1.25rem; background: var(--bg); border-bottom: 1px solid var(--line-light);
+    flex-shrink: 0; flex-wrap: wrap;
+  }
+  .toolbar input[type="search"] {
+    width: 220px; padding: 0.55rem 1rem; border: 1px solid var(--line-light); border-radius: 999px;
+    background: #fff; color: var(--ink); font-family: inherit; font-size: 0.85rem;
+  }
+  .toolbar input:focus { outline: none; border-color: var(--accent-soft); }
+  .toolbar select {
+    padding: 0.55rem 1rem; border: 1px solid var(--line-light); border-radius: 999px;
+    background: #fff; color: var(--ink); font-family: inherit; font-size: 0.85rem;
+  }
+  .toolbar button {
+    padding: 0.55rem 1rem; border: 1px solid var(--line-light); border-radius: 999px;
+    background: #fff; color: var(--ink-soft); font-family: inherit; font-size: 0.8rem; font-weight: 500;
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .toolbar button:hover { border-color: var(--accent-soft); color: var(--ink); }
+
+  .stage {
+    flex: 1; position: relative; overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(160,150,130,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(160,150,130,0.04) 0%, transparent 50%),
+      var(--bg);
+    cursor: grab;
+  }
+  .stage:active { cursor: grabbing; }
+  .stage svg {
+    position: absolute; top: 0; left: 0;
+    transform-origin: 0 0;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .stage svg.dragging { transition: none; }
+
+  .link {
+    fill: none; stroke: var(--line); stroke-width: 1.2;
+    transition: stroke 0.2s ease, stroke-width 0.2s ease, opacity 0.2s ease;
+  }
+  .link.highlight { stroke: var(--accent); stroke-width: 2; opacity: 1; }
+  .link.dim { opacity: 0.15; }
+  .link.dashed { stroke-dasharray: 4 3; }
+
+  .node-group { cursor: pointer; }
+  .node-circle {
+    fill: #fff; stroke: var(--ink-soft); stroke-width: 1.2;
+    transition: all 0.2s ease;
+  }
+  .node-group:hover .node-circle { stroke: var(--accent); stroke-width: 2.5; fill: var(--highlight); }
+  .node-group.selected .node-circle { stroke: var(--accent); stroke-width: 2.5; fill: var(--highlight); }
+  .node-group.dim { opacity: 0.2; }
+
+  .node-label {
+    font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 500;
+    fill: var(--ink-soft); text-anchor: middle; pointer-events: none;
+    transition: opacity 0.2s ease, fill 0.2s ease;
+  }
+  .node-group:hover .node-label, .node-group.selected .node-label { fill: var(--ink); font-weight: 600; }
+
+  .time-axis {
+    stroke: var(--line-light); stroke-width: 1; stroke-dasharray: 2 4;
+  }
+  .time-label {
+    font-family: 'Cormorant Garamond', serif; font-size: 10px; fill: var(--ink-faint);
+    font-style: italic; text-anchor: middle;
+  }
+
+  .zoom-controls {
+    position: fixed; bottom: 1.25rem; right: 1.25rem;
+    display: flex; flex-direction: column; gap: 0.4rem; z-index: 100;
+  }
+  .zoom-controls button {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-light);
+    background: #fff; color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: var(--shadow); transition: all 0.15s ease;
+  }
+  .zoom-controls button:hover { color: var(--ink); border-color: var(--accent-soft); }
+
+  .panel {
+    position: fixed; top: 0; right: 0; width: 360px; max-width: 90vw; height: 100%;
+    background: rgba(255,253,248,0.96); backdrop-filter: blur(8px);
+    border-left: 1px solid var(--line-light); box-shadow: var(--shadow);
+    z-index: 200; transform: translateX(110%); transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
+    overflow-y: auto; padding: 1.75rem;
+  }
+  .panel.open { transform: translateX(0); }
+  .panel-cover {
+    position: fixed; inset: 0; background: rgba(47,45,40,0.12); z-index: 199;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .panel-cover.open { opacity: 1; pointer-events: auto; }
+  .panel h2 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.3rem;
+  }
+  .panel .meta { font-size: 0.8rem; color: var(--ink-faint); margin-bottom: 1rem; }
+  .panel p { font-size: 0.9rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 1rem; }
+  .panel h3 {
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint);
+    margin: 1.2rem 0 0.5rem;
+  }
+  .panel .connection {
+    display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0;
+    font-size: 0.85rem; color: var(--ink-soft); cursor: pointer;
+  }
+  .panel .connection:hover { color: var(--accent); }
+  .panel .connection .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line-light); }
+  .panel-close {
+    position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px;
+    border-radius: 50%; border: 1px solid var(--line-light); background: #fff;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+
+  .empty-state {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    text-align: center; color: var(--ink-faint); max-width: 300px;
+  }
+
+  @media (max-width: 640px) {
+    .toolbar input[type="search"] { width: 100%; order: 2; }
+    .brand-title { font-size: 1.3rem; }
+    .panel { width: 100%; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <a href="index.html">workshop</a>
+      <span class="brand-title">Lombardi Networks</span>
+    </div>
+    <div class="header-actions">
+      <button class="toolbar" style="border-radius:999px;padding:0.55rem 1rem;" onclick="loadSample()">Reset sample</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" id="searchInput" placeholder="Find a node…">
+    <select id="datasetSelect">
+      <option value="family">Family lineage</option>
+      <option value="bcci">BCCI sketch</option>
+    </select>
+    <button onclick="fitToScreen()">Fit</button>
+    <button onclick="toggleLabels()">Labels</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <div class="zoom-controls">
+    <button onclick="setZoom(0.2)" title="Zoom in">+</button>
+    <button onclick="setZoom(-0.2)" title="Zoom out">−</button>
+    <button onclick="fitToScreen()" title="Fit">⤢</button>
+  </div>
+</div>
+
+<div class="panel-cover" id="panelCover" onclick="closePanel()"></div>
+<aside class="panel" id="panel">
+  <button class="panel-close" onclick="closePanel()">×</button>
+  <h2 id="panelTitle"></h2>
+  <div class="meta" id="panelMeta"></div>
+  <p id="panelNotes"></p>
+  <h3>Connections</h3>
+  <div id="panelConnections"></div>
+</aside>
+
+<script>
+let nodes = [], links = [];
+let scale = 1, panX = 0, panY = 0;
+let isDragging = false, startX, startY;
+let selectedId = null;
+let showLabels = true;
+
+const svg = document.getElementById('svg');
+const stage = document.getElementById('stage');
+
+const SAMPLES = {
+  family: {
+    nodes: [
+      { id: 'pedro', label: 'Pedro Pacho', year: 1500, group: 'Sephardic', notes: 'Earliest known ancestor; judeoconverso from Fregenal de la Sierra, Spain. Died before 1547 in Nueva España.' },
+      { id: 'mariana1', label: 'Mariana Temiño de Velasco', year: 1510, group: 'Sephardic', notes: 'Wife of Pedro Pacho. Born c. 1510 in Sevilla, Spain.' },
+      { id: 'mariana2', label: 'Mariana Temiño de Velasco', year: 1543, group: 'Sephardic', notes: 'Daughter of Pedro Pacho and Mariana. Born 1543 in Ciudad de México.' },
+      { id: 'lorenzo', label: 'Lorenzo de Padilla Dávila', year: 1520, group: 'Sephardic', notes: 'Born c. 1520 in Jerez de la Frontera, Spain. Husband of Mariana Temiño de Velasco.' },
+      { id: 'diego', label: 'Diego de Padilla Dávila', year: 1560, group: 'Padilla', notes: 'Born c. 1560 in Guadalajara, Nueva Galicia. Died 1631.' },
+      { id: 'ana', label: 'María Ana de la Mota y Vera', year: 1560, group: 'Padilla', notes: 'Wife of Diego de Padilla Dávila.' },
+      { id: 'lorenzo2', label: 'Lorenzo de Padilla Dávila', year: 1598, group: 'Padilla', notes: 'Born c. 1598 Guadalajara. Died 1648.' },
+      { id: 'josefa', label: 'Josefa Arias de Valdés', year: 1610, group: 'Padilla', notes: 'Wife of Lorenzo de Padilla Dávila.' },
+      { id: 'cristobal', label: 'Cristóbal de Padilla Dávila', year: 1640, group: 'Padilla', notes: 'Born 1640 in Guadalajara.' },
+      { id: 'luisa', label: 'Luisa Gutiérrez de Hermosillo', year: 1645, group: 'Padilla', notes: 'Wife of Cristóbal de Padilla Dávila.' },
+      { id: 'francisco', label: 'Francisco de Padilla', year: 1672, group: 'Padilla', notes: 'Born c. 1672 Jalostotitlán. Died 1738 San Juan de los Lagos.' },
+      { id: 'anam', label: 'Ana Muñoz de la Barba', year: 1680, group: 'Padilla', notes: 'Wife of Francisco de Padilla.' },
+      { id: 'cristobal2', label: 'Cristóbal de Padilla', year: 1704, group: 'Padilla', notes: 'Born 1704 Jalostotitlán. Died 1784 San Juan de los Lagos.' },
+      { id: 'agueda', label: 'María Águeda Martín del Campo', year: 1705, group: 'Padilla', notes: 'Wife of Cristóbal de Padilla.' },
+      { id: 'juanl', label: 'Juan Leonardo Padilla', year: 1739, group: 'Padilla', notes: 'Born 1739 San Juan de los Lagos.' },
+      { id: 'rosalia', label: 'Rosalía Pérez', year: 1739, group: 'Padilla', notes: 'Wife of Juan Leonardo Padilla.' },
+      { id: 'josed', label: 'José Domingo Padilla', year: 1772, group: 'Padilla', notes: 'Born 1772 Jalostotitlán.' },
+      { id: 'juliana', label: 'María Juliana Covarrubias', year: 1778, group: 'Padilla', notes: 'Wife of José Domingo Padilla.' },
+      { id: 'juanj', label: 'Juan José Padilla', year: 1794, group: 'Padilla', notes: 'Born c. 1794 Tepatitlán.' },
+      { id: 'gertrudis', label: 'Gertrudis González', year: 1798, group: 'Padilla', notes: 'Wife of Juan José Padilla.' },
+      { id: 'victoriano', label: 'Victoriano Padilla González', year: 1822, group: 'Padilla', notes: 'Born 1822 Tepatitlán.' },
+      { id: 'mjesus', label: 'María de Jesús Aceves Ramírez', year: 1834, group: 'Padilla', notes: 'Wife of Victoriano Padilla González.' },
+      { id: 'felicitas', label: 'Felicitas Padilla Aceves', year: 1860, group: 'González', notes: 'Born 1860 Tepatitlán. Married 1881. Mother of Esteban González Padilla.' },
+      { id: 'ines', label: 'José Inés González Ramírez', year: 1860, group: 'González', notes: 'Husband of Felicitas Padilla Aceves. Father of Esteban González Padilla.' },
+      { id: 'esteban', label: 'Esteban González Padilla', year: 1895, group: 'González', notes: 'Born 1895 Tepatitlán. Co-founded Fábrica de Jabón La Corona in 1920 with brothers Loreto and Daniel. Handed leadership to son Antonio in 1950. Died 1970.' },
+      { id: 'isabel', label: 'María Isabel Mendoza Pardo', year: 1896, group: 'González', notes: 'Wife of Esteban González Padilla. Married 1918.' },
+      { id: 'antonio', label: 'Antonio Eduardo González Mendoza', year: 1919, group: 'González', notes: 'Born 1919 Torreón. Took over La Corona in 1950. Diversified into Corona, Tepeyac, Roma, Foca, Blancanieves, Doña Blanca, Aceite 123, Briden. Died 2002.' },
+      { id: 'rosaol', label: 'Rosa Ortiz Luna', year: 1919, group: 'González', notes: 'Wife of Antonio Eduardo González Mendoza.' },
+      { id: 'rosamg', label: 'Rosa Martha González Ortiz', year: 1941, group: 'González', notes: 'Born 1941. Married Sostenes Melgarejo 1963. Mother of Lusana. Sephardic certificate 111852/07-2022.' },
+      { id: 'sostenes', label: 'Sostenes Gustavo Melgarejo', year: 1940, group: 'Melgarejo', notes: 'Husband of Rosa Martha González Ortiz. Father of Lusana.' },
+      { id: 'lusana', label: 'Lusana Marina Melgarejo González', year: 1968, group: 'Melgarejo', notes: 'Born 1968. Holder of Sephardic certificate 111852/07-2022 from Comunidade Israelita de Lisboa.' },
+      { id: 'daniel', label: 'Daniel Martínez del Campo Melgarejo', year: 1995, group: 'Melgarejo', notes: 'Son of Lusana. Musician/producer (Dans) and builder of this family tree app.' }
+    ],
+    links: [
+      { source: 'pedro', target: 'mariana2', type: 'child' },
+      { source: 'mariana1', target: 'mariana2', type: 'child' },
+      { source: 'lorenzo', target: 'mariana2', type: 'spouse' },
+      { source: 'mariana2', target: 'diego', type: 'child' },
+      { source: 'diego', target: 'lorenzo2', type: 'child' },
+      { source: 'diego', target: 'ana', type: 'spouse' },
+      { source: 'lorenzo2', target: 'cristobal', type: 'child' },
+      { source: 'lorenzo2', target: 'josefa', type: 'spouse' },
+      { source: 'cristobal', target: 'francisco', type: 'child' },
+      { source: 'cristobal', target: 'luisa', type: 'spouse' },
+      { source: 'francisco', target: 'cristobal2', type: 'child' },
+      { source: 'francisco', target: 'anam', type: 'spouse' },
+      { source: 'cristobal2', target: 'juanl', type: 'child' },
+      { source: 'cristobal2', target: 'agueda', type: 'spouse' },
+      { source: 'juanl', target: 'josed', type: 'child' },
+      { source: 'juanl', target: 'rosalia', type: 'spouse' },
+      { source: 'josed', target: 'juanj', type: 'child' },
+      { source: 'josed', target: 'juliana', type: 'spouse' },
+      { source: 'juanj', target: 'victoriano', type: 'child' },
+      { source: 'juanj', target: 'gertrudis', type: 'spouse' },
+      { source: 'victoriano', target: 'felicitas', type: 'child' },
+      { source: 'victoriano', target: 'mjesus', type: 'spouse' },
+      { source: 'felicitas', target: 'esteban', type: 'child' },
+      { source: 'felicitas', target: 'ines', type: 'spouse' },
+      { source: 'esteban', target: 'antonio', type: 'child' },
+      { source: 'esteban', target: 'isabel', type: 'spouse' },
+      { source: 'antonio', target: 'rosamg', type: 'child' },
+      { source: 'antonio', target: 'rosaol', type: 'spouse' },
+      { source: 'rosamg', target: 'lusana', type: 'child' },
+      { source: 'rosamg', target: 'sostenes', type: 'spouse' },
+      { source: 'lusana', target: 'daniel', type: 'child' }
+    ]
+  },
+  bcci: {
+    nodes: [
+      { id: 'bcci', label: 'BCCI', year: 1972, group: 'bank', notes: 'Bank of Credit and Commerce International. Pakistani-owned bank involved in massive money laundering, arms brokering, and bribery before its 1991 collapse.' },
+      { id: 'icic', label: 'ICIC', year: 1972, group: 'bank', notes: 'International Credit and Investment Corporation, BCCI holding company.' },
+      { id: 'fab', label: 'First American Bank', year: 1982, group: 'bank', notes: 'Washington D.C. bank secretly acquired by BCCI through front men.' },
+      { id: 'abinur', label: 'Agha Hasan Abedi', year: 1972, group: 'person', notes: 'Founder of BCCI.' },
+      { id: 'mahfouz', label: 'Khalid bin Mahfouz', year: 1980, group: 'person', notes: 'Saudi banker and major BCCI shareholder; later accused of funding terrorism through charitable fronts.' },
+      { id: 'bath', label: 'James R. Bath', year: 1979, group: 'person', notes: 'Texas businessman and friend of George W. Bush; represented Saudi investors including the bin Laden family.' },
+      { id: 'bush', label: 'George W. Bush', year: 1979, group: 'person', notes: 'Future U.S. president; founder of Arbusto Energy and director at Harken Energy.' },
+      { id: 'harken', label: 'Harken Energy', year: 1986, group: 'corp', notes: 'Texas oil company tied to Bush, Bath, and Bahrainian financing.' },
+      { id: 'binladen', label: 'Salem bin Laden', year: 1979, group: 'person', notes: 'Older brother of Osama bin Laden; invested in Bush-related ventures through James Bath.' },
+      { id: 'stephens', label: 'Jackson Stephens', year: 1980, group: 'person', notes: 'Arkansas investment banker; helped arrange Harken financing.' }
+    ],
+    links: [
+      { source: 'abinur', target: 'bcci', type: 'founded' },
+      { source: 'bcci', target: 'icic', type: 'owns' },
+      { source: 'bcci', target: 'fab', type: 'controls' },
+      { source: 'mahfouz', target: 'bcci', type: 'shareholder' },
+      { source: 'mahfouz', target: 'bath', type: 'client' },
+      { source: 'bath', target: 'bush', type: 'investor' },
+      { source: 'bath', target: 'binladen', type: 'represents' },
+      { source: 'binladen', target: 'bath', type: 'investor' },
+      { source: 'bush', target: 'harken', type: 'director' },
+      { source: 'stephens', target: 'harken', type: 'finances' },
+      { source: 'harken', target: 'bcci', type: 'loan' },
+      { source: 'mahfouz', target: 'fab', type: 'front' }
+    ]
+  }
+};
+
+function init() {
+  const ds = document.getElementById('datasetSelect').value;
+  loadDataset(ds);
+}
+
+function loadDataset(name) {
+  const data = SAMPLES[name];
+  nodes = data.nodes.map(n => ({ ...n, x: 0, y: 0, vx: 0, vy: 0 }));
+  links = data.links;
+  selectedId = null;
+  closePanel();
+  layout();
+  render();
+  fitToScreen();
+}
+
+function loadSample() {
+  loadDataset(document.getElementById('datasetSelect').value);
+}
+
+document.getElementById('datasetSelect').addEventListener('change', (e) => loadDataset(e.target.value));
+
+function layout() {
+  const width = 3000;
+  const groups = {};
+  nodes.forEach(n => { groups[n.group] = groups[n.group] || []; groups[n.group].push(n); });
+
+  // Initial positions: x based on year, y based on group bands
+  const minYear = Math.min(...nodes.map(n => n.year || 1900));
+  const maxYear = Math.max(...nodes.map(n => n.year || 2000));
+  const groupNames = Object.keys(groups);
+
+  nodes.forEach((n, i) => {
+    const t = (n.year - minYear) / (maxYear - minYear + 1);
+    n.x = 100 + t * (width - 200);
+    n.y = 300 + (groupNames.indexOf(n.group) % 5) * 140 + (Math.random() - 0.5) * 60;
+  });
+
+  // Simple force-directed relaxation
+  const k = 180;
+  for (let iter = 0; iter < 120; iter++) {
+    // repulsion
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        let dx = a.x - b.x, dy = a.y - b.y;
+        let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        const f = (k * k) / dist;
+        dx /= dist; dy /= dist;
+        a.vx += dx * f * 0.05; a.vy += dy * f * 0.05;
+        b.vx -= dx * f * 0.05; b.vy -= dy * f * 0.05;
+      }
+    }
+    // attraction along links
+    links.forEach(l => {
+      const a = nodes.find(n => n.id === l.source);
+      const b = nodes.find(n => n.id === l.target);
+      if (!a || !b) return;
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const f = (dist * dist) / (k * 4);
+      dx /= dist; dy /= dist;
+      a.vx += dx * f * 0.05; a.vy += dy * f * 0.05;
+      b.vx -= dx * f * 0.05; b.vy -= dy * f * 0.05;
+    });
+    // center gravity
+    nodes.forEach(n => {
+      n.vx += (width/2 - n.x) * 0.0005;
+      n.vy += (400 - n.y) * 0.0005;
+      n.x += n.vx; n.y += n.vy;
+      n.vx *= 0.7; n.vy *= 0.7;
+    });
+  }
+}
+
+function render() {
+  const ns = 'http://www.w3.org/2000/svg';
+  svg.innerHTML = '';
+
+  // draw time axis
+  const years = [...new Set(nodes.map(n => n.year).filter(Boolean))].sort((a,b)=>a-b);
+  const minX = Math.min(...nodes.map(n=>n.x)) - 80;
+  const maxX = Math.max(...nodes.map(n=>n.x)) + 80;
+  const minY = Math.min(...nodes.map(n=>n.y)) - 80;
+  const maxY = Math.max(...nodes.map(n=>n.y)) + 80;
+
+  svg.setAttribute('width', maxX - minX + 200);
+  svg.setAttribute('height', maxY - minY + 200);
+  svg.dataset.ox = minX - 100;
+  svg.dataset.oy = minY - 100;
+
+  const g = document.createElementNS(ns, 'g');
+  g.setAttribute('transform', `translate(${-(minX-100)},${-(minY-100)})`);
+  svg.appendChild(g);
+
+  // time axis lines
+  years.forEach(y => {
+    const x = nodes.find(n => n.year === y).x;
+    const line = document.createElementNS(ns, 'line');
+    line.setAttribute('x1', x); line.setAttribute('y1', minY - 50);
+    line.setAttribute('x2', x); line.setAttribute('y2', maxY + 50);
+    line.setAttribute('class', 'time-axis');
+    g.appendChild(line);
+    const text = document.createElementNS(ns, 'text');
+    text.setAttribute('x', x); text.setAttribute('y', maxY + 70);
+    text.setAttribute('class', 'time-label');
+    text.textContent = y;
+    g.appendChild(text);
+  });
+
+  // links
+  links.forEach(l => {
+    const a = nodes.find(n => n.id === l.source);
+    const b = nodes.find(n => n.id === l.target);
+    if (!a || !b) return;
+    const path = document.createElementNS(ns, 'path');
+    const d = arcPath(a.x, a.y, b.x, b.y);
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'link' + (l.type === 'spouse' || l.type === 'investor' ? ' dashed' : ''));
+    path.dataset.source = l.source;
+    path.dataset.target = l.target;
+    g.appendChild(path);
+  });
+
+  // nodes
+  nodes.forEach(n => {
+    const group = document.createElementNS(ns, 'g');
+    group.setAttribute('class', 'node-group');
+    group.setAttribute('transform', `translate(${n.x},${n.y})`);
+    group.dataset.id = n.id;
+    group.addEventListener('click', (e) => { e.stopPropagation(); selectNode(n.id); });
+    group.addEventListener('mouseenter', () => highlightConnections(n.id));
+    group.addEventListener('mouseleave', () => resetHighlight());
+
+    const r = n.group === 'bank' || n.group === 'corp' ? 10 : 6;
+    const circle = document.createElementNS(ns, 'circle');
+    circle.setAttribute('r', r);
+    circle.setAttribute('class', 'node-circle');
+    group.appendChild(circle);
+
+    if (showLabels) {
+      const label = document.createElementNS(ns, 'text');
+      label.setAttribute('y', r + 14);
+      label.setAttribute('class', 'node-label');
+      label.textContent = n.label;
+      group.appendChild(label);
+    }
+
+    g.appendChild(group);
+  });
+}
+
+function arcPath(x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const midX = (x1 + x2) / 2;
+  const midY = (y1 + y2) / 2;
+  const curve = dist * 0.25;
+  return `M${x1},${y1} Q${midX},${midY - curve} ${x2},${y2}`;
+}
+
+function selectNode(id) {
+  selectedId = id;
+  document.querySelectorAll('.node-group').forEach(g => g.classList.toggle('selected', g.dataset.id === id));
+  openPanel(id);
+}
+
+function highlightConnections(id) {
+  const connected = new Set([id]);
+  links.forEach(l => { if (l.source === id) connected.add(l.target); if (l.target === id) connected.add(l.source); });
+  document.querySelectorAll('.node-group').forEach(g => g.classList.toggle('dim', !connected.has(g.dataset.id)));
+  document.querySelectorAll('.link').forEach(p => {
+    const hl = p.dataset.source === id || p.dataset.target === id;
+    p.classList.toggle('highlight', hl);
+    p.classList.toggle('dim', !hl);
+  });
+}
+
+function resetHighlight() {
+  document.querySelectorAll('.node-group').forEach(g => g.classList.remove('dim'));
+  document.querySelectorAll('.link').forEach(p => { p.classList.remove('highlight', 'dim'); });
+}
+
+function openPanel(id) {
+  const n = nodes.find(x => x.id === id);
+  if (!n) return;
+  document.getElementById('panelTitle').textContent = n.label;
+  document.getElementById('panelMeta').textContent = (n.year ? n.year + ' · ' : '') + n.group;
+  document.getElementById('panelNotes').textContent = n.notes || 'No notes.';
+
+  const conns = [];
+  links.forEach(l => {
+    if (l.source === id) conns.push({ label: linkLabel(l.type) + ' →', target: l.target });
+    if (l.target === id) conns.push({ label: '← ' + linkLabel(l.type), target: l.source });
+  });
+  const container = document.getElementById('panelConnections');
+  container.innerHTML = '';
+  conns.forEach(c => {
+    const t = nodes.find(x => x.id === c.target);
+    if (!t) return;
+    const el = document.createElement('div');
+    el.className = 'connection';
+    el.innerHTML = '<span class="dot"></span><span>' + escapeHtml(c.label) + ' ' + escapeHtml(t.label) + '</span>';
+    el.onclick = () => selectNode(t.id);
+    container.appendChild(el);
+  });
+
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('panelCover').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('panelCover').classList.remove('open');
+  selectedId = null;
+  document.querySelectorAll('.node-group').forEach(g => g.classList.remove('selected'));
+}
+
+function linkLabel(type) {
+  return type === 'spouse' ? 'married' : type === 'child' ? 'parent of' : type === 'founded' ? 'founded' : type === 'owns' ? 'owns' : type === 'controls' ? 'controls' : type === 'shareholder' ? 'shareholder' : type === 'client' ? 'client' : type === 'investor' ? 'investor' : type === 'represents' ? 'represents' : type === 'director' ? 'director' : type === 'finances' ? 'finances' : type === 'loan' ? 'loan' : type === 'front' ? 'front' : type;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+}
+
+function applyTransform() {
+  svg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+}
+
+function fitToScreen() {
+  const sW = stage.clientWidth, sH = stage.clientHeight;
+  const cW = parseFloat(svg.getAttribute('width')), cH = parseFloat(svg.getAttribute('height'));
+  const pad = 60;
+  scale = Math.min(1, (sW - pad*2)/cW, (sH - pad*2)/cH);
+  scale = Math.max(0.2, scale);
+  panX = (sW - cW * scale) / 2;
+  panY = (sH - cH * scale) / 2;
+  applyTransform();
+}
+
+function setZoom(delta) {
+  const sW = stage.clientWidth, sH = stage.clientHeight;
+  const old = scale;
+  scale = Math.min(2.5, Math.max(0.2, scale + delta));
+  panX = sW/2 - (sW/2 - panX) * (scale/old);
+  panY = sH/2 - (sH/2 - panY) * (scale/old);
+  applyTransform();
+}
+
+function toggleLabels() {
+  showLabels = !showLabels;
+  render();
+}
+
+// Pan / zoom events
+stage.addEventListener('mousedown', (e) => {
+  if (e.target.closest('.node-group')) return;
+  isDragging = true;
+  svg.classList.add('dragging');
+  startX = e.clientX - panX;
+  startY = e.clientY - panY;
+});
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  e.preventDefault();
+  panX = e.clientX - startX;
+  panY = e.clientY - startY;
+  applyTransform();
+});
+document.addEventListener('mouseup', () => { isDragging = false; svg.classList.remove('dragging'); });
+stage.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? -0.1 : 0.1;
+  const rect = stage.getBoundingClientRect();
+  const old = scale;
+  scale = Math.min(2.5, Math.max(0.2, scale + delta));
+  panX = (e.clientX - rect.left) - ((e.clientX - rect.left) - panX) * (scale/old);
+  panY = (e.clientY - rect.top) - ((e.clientY - rect.top) - panY) * (scale/old);
+  applyTransform();
+}, { passive: false });
+
+stage.addEventListener('click', (e) => {
+  if (e.target.closest('.node-group')) return;
+  closePanel();
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const term = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.node-group').forEach(g => {
+    const n = nodes.find(x => x.id === g.dataset.id);
+    const match = !term || n.label.toLowerCase().includes(term) || (n.notes||'').toLowerCase().includes(term);
+    g.style.opacity = match ? '' : '0.15';
+  });
+});
+
+window.addEventListener('resize', fitToScreen);
+
+init();
+</script>
+</body>
+</html>
