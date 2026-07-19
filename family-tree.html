@@ -193,7 +193,9 @@
     left: 0;
     transform-origin: 0 0;
     will-change: transform;
+    transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
+  .tree-canvas.dragging { transition: none; }
 
   .connector-svg {
     position: absolute;
@@ -714,7 +716,7 @@
     if (selectedId) {
       zoomToNode(selectedId);
     } else {
-      fitToScreen();
+      centerOnFocusReadable();
     }
   }
 
@@ -849,6 +851,27 @@
     applyTransform();
   }
 
+  function centerOnFocusReadable() {
+    const stage = document.getElementById('treeStage');
+    const canvas = document.getElementById('treeCanvas');
+    const focusEl = canvas.querySelector('.node.focus');
+    if (!focusEl || !stage) { fitToScreen(); return; }
+    const sRect = stage.getBoundingClientRect();
+
+    const elLeft = parseFloat(focusEl.style.left);
+    const elTop = parseFloat(focusEl.style.top);
+    const elW = NODE_W;
+    const elH = NODE_H;
+
+    // Default readable zoom — show a few generations to the left of focus.
+    scale = Math.min(1.05, Math.max(0.75, (sRect.width * 0.55) / (GEN_GAP_X * 3)));
+
+    // Position focus ~72% from left edge so ancestors are visible to the left.
+    panX = sRect.width * 0.72 - (elLeft + elW / 2) * scale;
+    panY = (sRect.height / 2) - (elTop + elH / 2) * scale;
+    applyTransform();
+  }
+
   function setZoom(delta, centerX, centerY) {
     const stage = document.getElementById('treeStage');
     const rect = stage.getBoundingClientRect();
@@ -866,10 +889,12 @@
 
   // — Pan —
   const stage = document.getElementById('treeStage');
+  const canvasEl = document.getElementById('treeCanvas');
   stage.addEventListener('mousedown', (e) => {
     if (e.target.closest('.node')) return;
     isPanning = true;
     stage.classList.add('panning');
+    canvasEl.classList.add('dragging');
     startX = e.clientX - panX;
     startY = e.clientY - panY;
   });
@@ -880,7 +905,11 @@
     panY = e.clientY - startY;
     applyTransform();
   });
-  document.addEventListener('mouseup', () => { isPanning = false; stage.classList.remove('panning'); });
+  document.addEventListener('mouseup', () => {
+    isPanning = false;
+    stage.classList.remove('panning');
+    setTimeout(() => canvasEl.classList.remove('dragging'), 50);
+  });
 
   stage.addEventListener('wheel', (e) => {
     if (e.ctrlKey || e.metaKey) {
