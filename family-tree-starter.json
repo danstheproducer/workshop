@@ -1,0 +1,182 @@
+[
+  {
+    "id": "p-ines-gonzalez-ramirez",
+    "name": "Inés González Ramírez",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Father of Esteban González Padilla. Rural family from Los Altos de Jalisco.",
+    "parentId": null
+  },
+  {
+    "id": "p-felicitas-padilla-aceves",
+    "name": "Felicitas Padilla Aceves",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Mother of Esteban González Padilla. Rural family from Los Altos de Jalisco.",
+    "parentId": null
+  },
+  {
+    "id": "p-esteban-gonzalez-padilla",
+    "name": "Esteban González Padilla",
+    "birth": "1895",
+    "death": "1971",
+    "photo": null,
+    "notes": "Born 26 Dec 1895 in Tepatitlán de Morelos, Jalisco. Founded Fábrica de Jabón La Corona in 1920 with brothers Loreto and Daniel. Married María Isabel Mendoza Pardo on 5 Jul 1918 in Guadalajara. Directed the company until 1950, then ceded general direction to his son Antonio. Died 10 Sep 1971 in Mexico City.",
+    "parentId": "p-ines-gonzalez-ramirez"
+  },
+  {
+    "id": "p-loreto-gonzalez-padilla",
+    "name": "Loreto González Padilla",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Brother of Esteban González Padilla. Co-founder of Fábrica de Jabón La Corona.",
+    "parentId": "p-ines-gonzalez-ramirez"
+  },
+  {
+    "id": "p-daniel-gonzalez-padilla",
+    "name": "Daniel González Padilla",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Brother of Esteban González Padilla. Co-founder of Fábrica de Jabón La Corona.",
+    "parentId": "p-ines-gonzalez-ramirez"
+  },
+  {
+    "id": "p-maria-isabel-mendoza-pardo",
+    "name": "María Isabel Mendoza Pardo",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Married Esteban González Padilla on 5 Jul 1918 in Guadalajara, Jalisco. Had four sons and six daughters.",
+    "parentId": null
+  },
+  {
+    "id": "p-antonio-gonzalez-mendoza",
+    "name": "Antonio González Mendoza",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Son of Esteban González Padilla and María Isabel Mendoza Pardo. Inherited leadership of Fábrica de Jabón La Corona in 1950. Traveled with Esteban to the United States in 1954 to study detergent processes.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-son-2-gonzalez-mendoza",
+    "name": "González Mendoza (son, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the four sons of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-son-3-gonzalez-mendoza",
+    "name": "González Mendoza (son, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the four sons of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-son-4-gonzalez-mendoza",
+    "name": "González Mendoza (son, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the four sons of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-daughter-1-gonzalez-mendoza",
+    "name": "González Mendoza (daughter, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the six daughters of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-daughter-2-gonzalez-mendoza",
+    "name": "González Mendoza (daughter, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the six daughters of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-rosa-martha-gonzalez-ortiz",
+    "name": "Rosa Martha González Ortiz",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Daughter of Esteban González Padilla and María Isabel Mendoza Pardo. Grandmother on the Melgarejo side. Married Sostenes Melgarejo. One of six daughters.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-daughter-4-gonzalez-mendoza",
+    "name": "González Mendoza (daughter, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the six daughters of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-daughter-5-gonzalez-mendoza",
+    "name": "González Mendoza (daughter, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the six daughters of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-daughter-6-gonzalez-mendoza",
+    "name": "González Mendoza (daughter, name unknown)",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "One of the six daughters of Esteban and María Isabel.",
+    "parentId": "p-esteban-gonzalez-padilla"
+  },
+  {
+    "id": "p-sostenes-melgarejo",
+    "name": "Sostenes Melgarejo",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Husband of Rosa Martha González Ortiz. Likely from Veracruz. Possible lead: 'Sóstenes y Pascual Carlos Melgarejo y Velasco' co-owned rancho 'La Alameda' in Xalapa, Veracruz, from 1917; the government negotiated with them over those lands when building the Estadio Xalapeño in the 1920s. Source: Redalyc article on Estadio Xalapeño. The 'y Velasco' suggests their mother’s surname was Velasco. Needs confirmation that this is the same Sóstenes.",
+    "parentId": null
+  },
+  {
+    "id": "p-pascual-carlos-melgarejo-velasco",
+    "name": "Pascual Carlos Melgarejo y Velasco",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Possible brother or relative of Sostenes Melgarejo. Co-owner of rancho 'La Alameda' in Xalapa, Veracruz, with Sóstenes Melgarejo in 1917.",
+    "parentId": null
+  },
+  {
+    "id": "p-marina-melgarejo-gonzalez",
+    "name": "Marina Melgarejo González",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Daughter of Rosa Martha González Ortiz and Sostenes Melgarejo. Mother on the Melgarejo side.",
+    "parentId": "p-rosa-martha-gonzalez-ortiz"
+  },
+  {
+    "id": "p-daniel-martinez-del-campo-melgarejo",
+    "name": "Daniel Martínez del Campo Melgarejo",
+    "birth": null,
+    "death": null,
+    "photo": null,
+    "notes": "Son of Marina Melgarejo González. Built this family tree app.",
+    "parentId": "p-marina-melgarejo-gonzalez"
+  }
+]
