@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="family tree">
-<meta name="theme-color" content="#f4f1eb">
+<meta name="theme-color" content="#fff8ef">
 <title>family tree</title>
 <link rel="icon" type="image/svg+xml" href="family-tree-icon.svg">
 <link rel="apple-touch-icon" href="family-tree-icon-180.png">
@@ -15,46 +15,46 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f4f1eb;
-    --bg-soft: #e8e4da;
-    --canvas-bg: #faf8f4;
-    --card: #ffffff;
-    --ink: #2d2c28;
-    --ink-soft: #5b5951;
-    --ink-faint: #8a877b;
-    --line: #c7c1b4;
-    --line-soft: #ddd8ce;
-    --accent: #5e7561;
-    --accent-soft: #7e9680;
-    --accent-bg: #e6ebe5;
-    --highlight: #a86e4f;
-    --highlight-bg: #f2e4db;
-    --male: #e8eef5;
-    --female: #f5e8ec;
-    --shadow: 0 2px 10px rgba(45, 44, 40, 0.06), 0 1px 2px rgba(45, 44, 40, 0.04);
-    --shadow-lg: 0 12px 32px rgba(45, 44, 40, 0.12);
-    --radius: 14px;
-    --radius-sm: 10px;
+    --bg: #fff8ef;
+    --bg-soft: #f8ecd9;
+    --canvas-bg: #fffdf8;
+    --card: #fffdfa;
+    --ink: #3d2e24;
+    --ink-soft: #6f5e4f;
+    --ink-faint: #9c8d7b;
+    --line: #e3d4c0;
+    --line-soft: #efe3d4;
+    --accent: #5e7d61;
+    --accent-soft: #7d9a7f;
+    --accent-bg: #e8f0e8;
+    --highlight: #b56b45;
+    --highlight-bg: #f9e9df;
+    --male: #eef4f1;
+    --female: #f9eff1;
+    --shadow: 0 3px 14px rgba(96, 72, 48, 0.07), 0 1px 3px rgba(96, 72, 48, 0.05);
+    --shadow-lg: 0 14px 38px rgba(96, 72, 48, 0.12);
+    --radius: 16px;
+    --radius-sm: 12px;
   }
   body.dark {
-    --bg: #1c1b18;
-    --bg-soft: #282723;
-    --canvas-bg: #22211d;
-    --card: #2f2e29;
-    --ink: #f0eee6;
-    --ink-soft: #b8b5a9;
-    --ink-faint: #8a877b;
-    --line: #4a4841;
-    --line-soft: #3d3b35;
-    --accent: #8ba88d;
-    --accent-soft: #a3bda5;
-    --accent-bg: #353d35;
-    --highlight: #c89374;
-    --highlight-bg: #3d302a;
-    --male: #2a333d;
-    --female: #3d2a30;
-    --shadow: 0 2px 10px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.2);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.4);
+    --bg: #2a2520;
+    --bg-soft: #35302a;
+    --canvas-bg: #322c26;
+    --card: #3d3630;
+    --ink: #f7f2ea;
+    --ink-soft: #c9bfb0;
+    --ink-faint: #9c8f7e;
+    --line: #5b5249;
+    --line-soft: #4a433b;
+    --accent: #8fb892;
+    --accent-soft: #a6c9a8;
+    --accent-bg: #3f4a3f;
+    --highlight: #d89977;
+    --highlight-bg: #4a3830;
+    --male: #2f3a36;
+    --female: #3a2f32;
+    --shadow: 0 3px 14px rgba(0,0,0,0.22), 0 1px 3px rgba(0,0,0,0.16);
+    --shadow-lg: 0 14px 38px rgba(0,0,0,0.35);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -590,13 +590,13 @@
   let focusId = null;
   let currentView = 'pedigree';
 
-  const NODE_W = 220;
-  const NODE_H = 66;
-  const PARTNER_GAP_Y = 72;
-  const GEN_GAP_X = 240;
-  const SIBLING_GAP_X = 28;
-  const VERTICAL_OFFSET = 90;
-  const MARGIN = 120;
+  const NODE_W = 250;
+  const NODE_H = 70;
+  const PARTNER_GAP_Y = 120;
+  const GEN_GAP_X = 460;
+  const SIBLING_GAP_X = 36;
+  const VERTICAL_OFFSET = 170;
+  const MARGIN = 160;
 
   let scale = 1;
   let panX = 0;
@@ -697,14 +697,14 @@
 
     function place(person, x, y) {
       const partner = person.partnerId ? getPerson(person.partnerId) : null;
-      const pairW = NODE_W + (partner ? NODE_W + 24 : 0);
+      const pairW = NODE_W + (partner ? NODE_W + 32 : 0);
       const centerX = x + pairW / 2;
 
       const main = { person, x, y, role: 'main' };
       nodes.push(main);
       let partnerNode = null;
       if (partner) {
-        partnerNode = { person: partner, x: x + NODE_W + 24, y, role: 'partner' };
+        partnerNode = { person: partner, x: x + NODE_W + 32, y, role: 'partner' };
         nodes.push(partnerNode);
         links.push({ from: main, to: partnerNode, type: 'spouse' });
       }
@@ -716,7 +716,7 @@
       let childX = centerX - totalChildrenW / 2;
       children.forEach(c => {
         const cw = subtreeWidth(c);
-        const childNode = place(c, childX, y + 140);
+        const childNode = place(c, childX, y + 190);
         childX += cw + SIBLING_GAP_X;
         links.push({ from: main, to: childNode, type: 'child' });
       });
@@ -1048,8 +1048,7 @@
   let savedDark = null;
   try { savedDark = localStorage.getItem(DARK_KEY); } catch(e) {}
   if (savedDark === '1') applyDark(true);
-  else if (savedDark === '0') applyDark(false);
-  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
+  else applyDark(false);
   document.getElementById('darkToggle').addEventListener('click', () => {
     const next = !document.body.classList.contains('dark');
     applyDark(next);
