@@ -1,191 +1,303 @@
 [
   {
-    "id": "p-melgarejo-padre",
-    "name": "Melgarejo (father, name unknown)",
-    "birth": null,
-    "death": null,
+    "id": "p-pedro-pacho",
+    "name": "Pedro Pacho",
+    "birth": "1500",
+    "death": "1547",
     "photo": null,
-    "notes": "Father of Sóstenes and Pascual Carlos Melgarejo y Velasco. Inferred from the compound surname: in 1917, 'Sóstenes y Pascual Carlos Melgarejo y Velasco' co-owned rancho La Alameda in Xalapa, Veracruz. 'y Velasco' indicates their mother's surname.",
+    "notes": "Born c. 1500 in Fregenal de la Sierra, Badajoz, Reinos de Castilla (Spain). Died before 1547 in Nueva España. Marked *judeoconverso* (Jewish converso) in the Lisbon Sephardic certificate. Earliest known ancestor in this lineage.",
     "parentId": null,
-    "partnerId": "p-velasco-madre"
+    "partnerId": "p-mariana-temino-velasco-1510"
   },
   {
-    "id": "p-velasco-madre",
-    "name": "Velasco (mother, name unknown)",
-    "birth": null,
+    "id": "p-mariana-temino-velasco-1510",
+    "name": "Mariana Temiño de Velasco",
+    "birth": "1510",
     "death": null,
     "photo": null,
-    "notes": "Mother of Sóstenes and Pascual Carlos Melgarejo y Velasco. Surname inferred from 'Melgarejo y Velasco'.",
+    "notes": "Born c. 1510 in Sevilla, Andalucía, Reinos de Castilla (Spain). Wife of Pedro Pacho.",
     "parentId": null,
-    "partnerId": "p-melgarejo-padre"
+    "partnerId": "p-pedro-pacho"
   },
   {
-    "id": "p-sostenes-melgarejo",
-    "name": "Sostenes Gustavo Melgarejo y Velasco",
-    "birth": null,
+    "id": "p-mariana-temino-velasco-1543",
+    "name": "Mariana Temiño de Velasco",
+    "birth": "1543",
     "death": null,
     "photo": null,
-    "notes": "Husband of Rosa Martha González Ortiz. Father of Lusana Marina Melgarejo González. From Veracruz. Co-owned rancho 'La Alameda' in Xalapa, Veracruz, from 1917; the land was later used for Estadio Xalapeño. Source: Redalyc article on Estadio Xalapeño. Full name confirmed by Jewish Community of Lisbon certificate 111852/07-2022 for his daughter Lusana.",
-    "parentId": "p-melgarejo-padre",
-    "partnerId": "p-rosa-martha-gonzalez-ortiz"
+    "notes": "Born 20 Aug 1543 in Ciudad de México, Nueva España. Daughter of Pedro Pacho and Mariana Temiño de Velasco (1510). Wife of Lorenzo de Padilla Dávila.",
+    "parentId": "p-pedro-pacho",
+    "partnerId": "p-lorenzo-padilla-davila-1520"
   },
   {
-    "id": "p-pascual-carlos-melgarejo-velasco",
-    "name": "Pascual Carlos Melgarejo y Velasco",
-    "birth": null,
+    "id": "p-lorenzo-padilla-davila-1520",
+    "name": "Lorenzo de Padilla Dávila",
+    "birth": "1520",
     "death": null,
     "photo": null,
-    "notes": "Brother of Sostenes Gustavo Melgarejo y Velasco. Co-owner of rancho 'La Alameda' in Xalapa, Veracruz.",
-    "parentId": "p-melgarejo-padre"
-  },
-  {
-    "id": "p-ines-gonzalez-ramirez",
-    "name": "Inés González Ramírez",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "Father of Esteban González Padilla. Rural family from Los Altos de Jalisco.",
+    "notes": "Born c. 1520 in Jerez de la Frontera, Reinos de Castilla (Spain). Husband of Mariana Temiño de Velasco (1543).",
     "parentId": null,
-    "partnerId": "p-felicitas-padilla-aceves"
+    "partnerId": "p-mariana-temino-velasco-1543"
+  },
+  {
+    "id": "p-diego-padilla-davila",
+    "name": "Diego de Padilla Dávila",
+    "birth": "1560",
+    "death": "1631",
+    "photo": null,
+    "notes": "Born c. 1560 in Guadalajara, Nueva Galicia. Died 11 Jun 1631 in Guadalajara, Nueva Galicia. Son of Lorenzo de Padilla Dávila and Mariana Temiño de Velasco (1543).",
+    "parentId": "p-mariana-temino-velasco-1543",
+    "partnerId": "p-maria-ana-mota-vera"
+  },
+  {
+    "id": "p-maria-ana-mota-vera",
+    "name": "María Ana de la Mota y Vera",
+    "birth": "1560",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1560 in Guadalajara, Nueva Galicia. Wife of Diego de Padilla Dávila.",
+    "parentId": null,
+    "partnerId": "p-diego-padilla-davila"
+  },
+  {
+    "id": "p-lorenzo-padilla-davila-1598",
+    "name": "Lorenzo de Padilla Dávila / de la Mota Padilla",
+    "birth": "1598",
+    "death": "1648",
+    "photo": null,
+    "notes": "Born c. 1598 in Guadalajara, Nueva Galicia. Died 3 Dec 1648 in Guadalajara, Nueva Galicia. Son of Diego de Padilla Dávila and María Ana de la Mota y Vera.",
+    "parentId": "p-diego-padilla-davila",
+    "partnerId": "p-josefa-arias-valdes"
+  },
+  {
+    "id": "p-josefa-arias-valdes",
+    "name": "Josefa Arias de Valdés",
+    "birth": "1610",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1610 in Nueva Galicia. Wife of Lorenzo de Padilla Dávila.",
+    "parentId": null,
+    "partnerId": "p-lorenzo-padilla-davila-1598"
+  },
+  {
+    "id": "p-cristobal-padilla-davila-1640",
+    "name": "Cristóbal de Padilla Dávila",
+    "birth": "1640",
+    "death": null,
+    "photo": null,
+    "notes": "Born 23 Apr 1640 in Guadalajara, Nueva Galicia. Son of Lorenzo de Padilla Dávila and Josefa Arias de Valdés.",
+    "parentId": "p-lorenzo-padilla-davila-1598",
+    "partnerId": "p-luisa-gutierrez-hermosillo"
+  },
+  {
+    "id": "p-luisa-gutierrez-hermosillo",
+    "name": "Luisa Gutiérrez de Hermosillo",
+    "birth": "1645",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1645 in Jalostotitlán, Nueva Galicia. Wife of Cristóbal de Padilla Dávila.",
+    "parentId": null,
+    "partnerId": "p-cristobal-padilla-davila-1640"
+  },
+  {
+    "id": "p-francisco-padilla",
+    "name": "Francisco de Padilla",
+    "birth": "1672",
+    "death": "1738",
+    "photo": null,
+    "notes": "Born c. 1672 in Jalostotitlán, Nueva Galicia. Died 6 Nov 1738 in San Juan de los Lagos, Nueva Galicia. Son of Cristóbal de Padilla Dávila and Luisa Gutiérrez de Hermosillo.",
+    "parentId": "p-cristobal-padilla-davila-1640",
+    "partnerId": "p-ana-munoz-barba"
+  },
+  {
+    "id": "p-ana-munoz-barba",
+    "name": "Ana Muñoz de la Barba",
+    "birth": "1680",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1680 in Nueva Galicia. Wife of Francisco de Padilla.",
+    "parentId": null,
+    "partnerId": "p-francisco-padilla"
+  },
+  {
+    "id": "p-cristobal-padilla-1704",
+    "name": "Cristóbal de Padilla",
+    "birth": "1704",
+    "death": "1784",
+    "photo": null,
+    "notes": "Born 15 Apr 1704 in Jalostotitlán, Nueva Galicia. Died 5 Sep 1784 in San Juan de los Lagos, Nueva Galicia. Son of Francisco de Padilla and Ana Muñoz de la Barba.",
+    "parentId": "p-francisco-padilla",
+    "partnerId": "p-maria-agueda-martin-campo"
+  },
+  {
+    "id": "p-maria-agueda-martin-campo",
+    "name": "María Águeda Martín del Campo",
+    "birth": "1705",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1705 in San Juan de los Lagos, Nueva Galicia. Wife of Cristóbal de Padilla.",
+    "parentId": null,
+    "partnerId": "p-cristobal-padilla-1704"
+  },
+  {
+    "id": "p-juan-leonardo-padilla",
+    "name": "Juan Leonardo Padilla",
+    "birth": "1739",
+    "death": null,
+    "photo": null,
+    "notes": "Born 29 Nov 1739 in San Juan de los Lagos, Nueva Galicia. Son of Cristóbal de Padilla and María Águeda Martín del Campo.",
+    "parentId": "p-cristobal-padilla-1704",
+    "partnerId": "p-rosalia-perez"
+  },
+  {
+    "id": "p-rosalia-perez",
+    "name": "Rosalía Pérez",
+    "birth": "1739",
+    "death": null,
+    "photo": null,
+    "notes": "Born 11 Mar 1739 in Jalostotitlán, Nueva Galicia. Wife of Juan Leonardo Padilla.",
+    "parentId": null,
+    "partnerId": "p-juan-leonardo-padilla"
+  },
+  {
+    "id": "p-jose-domingo-padilla",
+    "name": "José Domingo Padilla",
+    "birth": "1772",
+    "death": null,
+    "photo": null,
+    "notes": "Born 16 Aug 1772 in Jalostotitlán, Nueva Galicia. Son of Juan Leonardo Padilla and Rosalía Pérez.",
+    "parentId": "p-juan-leonardo-padilla",
+    "partnerId": "p-maria-juliana-covarrubias"
+  },
+  {
+    "id": "p-maria-juliana-covarrubias",
+    "name": "María Juliana Covarrubias",
+    "birth": "1778",
+    "death": null,
+    "photo": null,
+    "notes": "Born 25 Mar 1778 in Jalostotitlán, Nueva Galicia. Wife of José Domingo Padilla.",
+    "parentId": null,
+    "partnerId": "p-jose-domingo-padilla"
+  },
+  {
+    "id": "p-juan-jose-padilla",
+    "name": "Juan José Padilla",
+    "birth": "1794",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1794 in Tepatitlán, Nueva Galicia. Son of José Domingo Padilla and María Juliana Covarrubias.",
+    "parentId": "p-jose-domingo-padilla",
+    "partnerId": "p-gertrudis-gonzalez"
+  },
+  {
+    "id": "p-gertrudis-gonzalez",
+    "name": "Gertrudis González",
+    "birth": "1798",
+    "death": null,
+    "photo": null,
+    "notes": "Born 8 Jul 1798 in Tepatitlán, Nueva Galicia. Wife of Juan José Padilla.",
+    "parentId": null,
+    "partnerId": "p-juan-jose-padilla"
+  },
+  {
+    "id": "p-victoriano-padilla-gonzalez",
+    "name": "Victoriano Padilla González",
+    "birth": "1822",
+    "death": null,
+    "photo": null,
+    "notes": "Born 11 Sep 1822 in Tepatitlán, Nueva Galicia, Imperio Mexicano. Son of Juan José Padilla and Gertrudis González.",
+    "parentId": "p-juan-jose-padilla",
+    "partnerId": "p-maria-jesus-aceves-ramirez"
+  },
+  {
+    "id": "p-maria-jesus-aceves-ramirez",
+    "name": "María de Jesús Aceves Ramírez",
+    "birth": "1834",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1834 in Tepatitlán, Jalisco, México. Wife of Victoriano Padilla González.",
+    "parentId": null,
+    "partnerId": "p-victoriano-padilla-gonzalez"
   },
   {
     "id": "p-felicitas-padilla-aceves",
     "name": "Felicitas Padilla Aceves",
-    "birth": null,
+    "birth": "1860",
     "death": null,
     "photo": null,
-    "notes": "Mother of Esteban González Padilla. Rural family from Los Altos de Jalisco.",
+    "notes": "Born 15 Jul 1860 in Tepatitlán, Jalisco, México. Married 18 May 1881 in Tepatitlán. Mother of Esteban González Padilla.",
+    "parentId": "p-victoriano-padilla-gonzalez",
+    "partnerId": "p-jose-ines-gonzalez-ramirez"
+  },
+  {
+    "id": "p-jose-ines-gonzalez-ramirez",
+    "name": "José Inés González Ramírez",
+    "birth": "1860",
+    "death": null,
+    "photo": null,
+    "notes": "Born c. 1860 in Tepatitlán, Jalisco, México. Husband of Felicitas Padilla Aceves. Father of Esteban González Padilla.",
     "parentId": null,
-    "partnerId": "p-ines-gonzalez-ramirez"
+    "partnerId": "p-felicitas-padilla-aceves"
   },
   {
     "id": "p-esteban-gonzalez-padilla",
     "name": "Esteban González Padilla",
     "birth": "1895",
-    "death": "1971",
+    "death": "1970",
     "photo": null,
-    "notes": "Born 26 Dec 1895 in Tepatitlán de Morelos, Jalisco. Founded Fábrica de Jabón La Corona in 1920 with brothers Loreto and Daniel. Married María Isabel Mendoza Pardo on 5 Jul 1918 in Guadalajara. Directed the company until 1950. Died 10 Sep 1971 in Mexico City.",
-    "parentId": "p-ines-gonzalez-ramirez",
+    "notes": "Born 26 Dec 1895 in Tepatitlán de Morelos, Jalisco, México. Died 9 Sep 1970 in Distrito Federal, México. Founded Fábrica de Jabón La Corona in 1920 with brothers Loreto and Daniel. Married María Isabel Mendoza Pardo 5 Jul 1918 in Guadalajara.",
+    "parentId": "p-felicitas-padilla-aceves",
     "partnerId": "p-maria-isabel-mendoza-pardo"
-  },
-  {
-    "id": "p-loreto-gonzalez-padilla",
-    "name": "Loreto González Padilla",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "Brother of Esteban González Padilla. Co-founder of Fábrica de Jabón La Corona.",
-    "parentId": "p-ines-gonzalez-ramirez"
-  },
-  {
-    "id": "p-daniel-gonzalez-padilla",
-    "name": "Daniel González Padilla",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "Brother of Esteban González Padilla. Co-founder of Fábrica de Jabón La Corona.",
-    "parentId": "p-ines-gonzalez-ramirez"
   },
   {
     "id": "p-maria-isabel-mendoza-pardo",
     "name": "María Isabel Mendoza Pardo",
-    "birth": null,
+    "birth": "1896",
     "death": null,
     "photo": null,
-    "notes": "Married Esteban González Padilla on 5 Jul 1918 in Guadalajara, Jalisco. Had four sons and six daughters.",
+    "notes": "Born 10 Apr 1896 in Tingüindín, Michoacán, México. Married Esteban González Padilla 5 Jul 1918 in Guadalajara.",
     "parentId": null,
     "partnerId": "p-esteban-gonzalez-padilla"
   },
   {
-    "id": "p-antonio-gonzalez-mendoza",
-    "name": "Antonio González Mendoza",
-    "birth": null,
-    "death": null,
+    "id": "p-antonio-eduardo-gonzalez-mendoza",
+    "name": "Antonio Eduardo González Mendoza",
+    "birth": "1919",
+    "death": "2002",
     "photo": null,
-    "notes": "Son of Esteban González Padilla and María Isabel Mendoza Pardo. Inherited leadership of Fábrica de Jabón La Corona in 1950.",
-    "parentId": "p-esteban-gonzalez-padilla"
+    "notes": "Born 19 Apr 1919 in Torreón, Coahuila, México. Died 7 Mar 2002 in Miguel Hidalgo, Distrito Federal, México. Married Rosa Ortiz Luna 19 Jul 1940 in Zamora, Michoacán. Son of Esteban González Padilla and María Isabel Mendoza Pardo. Father of Rosa Martha González.",
+    "parentId": "p-esteban-gonzalez-padilla",
+    "partnerId": "p-rosa-ortiz-luna"
   },
   {
-    "id": "p-son-2-gonzalez-mendoza",
-    "name": "González Mendoza (son, name unknown)",
-    "birth": null,
+    "id": "p-rosa-ortiz-luna",
+    "name": "Rosa Ortiz Luna",
+    "birth": "1919",
     "death": null,
     "photo": null,
-    "notes": "One of the four sons of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
-  },
-  {
-    "id": "p-son-3-gonzalez-mendoza",
-    "name": "González Mendoza (son, name unknown)",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "One of the four sons of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
-  },
-  {
-    "id": "p-son-4-gonzalez-mendoza",
-    "name": "González Mendoza (son, name unknown)",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "One of the four sons of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
-  },
-  {
-    "id": "p-daughter-1-gonzalez-mendoza",
-    "name": "González Mendoza (daughter, name unknown)",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "One of the six daughters of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
-  },
-  {
-    "id": "p-daughter-2-gonzalez-mendoza",
-    "name": "González Mendoza (daughter, name unknown)",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "One of the six daughters of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
+    "notes": "Born 3 Sep 1919 in Zamora, Michoacán, México. Wife of Antonio Eduardo González Mendoza. Mother of Rosa Martha González.",
+    "parentId": null,
+    "partnerId": "p-antonio-eduardo-gonzalez-mendoza"
   },
   {
     "id": "p-rosa-martha-gonzalez-ortiz",
     "name": "Rosa Martha González Ortiz",
-    "birth": null,
+    "birth": "1941",
     "death": null,
     "photo": null,
-    "notes": "Daughter of Esteban González Padilla and María Isabel Mendoza Pardo. Grandmother on the Melgarejo side. Married Sostenes Gustavo Melgarejo y Velasco. Mother of Lusana Marina Melgarejo González. One of six daughters.",
-    "parentId": "p-esteban-gonzalez-padilla",
+    "notes": "Born 4 Jul 1941 in Distrito Federal, México. Married Sostenes Gustavo Melgarejo 13 Jun 1963 in Distrito Federal. Daughter of Antonio Eduardo González Mendoza and Rosa Ortiz Luna. Mother of Lusana Marina Melgarejo González.",
+    "parentId": "p-antonio-eduardo-gonzalez-mendoza",
     "partnerId": "p-sostenes-melgarejo"
   },
   {
-    "id": "p-daughter-4-gonzalez-mendoza",
-    "name": "González Mendoza (daughter, name unknown)",
-    "birth": null,
+    "id": "p-sostenes-melgarejo",
+    "name": "Sostenes Gustavo Melgarejo",
+    "birth": "1940",
     "death": null,
     "photo": null,
-    "notes": "One of the six daughters of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
-  },
-  {
-    "id": "p-daughter-5-gonzalez-mendoza",
-    "name": "González Mendoza (daughter, name unknown)",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "One of the six daughters of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
-  },
-  {
-    "id": "p-daughter-6-gonzalez-mendoza",
-    "name": "González Mendoza (daughter, name unknown)",
-    "birth": null,
-    "death": null,
-    "photo": null,
-    "notes": "One of the six daughters of Esteban and María Isabel.",
-    "parentId": "p-esteban-gonzalez-padilla"
+    "notes": "Born 7 Oct 1940 in Distrito Federal, México. Husband of Rosa Martha González Ortiz. Father of Lusana Marina Melgarejo González. The Melgarejo line beyond Sostenes is not traced in the Lisbon certificate.",
+    "parentId": null,
+    "partnerId": "p-rosa-martha-gonzalez-ortiz"
   },
   {
     "id": "p-lusana-marina-melgarejo-gonzalez",
@@ -193,7 +305,7 @@
     "birth": "1968",
     "death": null,
     "photo": null,
-    "notes": "Daughter of Rosa Martha González Ortiz and Sostenes Gustavo Melgarejo y Velasco. Mother of Daniel Martínez del Campo Melgarejo. Born 18 July 1968 in Distrito Federal, México. Certificate 111852/07-2022 from Comunidade Israelita de Lisboa certifies her as a descendant of Sephardic Jews of Portuguese origin.",
+    "notes": "Born 18 Jul 1968 in Distrito Federal, México. Daughter of Rosa Martha González Ortiz and Sostenes Gustavo Melgarejo. Mother of Daniel Martínez del Campo Melgarejo. Certificate 111852/07-2022 from Comunidade Israelita de Lisboa certifies her as a descendant of Sephardic Jews of Portuguese origin through the Padilla / Temiño de Velasco / Pacho line.",
     "parentId": "p-rosa-martha-gonzalez-ortiz"
   },
   {
