@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ibkr">
+<meta name="theme-color" content="#f5f5f4">
+<title>ibkr · portfolio analytics</title>
+<link rel="icon" type="image/svg+xml" href="ibkr-icon.svg">
+<link rel="apple-touch-icon" href="ibkr-apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f5f4;
+    --ink: #0c0a09;
+    --ink-soft: #57534e;
+    --ink-faint: #a8a29e;
+    --line: rgba(12, 10, 9, 0.14);
+    --card-bg: rgba(12, 10, 9, 0.03);
+    --positive: #15803d;
+    --negative: #b91c1c;
+    --accent: #0ea5e9;
+  }
+  body.dark {
+    --bg: #0c0a09;
+    --ink: #f5f5f4;
+    --ink-soft: #a8a29e;
+    --ink-faint: #57534e;
+    --line: rgba(245, 245, 244, 0.14);
+    --card-bg: rgba(245, 245, 244, 0.04);
+    --positive: #4ade80;
+    --negative: #f87171;
+    --accent: #38bdf8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+    min-height: 100dvh;
+    transition: background 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: max(2rem, env(safe-area-inset-top) + 1.5rem) 1.25rem max(2.5rem, env(safe-area-inset-bottom) + 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .dark-toggle {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .dark-toggle:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 0; }
+
+  /* Section */
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1rem;
+  }
+  .section { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* Hero */
+  .hero { padding: 0.5rem 0; }
+  .hero h1 {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .hero-meta {
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    margin-top: 0.5rem;
+  }
+
+  /* Metric cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .card-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .card-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .card-value.pos { color: var(--positive); }
+  .card-value.neg { color: var(--negative); }
+  .card-sub {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+  }
+
+  /* Chart container */
+  .chart-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    padding: 1.25rem;
+    position: relative;
+    height: 320px;
+  }
+  .chart-wrap.tall { height: 400px; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  td { font-variant-numeric: tabular-nums; }
+  td.pos { color: var(--positive); font-weight: 500; }
+  td.neg { color: var(--negative); font-weight: 500; }
+  tr:hover td { background: var(--card-bg); }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); }
+
+  /* Two column */
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* Insight box */
+  .insight {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    padding: 1.1rem 1.25rem;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .insight strong { color: var(--ink); }
+
+  /* Footer */
+  footer {
+    margin-top: auto;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    padding-top: 1.5rem;
+  }
+
+  /* Toggle tabs for tables */
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 0.35rem 0.8rem;
+    font-family: inherit;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .tab.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .tab:hover:not(.active) { border-color: var(--ink-soft); color: var(--ink); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  @media (max-width: 480px) {
+    .wrapper { padding: 1.25rem 1rem; gap: 2rem; }
+    .cards { grid-template-columns: 1fr 1fr; }
+    .card-value { font-size: 1.1rem; }
+    .chart-wrap { height: 260px; padding: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="topbar">
+    <div>ibkr · portfolio analytics</div>
+    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+
+  <hr>
+
+  <div class="hero">
+    <h1>Account U3775151</h1>
+    <div class="hero-meta">2020 — July 2026 · 7 statement periods · 670 trades</div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="section">
+    <div class="section-label">at a glance</div>
+    <div class="cards" id="summaryCards">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight" id="insightBox">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- Cumulative Performance Chart -->
+  <div class="section">
+    <div class="section-label">cumulative performance</div>
+    <div class="chart-wrap tall">
+      <canvas id="cumulativeChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Yearly Breakdown -->
+  <div class="section">
+    <div class="section-label">yearly breakdown</div>
+    <div class="chart-wrap">
+      <canvas id="yearlyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Two-column: Winners & Losers -->
+  <div class="two-col">
+    <div class="section">
+      <div class="section-label">top winners</div>
+      <div class="table-scroll">
+        <table id="winnersTable">
+          <thead><tr><th>Symbol</th><th style="text-align:right">Realized P&L</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-label">top losers</div>
+      <div class="table-scroll">
+        <table id="losersTable">
+          <thead><tr><th>Symbol</th><th style="text-align:right">Realized P&L</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asset Allocation -->
+  <div class="section">
+    <div class="section-label">current allocation</div>
+    <div class="two-col">
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="allocationChart"></canvas>
+      </div>
+      <div class="table-scroll" style="max-height:260px; overflow-y:auto">
+        <table id="positionsTable">
+          <thead><tr><th>Symbol</th><th>Qty</th><th style="text-align:right">Value</th><th style="text-align:right">Unrealized</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trade Stats -->
+  <div class="section">
+    <div class="section-label">trade statistics</div>
+    <div class="cards" id="tradeStats">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <footer>generated 2026-07-29 · data from interactive brokers</footer>
+</div>
+
+<script>
+// ===== EMBEDDED DATA =====
+const DATA = {
+  overview: {
+    total_realized_pnl: 62661.79,
+    total_unrealized_pnl: -53069.99,
+    combined_pnl: 9591.81,
+    total_mtm_pnl: 36968.01,
+    total_fees: -2197.76,
+    total_interest: -14364.59,
+    total_dividends: 8436.58,
+    total_withholding_tax: -140.88,
+    total_deposits: 126980.02,
+    total_withdrawals: 6500.00,
+    net_deposits: 120480.02,
+    winning_symbols: 147,
+    losing_symbols: 88,
+    breakeven_symbols: 47,
+    total_symbols_traded: 282,
+    total_trades: 670,
+    stock_trades: 287,
+    option_trades: 378,
+    forex_trades: 5,
+    options_realized_pnl: 54973.46,
+    stocks_realized_pnl: 7688.33
+  },
+  pnl_by_year: {"2020":4342.95,"2021":1910.51,"2022":-15874.95,"2023":-2726.92,"2024":-9310.41,"2025":75029.48,"2026":9291.14},
+  mtm_by_year: {"2020":-1413.65,"2021":-13719.48,"2022":-19125.69,"2023":8038.38,"2024":13958.59,"2025":99214.79,"2026":-49984.92},
+  fees_by_year: {"2020":-114.0,"2021":-351.8,"2022":-352.0,"2023":-348.0,"2024":-365.88,"2025":-384.32,"2026":-281.76},
+  dividends_by_year: {"2020":166.38,"2021":21.52,"2022":0.4,"2023":0.56,"2024":1292.52,"2025":2466.07,"2026":4489.13},
+  interest_by_year: {"2020":-21.22,"2021":-237.14,"2022":-35.74,"2023":-443.86,"2024":-2333.13,"2025":-5626.47,"2026":-5667.03},
+  cumulative_performance: [
+    {"period":"2020","year":"2020","mark_to_market":-1111.62,"dividends":83.19,"interest":-10.61,"fees":-414.89,"net_change":-1453.93,"cumulative_pnl":-1453.93},
+    {"period":"2021","year":"2021","mark_to_market":-13601.18,"dividends":10.76,"interest":-71.64,"fees":-305.24,"net_change":-13967.29,"cumulative_pnl":-15421.22},
+    {"period":"2022","year":"2022","mark_to_market":-19103.1,"dividends":0.2,"interest":-8.12,"fees":-198.3,"net_change":-19309.32,"cumulative_pnl":-34730.54},
+    {"period":"2023","year":"2023","mark_to_market":8052.86,"dividends":0.28,"interest":-143.35,"fees":-188.75,"net_change":7721.04,"cumulative_pnl":-27009.5},
+    {"period":"2024","year":"2024","mark_to_market":13622.49,"dividends":382.08,"interest":-598.98,"fees":-226.34,"net_change":13179.25,"cumulative_pnl":-13830.25},
+    {"period":"2025","year":"2025","mark_to_market":98571.44,"dividends":724.76,"interest":-818.22,"fees":-236.16,"net_change":98241.82,"cumulative_pnl":84411.56},
+    {"period":"2026","year":"2026","mark_to_market":-51389.6,"dividends":1447.8,"interest":-1356.39,"fees":-162.1,"net_change":-51460.29,"cumulative_pnl":32951.27}
+  ],
+  top_winners: [
+    ["BABA1 16JAN26 70 C",20927.94],["BABA1 16JAN26 80 C",17241.42],["NFLX 19JAN24 290 C",15929.77],
+    ["BABA1 16JAN26 100 C",8829.21],["BABA1 19DEC25 90 C",8822.43],["TQQQ 15JAN27 31 C",7357.34],
+    ["AAPL 18JUN26 175 C",5423.5],["HCA 16JAN26 330 C",4040.89],["CQQQ",3595.58],["QQQ 21JAN22 334.0 C",3266.43]
+  ],
+  top_losers: [
+    ["BABA 16JUN23 160 C",-3625.02],["PYPL 20JAN23 230 C",-3501.02],["BABA 19JAN24 115 C",-3249.05],
+    ["ARKK 21JAN22 147.18 C",-3050.33],["SKYY 20JAN23 110 C",-3038.14],["PNQI 17SEP21 255.0 C",-3001.93],
+    ["NVAX 15JAN21 115.0 C",-2917.74],["TAN 16JUL21 120.0 C",-2753.31],["ARKK 17SEP21 149.0 C",-2590.58],
+    ["BABA 21JUN24 95 C",-2530.75]
+  ],
+  asset_allocation: {"Stocks":133543.22,"Equity and Index Options":37958.37},
+  latest_positions: [
+    {"symbol":"GCARSOA1","asset_category":"Stocks","quantity":100,"value":15169,"unrealized_pl":2729,"close_price":151.69},
+    {"symbol":"BABA","asset_category":"Stocks","quantity":530,"value":61050.7,"unrealized_pl":-6449.09,"close_price":115.19},
+    {"symbol":"JD","asset_category":"Stocks","quantity":600,"value":19074,"unrealized_pl":-211.06,"close_price":31.79},
+    {"symbol":"FXI","asset_category":"Stocks","quantity":200,"value":7130,"unrealized_pl":1686.61,"close_price":35.65},
+    {"symbol":"PBR","asset_category":"Stocks","quantity":200,"value":3614,"unrealized_pl":647.13,"close_price":18.07},
+    {"symbol":"PDD","asset_category":"Stocks","quantity":100,"value":8571,"unrealized_pl":-3908,"close_price":85.71},
+    {"symbol":"BILI","asset_category":"Stocks","quantity":100,"value":1806,"unrealized_pl":-1203.93,"close_price":18.06},
+    {"symbol":"BYDDY","asset_category":"Stocks","quantity":500,"value":5755,"unrealized_pl":-507.5,"close_price":11.51},
+    {"symbol":"KWEB","asset_category":"Stocks","quantity":100,"value":2731,"unrealized_pl":-348.05,"close_price":27.31},
+    {"symbol":"TME","asset_category":"Stocks","quantity":300,"value":2856,"unrealized_pl":-2481.5,"close_price":9.52},
+    {"symbol":"XPEV","asset_category":"Stocks","quantity":200,"value":2542,"unrealized_pl":-958,"close_price":12.71},
+    {"symbol":"RERE","asset_category":"Stocks","quantity":400,"value":1732,"unrealized_pl":-566,"close_price":4.33},
+    {"symbol":"TCEHY","asset_category":"Stocks","quantity":10,"value":577,"unrealized_pl":112.4,"close_price":57.7},
+    {"symbol":"TCOM","asset_category":"Stocks","quantity":20,"value":906.2,"unrealized_pl":-201.2,"close_price":45.31},
+    {"symbol":"GLD 15JAN27 272 C","asset_category":"Equity and Index Options","quantity":1,"value":10450.69,"unrealized_pl":6949.63,"close_price":104.51},
+    {"symbol":"BABA2 15JAN27 90 C","asset_category":"Equity and Index Options","quantity":1,"value":3128,"unrealized_pl":1090.95,"close_price":31.28},
+    {"symbol":"EL 15JAN27 75 C","asset_category":"Equity and Index Options","quantity":4,"value":6670.32,"unrealized_pl":128.4,"close_price":16.68},
+    {"symbol":"VALE 15JAN27 12 C","asset_category":"Equity and Index Options","quantity":4,"value":1115.52,"unrealized_pl":748.7,"close_price":2.79},
+    {"symbol":"BABA 21JAN28 160 C","asset_category":"Equity and Index Options","quantity":6,"value":8998.2,"unrealized_pl":-15301.99,"close_price":14.997},
+    {"symbol":"BABA 21JAN28 140 C","asset_category":"Equity and Index Options","quantity":1,"value":1989.32,"unrealized_pl":-1781.73,"close_price":19.89}
+  ],
+  nav_timeline: [
+    {"year":"2021","total_nav":18036.63},
+    {"year":"2022","total_nav":16870.73},
+    {"year":"2023","total_nav":12060.92},
+    {"year":"2024","total_nav":25086.68},
+    {"year":"2025","total_nav":45918.30},
+    {"year":"2026","total_nav":144235.33}
+  ]
+};
+
+// ===== UTILS =====
+const fmt = (n) => {
+  const s = Math.abs(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  return (n < 0 ? '-$' : '$') + s;
+};
+const fmtK = (n) => {
+  if (Math.abs(n) >= 1000) return (n < 0 ? '-' : '') + '$' + (Math.abs(n)/1000).toFixed(1) + 'k';
+  return fmt(n);
+};
+const sign = (n) => n >= 0 ? 'pos' : 'neg';
+
+// ===== SUMMARY CARDS =====
+const ov = DATA.overview;
+const cards = [
+  { label: 'Realized P&L', value: ov.total_realized_pnl, sub: 'closed positions' },
+  { label: 'Unrealized P&L', value: ov.total_unrealized_pnl, sub: 'open positions' },
+  { label: 'Combined P&L', value: ov.combined_pnl, sub: 'realized + unrealized' },
+  { label: 'Net Deposits', value: ov.net_deposits, sub: 'deposits - withdrawals' },
+  { label: 'Total Dividends', value: ov.total_dividends, sub: 'income received' },
+  { label: 'Total Interest', value: ov.total_interest, sub: 'margin / cash interest' },
+  { label: 'Total Fees', value: ov.total_fees, sub: 'commissions + other' },
+  { label: 'Win Rate', value: (ov.winning_symbols / (ov.winning_symbols + ov.losing_symbols) * 100).toFixed(1) + '%', sub: `${ov.winning_symbols}W / ${ov.losing_symbols}L`, isText: true }
+];
+
+document.getElementById('summaryCards').innerHTML = cards.map(c => `
+  <div class="card">
+    <div class="card-label">${c.label}</div>
+    <div class="card-value ${c.isText ? (ov.combined_pnl >= 0 ? 'pos' : 'neg') : sign(c.value)}">${c.isText ? c.value : fmt(c.value)}</div>
+    <div class="card-sub">${c.sub}</div>
+  </div>
+`).join('');
+
+// ===== INSIGHT =====
+const totalReturn = ((ov.combined_pnl / ov.net_deposits) * 100).toFixed(1);
+const bestYear = Object.entries(DATA.pnl_by_year).sort((a,b) => b[1]-a[1])[0];
+const worstYear = Object.entries(DATA.pnl_by_year).sort((a,b) => a[1]-b[1])[0];
+const optionsPct = ((ov.options_realized_pnl / ov.total_realized_pnl) * 100).toFixed(0);
+
+const insightHTML = `
+  <strong>The bottom line:</strong> Across ${ov.total_trades} trades over 6.5 years, you've realized <strong style="color:var(--positive)">${fmt(ov.total_realized_pnl)}</strong> in closed positions but hold <strong style="color:var(--negative)">${fmt(ov.total_unrealized_pnl)}</strong> in unrealized losses. Your combined return on net deposits is <strong>${totalReturn}%</strong> (${fmt(ov.combined_pnl)} on ${fmt(ov.net_deposits)} deposited).<br><br>
+  <strong>Key observations:</strong> ${bestYear[0]} was your best year with ${fmt(bestYear[1])} realized; ${worstYear[0]} was the worst at ${fmt(worstYear[1])}. Options generated ${optionsPct}% of realized gains (${fmt(ov.options_realized_pnl)}). Interest costs total ${fmt(ov.total_interest)} — likely from margin usage. BABA options have been both your biggest wins and concentrated unrealized risk.
+`;
+document.getElementById('insightBox').innerHTML = insightHTML;
+
+// ===== CHART DEFAULTS =====
+const isDark = () => document.body.classList.contains('dark');
+const chartText = () => isDark() ? '#a8a29e' : '#57534e';
+const chartGrid = () => isDark() ? 'rgba(245,245,244,0.08)' : 'rgba(12,10,9,0.08)';
+
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = chartText();
+
+// ===== CUMULATIVE CHART =====
+const cumCtx = document.getElementById('cumulativeChart').getContext('2d');
+const cumLabels = DATA.cumulative_performance.map(d => d.year);
+const cumData = DATA.cumulative_performance.map(d => d.cumulative_pnl);
+const cumMTM = DATA.cumulative_performance.map(d => d.mark_to_market);
+
+const cumulativeChart = new Chart(cumCtx, {
+  type: 'line',
+  data: {
+    labels: cumLabels,
+    datasets: [
+      {
+        label: 'Cumulative P&L',
+        data: cumData,
+        borderColor: '#0ea5e9',
+        backgroundColor: 'rgba(14, 165, 233, 0.08)',
+        fill: true,
+        tension: 0.25,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 2
+      },
+      {
+        label: 'Mark-to-Market',
+        data: cumMTM,
+        borderColor: '#f59e0b',
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.25,
+        pointRadius: 3,
+        borderWidth: 1.5,
+        borderDash: [4, 4]
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { position: 'top', align: 'end', labels: { boxWidth: 12, usePointStyle: true } },
+      tooltip: {
+        callbacks: {
+          label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y)
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: {
+        grid: { color: chartGrid() },
+        ticks: { callback: v => fmtK(v) }
+      }
+    }
+  }
+});
+
+// ===== YEARLY CHART =====
+const yrCtx = document.getElementById('yearlyChart').getContext('2d');
+const yrLabels = Object.keys(DATA.pnl_by_year);
+const yrRealized = Object.values(DATA.pnl_by_year);
+const yrMTM = Object.values(DATA.mtm_by_year);
+const yrDividends = Object.values(DATA.dividends_by_year);
+const yrInterest = Object.values(DATA.interest_by_year);
+const yrFees = Object.values(DATA.fees_by_year);
+
+const yearlyChart = new Chart(yrCtx, {
+  type: 'bar',
+  data: {
+    labels: yrLabels,
+    datasets: [
+      { label: 'Realized P&L', data: yrRealized, backgroundColor: yrRealized.map(v => v >= 0 ? 'rgba(21,128,61,0.7)' : 'rgba(185,28,28,0.7)') },
+      { label: 'Dividends', data: yrDividends, backgroundColor: 'rgba(14,165,233,0.5)' },
+      { label: 'Interest', data: yrInterest, backgroundColor: 'rgba(245,158,11,0.5)' },
+      { label: 'Fees', data: yrFees, backgroundColor: 'rgba(168,162,158,0.4)' }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } },
+      tooltip: {
+        callbacks: { label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, stacked: false },
+      y: {
+        grid: { color: chartGrid() },
+        ticks: { callback: v => fmtK(v) },
+        stacked: false
+      }
+    }
+  }
+});
+
+// ===== WINNERS / LOSERS TABLES =====
+document.querySelector('#winnersTable tbody').innerHTML = DATA.top_winners.map(([s,v]) => `
+  <tr><td>${s}</td><td class="pos" style="text-align:right">${fmt(v)}</td></tr>
+`).join('');
+
+document.querySelector('#losersTable tbody').innerHTML = DATA.top_losers.map(([s,v]) => `
+  <tr><td>${s}</td><td class="neg" style="text-align:right">${fmt(v)}</td></tr>
+`).join('');
+
+// ===== ALLOCATION CHART =====
+const allocCtx = document.getElementById('allocationChart').getContext('2d');
+const allocChart = new Chart(allocCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Stocks', 'Options'],
+    datasets: [{
+      data: [DATA.asset_allocation.Stocks, DATA.asset_allocation['Equity and Index Options']],
+      backgroundColor: ['rgba(21,128,61,0.7)', 'rgba(14,165,233,0.6)'],
+      borderWidth: 0,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 15 } },
+      tooltip: {
+        callbacks: {
+          label: (c) => ` ${c.label}: ${fmt(c.parsed)} (${((c.parsed / (DATA.asset_allocation.Stocks + DATA.asset_allocation['Equity and Index Options'])) * 100).toFixed(1)}%)`
+        }
+      }
+    }
+  }
+});
+
+// ===== POSITIONS TABLE =====
+const sortedPositions = [...DATA.latest_positions].sort((a,b) => b.value - a.value);
+document.querySelector('#positionsTable tbody').innerHTML = sortedPositions.slice(0, 15).map(p => `
+  <tr>
+    <td>${p.symbol}</td>
+    <td>${p.quantity}</td>
+    <td style="text-align:right">${fmt(p.value)}</td>
+    <td class="${sign(p.unrealized_pl)}" style="text-align:right">${fmt(p.unrealized_pl)}</td>
+  </tr>
+`).join('');
+
+// ===== TRADE STATS =====
+const tradeCards = [
+  { label: 'Total Trades', value: ov.total_trades.toLocaleString(), sub: 'all-time' },
+  { label: 'Stock Trades', value: ov.stock_trades.toLocaleString(), sub: `${(ov.stock_trades/ov.total_trades*100).toFixed(0)}% of total` },
+  { label: 'Option Trades', value: ov.option_trades.toLocaleString(), sub: `${(ov.option_trades/ov.total_trades*100).toFixed(0)}% of total` },
+  { label: 'Symbols Traded', value: ov.total_symbols_traded.toLocaleString(), sub: 'unique tickers' },
+  { label: 'Options P&L', value: fmt(ov.options_realized_pnl), sub: `${optionsPct}% of realized` },
+  { label: 'Stocks P&L', value: fmt(ov.stocks_realized_pnl), sub: `${(100-optionsPct).toFixed(0)}% of realized` }
+];
+document.getElementById('tradeStats').innerHTML = tradeCards.map(c => `
+  <div class="card">
+    <div class="card-label">${c.label}</div>
+    <div class="card-value">${c.value}</div>
+    <div class="card-sub">${c.sub}</div>
+  </div>
+`).join('');
+
+// ===== DARK MODE =====
+const KEY = 'dzr-ibkr-dark';
+const darkToggle = document.getElementById('darkToggle');
+
+function applyDark(dark) {
+  document.body.classList.toggle('dark', dark);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', dark ? '#0c0a09' : '#f5f5f4');
+  // Update chart colors
+  Chart.defaults.color = chartText();
+  [cumulativeChart, yearlyChart, allocChart].forEach(ch => {
+    if (ch.options.scales.y) ch.options.scales.y.grid.color = chartGrid();
+    if (ch.options.scales.x) ch.options.scales.x.grid.color = chartGrid();
+    ch.update('none');
+  });
+}
+
+let saved = null;
+try { saved = localStorage.getItem(KEY); } catch(e) {}
+if (saved === '1') applyDark(true);
+else if (saved === '0') applyDark(false);
+else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
+
+darkToggle.addEventListener('click', () => {
+  const next = !document.body.classList.contains('dark');
+  applyDark(next);
+  try { localStorage.setItem(KEY, next ? '1' : '0'); } catch(e) {}
+});
+</script>
+</body>
+</html>
