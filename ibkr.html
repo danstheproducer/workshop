@@ -211,31 +211,12 @@
     padding-top: 1.5rem;
   }
 
-  /* Toggle tabs for tables */
-  .tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    flex-wrap: wrap;
+  /* Portfolio divider */
+  .portfolio-divider {
+    border-top: 2px solid var(--line);
+    padding-top: 2rem;
+    margin-top: 1rem;
   }
-  .tab {
-    background: transparent;
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    padding: 0.35rem 0.8rem;
-    font-family: inherit;
-    font-size: 0.7rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .tab.active {
-    background: var(--ink);
-    color: var(--bg);
-    border-color: var(--ink);
-  }
-  .tab:hover:not(.active) { border-color: var(--ink-soft); color: var(--ink); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
 
   @media (max-width: 480px) {
     .wrapper { padding: 1.25rem 1rem; gap: 2rem; }
@@ -267,15 +248,11 @@
   <!-- Key Metrics -->
   <div class="section">
     <div class="section-label">at a glance</div>
-    <div class="cards" id="summaryCards">
-      <!-- Filled by JS -->
-    </div>
+    <div class="cards" id="summaryCards"></div>
   </div>
 
   <!-- Insight -->
-  <div class="insight" id="insightBox">
-    <!-- Filled by JS -->
-  </div>
+  <div class="insight" id="insightBox"></div>
 
   <!-- Cumulative Performance Chart -->
   <div class="section">
@@ -334,12 +311,40 @@
   <!-- Trade Stats -->
   <div class="section">
     <div class="section-label">trade statistics</div>
-    <div class="cards" id="tradeStats">
-      <!-- Filled by JS -->
+    <div class="cards" id="tradeStats"></div>
+  </div>
+
+  <!-- ===== FINANTECH PORTFOLIO ===== -->
+  <div class="portfolio-divider"></div>
+
+  <div class="hero">
+    <h1>Finantech</h1>
+    <div class="hero-meta">Mexican Stock Exchange (BMV) · live positions</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">finantech at a glance</div>
+    <div class="cards" id="finantechCards"></div>
+  </div>
+
+  <div class="insight" id="finantechInsight"></div>
+
+  <div class="section">
+    <div class="section-label">finantech allocation</div>
+    <div class="two-col">
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="finantechAllocChart"></canvas>
+      </div>
+      <div class="table-scroll" style="max-height:260px; overflow-y:auto">
+        <table id="finantechTable">
+          <thead><tr><th>Symbol</th><th>Qty</th><th style="text-align:right">Value (MXN)</th><th style="text-align:right">Unrealized</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <footer>generated 2026-07-29 · data from interactive brokers</footer>
+  <footer>generated 2026-07-29 · data from interactive brokers & finantech</footer>
 </div>
 
 <script>
@@ -423,7 +428,23 @@ const DATA = {
     {"year":"2024","total_nav":25086.68},
     {"year":"2025","total_nav":45918.30},
     {"year":"2026","total_nav":144235.33}
-  ]
+  ],
+  finantech: {
+    overview: {
+      total_cost_basis: 1452933.67,
+      total_value: 1591823.07,
+      total_unrealized_pl: 138889.40,
+      return_pct: 9.6,
+      num_positions: 5
+    },
+    positions: [
+      {"symbol":"BABAN.MX","quantity":663,"avg_cost":1815.08,"current_price":2015.00,"cost_basis":1203397.91,"value":1335945.00,"unrealized_pl":132546.64,"return_pct":11.0},
+      {"symbol":"JDN.MX","quantity":302,"avg_cost":600.00,"current_price":560.00,"cost_basis":181200.00,"value":169120.00,"unrealized_pl":-12078.81,"return_pct":-6.7},
+      {"symbol":"CEMEXCPO.MX","quantity":1610,"avg_cost":11.54,"current_price":20.95,"cost_basis":18579.40,"value":33729.50,"unrealized_pl":15150.10,"return_pct":81.5},
+      {"symbol":"GCARSOA1.MX","quantity":153,"avg_cost":120.70,"current_price":151.69,"cost_basis":18467.10,"value":23208.57,"unrealized_pl":4741.47,"return_pct":25.7},
+      {"symbol":"EL.MX","quantity":21,"avg_cost":1490.00,"current_price":1420.00,"cost_basis":31290.00,"value":29820.00,"unrealized_pl":-1470.00,"return_pct":-4.7}
+    ]
+  }
 };
 
 // ===== UTILS =====
@@ -432,8 +453,13 @@ const fmt = (n) => {
   return (n < 0 ? '-$' : '$') + s;
 };
 const fmtK = (n) => {
+  if (Math.abs(n) >= 1000000) return (n < 0 ? '-' : '') + '$' + (Math.abs(n)/1000000).toFixed(2) + 'M';
   if (Math.abs(n) >= 1000) return (n < 0 ? '-' : '') + '$' + (Math.abs(n)/1000).toFixed(1) + 'k';
   return fmt(n);
+};
+const fmtMXN = (n) => {
+  const s = Math.abs(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  return (n < 0 ? '-$' : '$') + s + ' MXN';
 };
 const sign = (n) => n >= 0 ? 'pos' : 'neg';
 
@@ -540,7 +566,6 @@ const cumulativeChart = new Chart(cumCtx, {
 const yrCtx = document.getElementById('yearlyChart').getContext('2d');
 const yrLabels = Object.keys(DATA.pnl_by_year);
 const yrRealized = Object.values(DATA.pnl_by_year);
-const yrMTM = Object.values(DATA.mtm_by_year);
 const yrDividends = Object.values(DATA.dividends_by_year);
 const yrInterest = Object.values(DATA.interest_by_year);
 const yrFees = Object.values(DATA.fees_by_year);
@@ -641,6 +666,70 @@ document.getElementById('tradeStats').innerHTML = tradeCards.map(c => `
   </div>
 `).join('');
 
+// ===== FINANTECH SECTION =====
+const ft = DATA.finantech;
+const ftOv = ft.overview;
+
+// Finantech summary cards
+const ftCards = [
+  { label: 'Cost Basis', value: ftOv.total_cost_basis, sub: 'total invested', fmt: fmtMXN },
+  { label: 'Current Value', value: ftOv.total_value, sub: 'mark-to-market', fmt: fmtMXN },
+  { label: 'Unrealized P&L', value: ftOv.total_unrealized_pl, sub: 'open positions', fmt: fmtMXN },
+  { label: 'Return', value: ftOv.return_pct + '%', sub: 'since inception', isText: true }
+];
+document.getElementById('finantechCards').innerHTML = ftCards.map(c => `
+  <div class="card">
+    <div class="card-label">${c.label}</div>
+    <div class="card-value ${c.isText ? sign(ftOv.total_unrealized_pl) : sign(c.value)}">${c.isText ? c.value : (c.fmt || fmt)(c.value)}</div>
+    <div class="card-sub">${c.sub}</div>
+  </div>
+`).join('');
+
+// Finantech insight
+const ftBest = ft.positions.reduce((a,b) => a.return_pct > b.return_pct ? a : b);
+const ftWorst = ft.positions.reduce((a,b) => a.return_pct < b.return_pct ? a : b);
+document.getElementById('finantechInsight').innerHTML = `
+  <strong>Finantech summary:</strong> Your Mexican equity portfolio is up <strong style="color:var(--positive)">${ftOv.return_pct}%</strong> with ${fmtMXN(ftOv.total_unrealized_pl)} in unrealized gains on ${fmtMXN(ftOv.total_cost_basis)} invested. <strong>${ftBest.symbol}</strong> is the best performer at <strong>+${ftBest.return_pct}%</strong> (${fmtMXN(ftBest.unrealized_pl)}), while <strong>${ftWorst.symbol}</strong> lags at <strong>${ftWorst.return_pct}%</strong>. BABAN.MX dominates the portfolio at ~84% of total value — a significant concentration risk.
+`;
+
+// Finantech allocation chart
+const ftAllocCtx = document.getElementById('finantechAllocChart').getContext('2d');
+const ftAllocChart = new Chart(ftAllocCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ft.positions.map(p => p.symbol),
+    datasets: [{
+      data: ft.positions.map(p => p.value),
+      backgroundColor: ['rgba(245,158,11,0.7)', 'rgba(14,165,233,0.6)', 'rgba(21,128,61,0.7)', 'rgba(168,162,158,0.5)', 'rgba(185,28,28,0.5)'],
+      borderWidth: 0,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 12 } },
+      tooltip: {
+        callbacks: {
+          label: (c) => ` ${c.label}: ${fmtMXN(c.parsed)} (${((c.parsed / ftOv.total_value) * 100).toFixed(1)}%)`
+        }
+      }
+    }
+  }
+});
+
+// Finantech positions table
+document.querySelector('#finantechTable tbody').innerHTML = ft.positions.map(p => `
+  <tr>
+    <td>${p.symbol}</td>
+    <td>${p.quantity.toLocaleString()}</td>
+    <td style="text-align:right">${fmtMXN(p.value)}</td>
+    <td class="${sign(p.unrealized_pl)}" style="text-align:right">${fmtMXN(p.unrealized_pl)} (${p.return_pct}%)</td>
+  </tr>
+`).join('');
+
 // ===== DARK MODE =====
 const KEY = 'dzr-ibkr-dark';
 const darkToggle = document.getElementById('darkToggle');
@@ -649,9 +738,8 @@ function applyDark(dark) {
   document.body.classList.toggle('dark', dark);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', dark ? '#0c0a09' : '#f5f5f4');
-  // Update chart colors
   Chart.defaults.color = chartText();
-  [cumulativeChart, yearlyChart, allocChart].forEach(ch => {
+  [cumulativeChart, yearlyChart, allocChart, ftAllocChart].forEach(ch => {
     if (ch.options.scales.y) ch.options.scales.y.grid.color = chartGrid();
     if (ch.options.scales.x) ch.options.scales.x.grid.color = chartGrid();
     ch.update('none');
