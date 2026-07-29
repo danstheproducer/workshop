@@ -61,7 +61,6 @@
     gap: 2.5rem;
   }
 
-  /* Top bar */
   .topbar {
     display: flex;
     justify-content: space-between;
@@ -89,7 +88,6 @@
 
   hr { border: none; border-top: 1px solid var(--line); margin: 0; }
 
-  /* Section */
   .section-label {
     font-size: 0.65rem;
     letter-spacing: 0.22em;
@@ -99,7 +97,6 @@
   }
   .section { display: flex; flex-direction: column; gap: 1rem; }
 
-  /* Hero */
   .hero { padding: 0.5rem 0; }
   .hero h1 {
     font-family: inherit;
@@ -114,7 +111,6 @@
     margin-top: 0.5rem;
   }
 
-  /* Metric cards grid */
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -147,7 +143,6 @@
     color: var(--ink-soft);
   }
 
-  /* Chart container */
   .chart-wrap {
     background: var(--card-bg);
     border: 1px solid var(--line);
@@ -157,7 +152,6 @@
   }
   .chart-wrap.tall { height: 400px; }
 
-  /* Table */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -182,14 +176,12 @@
   tr:hover td { background: var(--card-bg); }
   .table-scroll { overflow-x: auto; border: 1px solid var(--line); }
 
-  /* Two column */
   .two-col {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
 
-  /* Insight box */
   .insight {
     background: var(--card-bg);
     border: 1px solid var(--line);
@@ -200,7 +192,6 @@
   }
   .insight strong { color: var(--ink); }
 
-  /* Footer */
   footer {
     margin-top: auto;
     font-size: 0.62rem;
@@ -211,18 +202,42 @@
     padding-top: 1.5rem;
   }
 
-  /* Portfolio divider */
   .portfolio-divider {
     border-top: 2px solid var(--line);
     padding-top: 2rem;
     margin-top: 1rem;
   }
 
+  /* Combined portfolio highlight */
+  .combined-hero {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .combined-hero h1 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .combined-total {
+    font-size: clamp(2.5rem, 7vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .combined-total.pos { color: var(--positive); }
+  .combined-total.neg { color: var(--negative); }
+
   @media (max-width: 480px) {
     .wrapper { padding: 1.25rem 1rem; gap: 2rem; }
     .cards { grid-template-columns: 1fr 1fr; }
     .card-value { font-size: 1.1rem; }
     .chart-wrap { height: 260px; padding: 0.75rem; }
+    .combined-total { font-size: 2rem; }
   }
 </style>
 </head>
@@ -240,21 +255,49 @@
 
   <hr>
 
+  <!-- ===== COMBINED PORTFOLIO ===== -->
+  <div class="section">
+    <div class="section-label">combined portfolio</div>
+    <div class="combined-hero">
+      <div style="font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-faint);">total value (USD)</div>
+      <div class="combined-total pos" id="combinedTotal">$0</div>
+      <div class="hero-meta">IBKR USD + Finantech MXN · at approx 17.5 MXN/USD</div>
+    </div>
+    <div class="cards" id="combinedCards"></div>
+  </div>
+
+  <div class="insight" id="combinedInsight"></div>
+
+  <div class="section">
+    <div class="section-label">cross-portfolio allocation</div>
+    <div class="two-col">
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="combinedAllocChart"></canvas>
+      </div>
+      <div class="table-scroll">
+        <table id="combinedTable">
+          <thead><tr><th>Portfolio</th><th style="text-align:right">Value (USD)</th><th style="text-align:right">Unrealized</th><th style="text-align:right">Weight</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== IBKR PORTFOLIO ===== -->
+  <div class="portfolio-divider"></div>
+
   <div class="hero">
     <h1>Account U3775151</h1>
     <div class="hero-meta">2020 — July 2026 · 7 statement periods · 670 trades</div>
   </div>
 
-  <!-- Key Metrics -->
   <div class="section">
     <div class="section-label">at a glance</div>
     <div class="cards" id="summaryCards"></div>
   </div>
 
-  <!-- Insight -->
   <div class="insight" id="insightBox"></div>
 
-  <!-- Cumulative Performance Chart -->
   <div class="section">
     <div class="section-label">cumulative performance</div>
     <div class="chart-wrap tall">
@@ -262,7 +305,6 @@
     </div>
   </div>
 
-  <!-- Yearly Breakdown -->
   <div class="section">
     <div class="section-label">yearly breakdown</div>
     <div class="chart-wrap">
@@ -270,7 +312,6 @@
     </div>
   </div>
 
-  <!-- Two-column: Winners & Losers -->
   <div class="two-col">
     <div class="section">
       <div class="section-label">top winners</div>
@@ -292,7 +333,6 @@
     </div>
   </div>
 
-  <!-- Asset Allocation -->
   <div class="section">
     <div class="section-label">current allocation</div>
     <div class="two-col">
@@ -308,7 +348,6 @@
     </div>
   </div>
 
-  <!-- Trade Stats -->
   <div class="section">
     <div class="section-label">trade statistics</div>
     <div class="cards" id="tradeStats"></div>
@@ -444,7 +483,9 @@ const DATA = {
       {"symbol":"GCARSOA1.MX","quantity":153,"avg_cost":120.70,"current_price":151.69,"cost_basis":18467.10,"value":23208.57,"unrealized_pl":4741.47,"return_pct":25.7},
       {"symbol":"EL.MX","quantity":21,"avg_cost":1490.00,"current_price":1420.00,"cost_basis":31290.00,"value":29820.00,"unrealized_pl":-1470.00,"return_pct":-4.7}
     ]
-  }
+  },
+  // FX rate for combined view
+  fx_rate: 17.5
 };
 
 // ===== UTILS =====
@@ -461,9 +502,110 @@ const fmtMXN = (n) => {
   const s = Math.abs(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   return (n < 0 ? '-$' : '$') + s + ' MXN';
 };
+const fmtPct = (n) => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
 const sign = (n) => n >= 0 ? 'pos' : 'neg';
 
-// ===== SUMMARY CARDS =====
+// ===== COMBINED PORTFOLIO CALCULATIONS =====
+const FX = DATA.fx_rate;
+const ibkrValue = DATA.asset_allocation.Stocks + DATA.asset_allocation['Equity and Index Options'];
+const ibkrUnrealized = DATA.overview.total_unrealized_pnl;
+const ibkrRealized = DATA.overview.total_realized_pnl;
+const ibkrCostBasis = DATA.overview.net_deposits + DATA.overview.total_fees + DATA.overview.total_interest;
+
+const ftValueMXN = DATA.finantech.overview.total_value;
+const ftValueUSD = ftValueMXN / FX;
+const ftUnrealizedMXN = DATA.finantech.overview.total_unrealized_pl;
+const ftUnrealizedUSD = ftUnrealizedMXN / FX;
+const ftCostBasisMXN = DATA.finantech.overview.total_cost_basis;
+const ftCostBasisUSD = ftCostBasisMXN / FX;
+
+const combinedValue = ibkrValue + ftValueUSD;
+const combinedUnrealized = ibkrUnrealized + ftUnrealizedUSD;
+const combinedCostBasis = ibkrCostBasis + ftCostBasisUSD;
+const combinedReturn = ((combinedUnrealized / combinedCostBasis) * 100);
+
+// ===== COMBINED HERO =====
+document.getElementById('combinedTotal').textContent = fmtK(combinedValue);
+document.getElementById('combinedTotal').className = 'combined-total ' + sign(combinedUnrealized);
+
+// Combined cards
+const combinedCards = [
+  { label: 'IBKR Value', value: ibkrValue, sub: 'USD account', fmt: fmt },
+  { label: 'Finantech Value', value: ftValueUSD, sub: `${fmtMXN(ftValueMXN)} @ ${FX}`, fmt: fmt },
+  { label: 'Combined Cost Basis', value: combinedCostBasis, sub: 'total invested', fmt: fmt },
+  { label: 'Combined Unrealized', value: combinedUnrealized, sub: 'open positions', fmt: fmt },
+  { label: 'IBKR Realized', value: ibkrRealized, sub: 'lifetime closed P&L', fmt: fmt },
+  { label: 'Combined Return', value: fmtPct(combinedReturn), sub: 'unrealized / cost basis', isText: true }
+];
+document.getElementById('combinedCards').innerHTML = combinedCards.map(c => `
+  <div class="card">
+    <div class="card-label">${c.label}</div>
+    <div class="card-value ${c.isText ? sign(combinedUnrealized) : sign(c.value)}">${c.isText ? c.value : (c.fmt || fmt)(c.value)}</div>
+    <div class="card-sub">${c.sub}</div>
+  </div>
+`).join('');
+
+// Combined insight
+const ibkrWeight = (ibkrValue / combinedValue * 100).toFixed(1);
+const ftWeight = (ftValueUSD / combinedValue * 100).toFixed(1);
+const ibkrReturn = ((ibkrUnrealized / ibkrCostBasis) * 100).toFixed(1);
+const ftReturn = DATA.finantech.overview.return_pct;
+
+document.getElementById('combinedInsight').innerHTML = `
+  <strong>Cross-portfolio view:</strong> Your combined portfolio is worth <strong>${fmtK(combinedValue)}</strong> USD across two accounts. IBKR makes up <strong>${ibkrWeight}%</strong> (${fmtK(ibkrValue)}) and Finantech <strong>${ftWeight}%</strong> (${fmtK(ftValueUSD)}). On a cost basis of ${fmtK(combinedCostBasis)}, you're sitting on <strong style="color:var(--${combinedUnrealized >= 0 ? 'positive' : 'negative'})">${combinedUnrealized >= 0 ? '+' : ''}${fmtK(combinedUnrealized)}</strong> in unrealized P&L (${fmtPct(combinedReturn)}). IBKR has returned ${ibkrReturn}% unrealized while Finantech is up ${ftReturn}%. The heavy BABA/BABAN concentration spans both portfolios.
+`;
+
+// Combined allocation chart
+const combinedAllocCtx = document.getElementById('combinedAllocChart').getContext('2d');
+const combinedAllocChart = new Chart(combinedAllocCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['IBKR (USD)', 'Finantech (MXN→USD)'],
+    datasets: [{
+      data: [ibkrValue, ftValueUSD],
+      backgroundColor: ['rgba(14,165,233,0.7)', 'rgba(245,158,11,0.7)'],
+      borderWidth: 0,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 15 } },
+      tooltip: {
+        callbacks: {
+          label: (c) => ` ${c.label}: ${fmtK(c.parsed)} (${(c.parsed / combinedValue * 100).toFixed(1)}%)`
+        }
+      }
+    }
+  }
+});
+
+// Combined table
+document.querySelector('#combinedTable tbody').innerHTML = `
+  <tr>
+    <td>IBKR (USD)</td>
+    <td style="text-align:right">${fmt(ibkrValue)}</td>
+    <td class="${sign(ibkrUnrealized)}" style="text-align:right">${fmt(ibkrUnrealized)}</td>
+    <td style="text-align:right">${ibkrWeight}%</td>
+  </tr>
+  <tr>
+    <td>Finantech (MXN→USD)</td>
+    <td style="text-align:right">${fmt(ftValueUSD)}</td>
+    <td class="${sign(ftUnrealizedUSD)}" style="text-align:right">${fmt(ftUnrealizedUSD)}</td>
+    <td style="text-align:right">${ftWeight}%</td>
+  </tr>
+  <tr style="border-top:2px solid var(--line); font-weight:700;">
+    <td>Combined</td>
+    <td style="text-align:right">${fmt(combinedValue)}</td>
+    <td class="${sign(combinedUnrealized)}" style="text-align:right">${fmt(combinedUnrealized)}</td>
+    <td style="text-align:right">100%</td>
+  </tr>
+`.trim();
+
+// ===== IBKR SECTION =====
 const ov = DATA.overview;
 const cards = [
   { label: 'Realized P&L', value: ov.total_realized_pnl, sub: 'closed positions' },
@@ -475,7 +617,6 @@ const cards = [
   { label: 'Total Fees', value: ov.total_fees, sub: 'commissions + other' },
   { label: 'Win Rate', value: (ov.winning_symbols / (ov.winning_symbols + ov.losing_symbols) * 100).toFixed(1) + '%', sub: `${ov.winning_symbols}W / ${ov.losing_symbols}L`, isText: true }
 ];
-
 document.getElementById('summaryCards').innerHTML = cards.map(c => `
   <div class="card">
     <div class="card-label">${c.label}</div>
@@ -484,17 +625,15 @@ document.getElementById('summaryCards').innerHTML = cards.map(c => `
   </div>
 `).join('');
 
-// ===== INSIGHT =====
 const totalReturn = ((ov.combined_pnl / ov.net_deposits) * 100).toFixed(1);
 const bestYear = Object.entries(DATA.pnl_by_year).sort((a,b) => b[1]-a[1])[0];
 const worstYear = Object.entries(DATA.pnl_by_year).sort((a,b) => a[1]-b[1])[0];
 const optionsPct = ((ov.options_realized_pnl / ov.total_realized_pnl) * 100).toFixed(0);
 
-const insightHTML = `
+document.getElementById('insightBox').innerHTML = `
   <strong>The bottom line:</strong> Across ${ov.total_trades} trades over 6.5 years, you've realized <strong style="color:var(--positive)">${fmt(ov.total_realized_pnl)}</strong> in closed positions but hold <strong style="color:var(--negative)">${fmt(ov.total_unrealized_pnl)}</strong> in unrealized losses. Your combined return on net deposits is <strong>${totalReturn}%</strong> (${fmt(ov.combined_pnl)} on ${fmt(ov.net_deposits)} deposited).<br><br>
   <strong>Key observations:</strong> ${bestYear[0]} was your best year with ${fmt(bestYear[1])} realized; ${worstYear[0]} was the worst at ${fmt(worstYear[1])}. Options generated ${optionsPct}% of realized gains (${fmt(ov.options_realized_pnl)}). Interest costs total ${fmt(ov.total_interest)} — likely from margin usage. BABA options have been both your biggest wins and concentrated unrealized risk.
 `;
-document.getElementById('insightBox').innerHTML = insightHTML;
 
 // ===== CHART DEFAULTS =====
 const isDark = () => document.body.classList.contains('dark');
@@ -546,18 +685,11 @@ const cumulativeChart = new Chart(cumCtx, {
     interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: { position: 'top', align: 'end', labels: { boxWidth: 12, usePointStyle: true } },
-      tooltip: {
-        callbacks: {
-          label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y)
-        }
-      }
+      tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) } }
     },
     scales: {
       x: { grid: { display: false } },
-      y: {
-        grid: { color: chartGrid() },
-        ticks: { callback: v => fmtK(v) }
-      }
+      y: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } }
     }
   }
 });
@@ -586,17 +718,11 @@ const yearlyChart = new Chart(yrCtx, {
     maintainAspectRatio: false,
     plugins: {
       legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } },
-      tooltip: {
-        callbacks: { label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) }
-      }
+      tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) } }
     },
     scales: {
       x: { grid: { display: false }, stacked: false },
-      y: {
-        grid: { color: chartGrid() },
-        ticks: { callback: v => fmtK(v) },
-        stacked: false
-      }
+      y: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) }, stacked: false }
     }
   }
 });
@@ -670,7 +796,6 @@ document.getElementById('tradeStats').innerHTML = tradeCards.map(c => `
 const ft = DATA.finantech;
 const ftOv = ft.overview;
 
-// Finantech summary cards
 const ftCards = [
   { label: 'Cost Basis', value: ftOv.total_cost_basis, sub: 'total invested', fmt: fmtMXN },
   { label: 'Current Value', value: ftOv.total_value, sub: 'mark-to-market', fmt: fmtMXN },
@@ -685,14 +810,12 @@ document.getElementById('finantechCards').innerHTML = ftCards.map(c => `
   </div>
 `).join('');
 
-// Finantech insight
 const ftBest = ft.positions.reduce((a,b) => a.return_pct > b.return_pct ? a : b);
 const ftWorst = ft.positions.reduce((a,b) => a.return_pct < b.return_pct ? a : b);
 document.getElementById('finantechInsight').innerHTML = `
   <strong>Finantech summary:</strong> Your Mexican equity portfolio is up <strong style="color:var(--positive)">${ftOv.return_pct}%</strong> with ${fmtMXN(ftOv.total_unrealized_pl)} in unrealized gains on ${fmtMXN(ftOv.total_cost_basis)} invested. <strong>${ftBest.symbol}</strong> is the best performer at <strong>+${ftBest.return_pct}%</strong> (${fmtMXN(ftBest.unrealized_pl)}), while <strong>${ftWorst.symbol}</strong> lags at <strong>${ftWorst.return_pct}%</strong>. BABAN.MX dominates the portfolio at ~84% of total value — a significant concentration risk.
 `;
 
-// Finantech allocation chart
 const ftAllocCtx = document.getElementById('finantechAllocChart').getContext('2d');
 const ftAllocChart = new Chart(ftAllocCtx, {
   type: 'doughnut',
@@ -720,7 +843,6 @@ const ftAllocChart = new Chart(ftAllocCtx, {
   }
 });
 
-// Finantech positions table
 document.querySelector('#finantechTable tbody').innerHTML = ft.positions.map(p => `
   <tr>
     <td>${p.symbol}</td>
@@ -739,7 +861,7 @@ function applyDark(dark) {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', dark ? '#0c0a09' : '#f5f5f4');
   Chart.defaults.color = chartText();
-  [cumulativeChart, yearlyChart, allocChart, ftAllocChart].forEach(ch => {
+  [cumulativeChart, yearlyChart, allocChart, ftAllocChart, combinedAllocChart].forEach(ch => {
     if (ch.options.scales.y) ch.options.scales.y.grid.color = chartGrid();
     if (ch.options.scales.x) ch.options.scales.x.grid.color = chartGrid();
     ch.update('none');
