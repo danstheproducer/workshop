@@ -1555,6 +1555,11 @@ document.getElementById('mainTabs').addEventListener('click', (e) => {
   e.target.classList.add('active');
   document.getElementById('tab-' + e.target.dataset.tab).classList.add('active');
   state.activeTab = e.target.dataset.tab;
+  // Charts initialized while their panel was display:none have 0x0 size — force a resize now visible
+  requestAnimationFrame(() => {
+    allCharts.forEach(ch => { if (ch) { ch.resize(); ch.update('none'); } });
+    if (combinedAllocChart) { combinedAllocChart.resize(); combinedAllocChart.update('none'); }
+  });
 });
 
 // ===== DARK MODE =====
