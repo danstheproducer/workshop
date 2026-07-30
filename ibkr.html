@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="portfolio">
 <meta name="theme-color" content="#f5f5f4">
-<title>portfolio · interactive analytics</title>
+<title>portfolio · performance analytics</title>
 <link rel="icon" type="image/svg+xml" href="ibkr-icon.svg">
 <link rel="apple-touch-icon" href="ibkr-apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -100,11 +100,6 @@
     text-transform: uppercase;
     color: var(--ink-faint);
     margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
   }
   .section { display: flex; flex-direction: column; gap: 1rem; }
 
@@ -163,11 +158,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
   }
   .card-label {
     font-size: 0.62rem;
@@ -196,61 +186,7 @@
     height: 320px;
   }
   .chart-wrap.tall { height: 400px; }
-
-  /* Controls bar */
-  .controls {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
-  }
-  .control-group {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: var(--card-bg);
-    border: 1px solid var(--line);
-    padding: 0.35rem 0.6rem;
-  }
-  .control-group label {
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-  .control-group input[type="number"], .control-group input[type="text"] {
-    background: transparent;
-    border: none;
-    color: var(--ink);
-    font-family: inherit;
-    font-size: 0.78rem;
-    width: 70px;
-    outline: none;
-  }
-  .control-group input[type="range"] {
-    width: 100px;
-    accent-color: var(--ink);
-  }
-  .control-group .range-val {
-    font-size: 0.78rem;
-    min-width: 45px;
-    text-align: right;
-  }
-
-  /* Search */
-  .search-box {
-    background: var(--card-bg);
-    border: 1px solid var(--line);
-    padding: 0.5rem 0.8rem;
-    font-family: inherit;
-    font-size: 0.82rem;
-    color: var(--ink);
-    width: 100%;
-    max-width: 280px;
-    outline: none;
-  }
-  .search-box::placeholder { color: var(--ink-faint); }
+  .chart-wrap.short { height: 260px; }
 
   /* Table */
   table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
@@ -277,53 +213,9 @@
   td { font-variant-numeric: tabular-nums; }
   td.pos { color: var(--positive); font-weight: 500; }
   td.neg { color: var(--negative); font-weight: 500; }
-  tr { transition: background 0.1s ease; cursor: pointer; }
+  tr { transition: background 0.1s ease; }
   tr:hover td { background: var(--card-bg); }
-  tr.expanded { background: var(--card-bg); }
   .table-scroll { overflow-x: auto; border: 1px solid var(--line); }
-
-  /* Expandable row details */
-  .row-detail {
-    display: none;
-    background: var(--card-bg);
-    padding: 0.75rem 0.6rem;
-    font-size: 0.72rem;
-    color: var(--ink-soft);
-    border-bottom: 1px solid var(--line);
-  }
-  .row-detail.show { display: table-row; }
-  .row-detail td { border: none; padding: 0.75rem 0.6rem; }
-  .detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.5rem;
-  }
-  .detail-item { display: flex; flex-direction: column; gap: 0.1rem; }
-  .detail-item .detail-label { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
-  .detail-item .detail-val { color: var(--ink); font-weight: 500; }
-
-  /* Year filter chips */
-  .chips {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-  .chip {
-    background: transparent;
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    padding: 0.3rem 0.7rem;
-    font-family: inherit;
-    font-size: 0.7rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .chip:hover { border-color: var(--ink-soft); color: var(--ink); }
-  .chip.active {
-    background: var(--ink);
-    color: var(--bg);
-    border-color: var(--ink);
-  }
 
   .two-col {
     display: grid;
@@ -341,12 +233,6 @@
   }
   .insight strong { color: var(--ink); }
 
-  .portfolio-divider {
-    border-top: 2px solid var(--line);
-    padding-top: 2rem;
-    margin-top: 1rem;
-  }
-
   /* Big hero number */
   .big-number {
     font-size: clamp(2.5rem, 7vw, 4rem);
@@ -356,6 +242,31 @@
   }
   .big-number.pos { color: var(--positive); }
   .big-number.neg { color: var(--negative); }
+
+  .fx-note {
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    margin-top: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+
+  .rules-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .rule-item {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .rule-item strong { color: var(--ink); }
+  .rule-item .rule-num {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
 
   footer {
     margin-top: auto;
@@ -372,11 +283,9 @@
     .cards { grid-template-columns: 1fr 1fr; }
     .card-value { font-size: 1.1rem; }
     .chart-wrap { height: 260px; padding: 0.75rem; }
+    .chart-wrap.tall { height: 320px; }
     .big-number { font-size: 2.2rem; }
-    .tabs { gap: 0; }
     .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.72rem; }
-    .controls { gap: 0.5rem; }
-    .control-group input[type="range"] { width: 70px; }
   }
 </style>
 </head>
@@ -384,7 +293,7 @@
 <div class="wrapper">
 
   <div class="topbar">
-    <div>portfolio · interactive analytics</div>
+    <div>portfolio · performance analytics</div>
     <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -399,28 +308,16 @@
     <button class="tab-btn active" data-tab="combined">Combined</button>
     <button class="tab-btn" data-tab="ibkr">IBKR U3775151</button>
     <button class="tab-btn" data-tab="finantech">Finantech (BMV)</button>
+    <button class="tab-btn" data-tab="plan">BABA Plan</button>
   </div>
 
   <!-- ========== COMBINED TAB ========== -->
   <div class="tab-panel active" id="tab-combined">
     <div class="section">
-      <div style="display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap;">
-        <div>
-          <div style="font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:0.3rem;">total portfolio value</div>
-          <div class="big-number pos" id="combinedTotal">$0</div>
-        </div>
-        <div style="flex:1;min-width:200px;">
-          <div class="controls" style="justify-content:flex-end;">
-            <div class="control-group">
-              <label>MXN/USD</label>
-              <input type="range" id="fxSlider" min="15" max="22" step="0.1" value="17.5">
-              <span class="range-val" id="fxVal">17.5</span>
-            </div>
-            <div class="control-group">
-              <input type="number" id="fxInput" value="17.5" step="0.1" style="width:55px;text-align:center;">
-            </div>
-          </div>
-        </div>
+      <div>
+        <div style="font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:0.3rem;">total portfolio value</div>
+        <div class="big-number pos" id="combinedTotal">$0</div>
+        <div class="fx-note" id="fxNote"></div>
       </div>
     </div>
 
@@ -437,9 +334,6 @@
           <canvas id="combinedAllocChart"></canvas>
         </div>
         <div>
-          <div class="controls" style="margin-bottom:0.75rem;">
-            <input type="text" class="search-box" id="combinedSearch" placeholder="Filter positions...">
-          </div>
           <div class="table-scroll" style="max-height:280px; overflow-y:auto">
             <table id="combinedTable">
               <thead><tr>
@@ -461,7 +355,7 @@
   <div class="tab-panel" id="tab-ibkr">
     <div class="hero">
       <h1>Account U3775151</h1>
-      <div class="hero-meta">2020 — July 2026 · 7 statement periods · 670 trades</div>
+      <div class="hero-meta">April 2020 — July 28, 2026 · 7 activity statements · reconciled to the cent</div>
     </div>
 
     <div class="section">
@@ -471,49 +365,124 @@
     <div class="insight" id="insightBox"></div>
 
     <div class="section">
-      <div class="section-label">
-        <span>cumulative performance</span>
-        <div class="chips" id="yearChips">
-          <button class="chip active" data-year="all">All</button>
-          <button class="chip" data-year="2020">2020</button>
-          <button class="chip" data-year="2021">2021</button>
-          <button class="chip" data-year="2022">2022</button>
-          <button class="chip" data-year="2023">2023</button>
-          <button class="chip" data-year="2024">2024</button>
-          <button class="chip" data-year="2025">2025</button>
-          <button class="chip" data-year="2026">2026</button>
-        </div>
-      </div>
+      <div class="section-label">NAV path &amp; deposits</div>
       <div class="chart-wrap tall">
+        <canvas id="navChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight" id="mwrTwrInsight"></div>
+
+    <div class="section">
+      <div class="section-label">time-weighted return by year</div>
+      <div class="chart-wrap">
+        <canvas id="twrChart"></canvas>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">cumulative net P&amp;L (NAV − deposits)</div>
+      <div class="chart-wrap">
         <canvas id="cumulativeChart"></canvas>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-label">yearly breakdown</div>
+      <div class="section-label">realized vs unrealized by year</div>
       <div class="chart-wrap">
-        <canvas id="yearlyChart"></canvas>
+        <canvas id="realUnrealChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight" id="optionsInsight"></div>
+
+    <div class="section">
+      <div class="section-label">options vs stocks — realized P&amp;L by year</div>
+      <div class="chart-wrap">
+        <canvas id="optStockChart"></canvas>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">option expiration burn (52 contracts to zero)</div>
+      <div class="chart-wrap short">
+        <canvas id="burnChart"></canvas>
       </div>
     </div>
 
     <div class="two-col">
       <div class="section">
-        <div class="section-label">top winners</div>
+        <div class="section-label">income &amp; costs by year</div>
+        <div class="chart-wrap short">
+          <canvas id="costsChart"></canvas>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-label">lifetime friction ≈ $4,574</div>
+        <div class="chart-wrap short">
+          <canvas id="frictionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" id="thesisInsight"></div>
+
+    <div class="section">
+      <div class="section-label">lifetime P&amp;L by theme</div>
+      <div class="chart-wrap">
+        <canvas id="themeChart"></canvas>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">the BABA complex — annual &amp; cumulative</div>
+      <div class="chart-wrap">
+        <canvas id="babaChart"></canvas>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <div class="section-label">top lifetime winners (R+U)</div>
         <div class="table-scroll">
           <table id="winnersTable">
-            <thead><tr><th>Symbol</th><th style="text-align:right">Realized P&L</th></tr></thead>
+            <thead><tr><th>Symbol</th><th style="text-align:right">Total P&amp;L</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
       <div class="section">
-        <div class="section-label">top losers</div>
+        <div class="section-label">top lifetime losers (R+U)</div>
         <div class="table-scroll">
           <table id="losersTable">
-            <thead><tr><th>Symbol</th><th style="text-align:right">Realized P&L</th></tr></thead>
+            <thead><tr><th>Symbol</th><th style="text-align:right">Total P&amp;L</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">current book — leverage &amp; concentration (2026-07-28)</div>
+      <div class="cards" id="riskCards"></div>
+    </div>
+
+    <div class="insight" id="riskInsight"></div>
+
+    <div class="section">
+      <div class="section-label">scenario analysis — shock to China/EM sleeve</div>
+      <div class="table-scroll">
+        <table id="scenarioTable">
+          <thead><tr>
+            <th>Scenario</th>
+            <th style="text-align:right">Sleeve P&amp;L</th>
+            <th style="text-align:right">NAV</th>
+            <th style="text-align:right">ΔNAV</th>
+            <th style="text-align:right">Debit / NAV</th>
+            <th style="text-align:right">Gross / NAV</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
 
@@ -524,9 +493,6 @@
           <canvas id="allocationChart"></canvas>
         </div>
         <div>
-          <div class="controls" style="margin-bottom:0.75rem;">
-            <input type="text" class="search-box" id="ibkrSearch" placeholder="Filter positions...">
-          </div>
           <div class="table-scroll" style="max-height:260px; overflow-y:auto">
             <table id="positionsTable">
               <thead><tr>
@@ -541,18 +507,13 @@
         </div>
       </div>
     </div>
-
-    <div class="section">
-      <div class="section-label">trade statistics</div>
-      <div class="cards" id="tradeStats"></div>
-    </div>
   </div>
 
   <!-- ========== FINANTECH TAB ========== -->
   <div class="tab-panel" id="tab-finantech">
     <div class="hero">
       <h1>Finantech</h1>
-      <div class="hero-meta">Mexican Stock Exchange (BMV) · live positions</div>
+      <div class="hero-meta">Mexican Stock Exchange (BMV) · positions as of 2026-07-28</div>
     </div>
 
     <div class="section">
@@ -568,9 +529,6 @@
           <canvas id="finantechAllocChart"></canvas>
         </div>
         <div>
-          <div class="controls" style="margin-bottom:0.75rem;">
-            <input type="text" class="search-box" id="finantechSearch" placeholder="Filter positions...">
-          </div>
           <div class="table-scroll" style="max-height:260px; overflow-y:auto">
             <table id="finantechTable">
               <thead><tr>
@@ -587,109 +545,343 @@
     </div>
   </div>
 
-  <footer>generated 2026-07-29 · data from interactive brokers & finantech</footer>
+  <!-- ========== BABA PLAN TAB ========== -->
+  <div class="tab-panel" id="tab-plan">
+    <div class="hero">
+      <h1>BABA Valuation &amp; Risk Plan</h1>
+      <div class="hero-meta">companion audit · market data as of 2026-07-28/29 · USD/MXN 17.4324</div>
+    </div>
+
+    <div class="insight" id="planVerdict"></div>
+
+    <div class="section">
+      <div class="section-label">forward P&amp;E — China complex vs Western comps</div>
+      <div class="chart-wrap">
+        <canvas id="fpeChart"></canvas>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="cards" id="discountCards"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">valuation comps (multiples as sourced)</div>
+      <div class="table-scroll">
+        <table id="compsTable">
+          <thead><tr>
+            <th>Name</th>
+            <th style="text-align:right">Trailing P/E</th>
+            <th style="text-align:right">Forward P/E</th>
+            <th style="text-align:right">EV/EBITDA</th>
+            <th style="text-align:right">EV/Rev or P/S</th>
+            <th style="text-align:right">Market cap</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="insight" id="discountInsight"></div>
+
+    <div class="section">
+      <div class="section-label">combined balance sheet — two accounts, one factor</div>
+      <div class="cards" id="wealthCards"></div>
+    </div>
+
+    <div class="section">
+      <div class="chart-wrap short">
+        <canvas id="exposureChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight" id="realityInsight"></div>
+
+    <div class="section">
+      <div class="section-label">plan targets</div>
+      <div class="table-scroll">
+        <table id="targetsTable">
+          <thead><tr>
+            <th>Metric</th>
+            <th style="text-align:right">Now</th>
+            <th style="text-align:right">Target</th>
+            <th style="text-align:right">Deadline</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">margin debit paydown path</div>
+      <div class="chart-wrap short">
+        <canvas id="debitChart"></canvas>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <div class="section-label">step 1 · by 2026-08-07 — sell the speculative tail</div>
+        <div class="table-scroll">
+          <table id="step1Table">
+            <thead><tr><th>Position</th><th style="text-align:right">Shares</th><th style="text-align:right">Value</th><th style="text-align:right">uPL</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-label">step 2 · by 2026-09-30 — core-adjacent &amp; theta-bleeders</div>
+        <div class="table-scroll">
+          <table id="step2Table">
+            <thead><tr><th>Action</th><th style="text-align:right">Proceeds</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" id="stepsInsight"></div>
+
+    <div class="section">
+      <div class="section-label">step 5 · concentration cap — sell BABA into strength (Mexican account)</div>
+      <div class="table-scroll">
+        <table id="ladderTable">
+          <thead><tr>
+            <th>Rung</th>
+            <th style="text-align:right">Trigger (BABA US)</th>
+            <th style="text-align:right">Sell (sh)</th>
+            <th style="text-align:right">≈ Proceeds</th>
+            <th style="text-align:right">BABA % of wealth after</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">permanent operational rules</div>
+      <div class="rules-list" id="rulesList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">pre / post plan — the same −30% sleeve shock</div>
+      <div class="chart-wrap">
+        <canvas id="shockChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight" id="closingInsight"></div>
+  </div>
+
+  <footer>generated 2026-07-29 · data from interactive brokers &amp; finantech · post-mortem reconciled to statements</footer>
 </div>
 
 <script>
-// ===== DATA =====
+// ===== DATA (swarm post-mortem, reconciled to IBKR statements to the cent) =====
 const RAW = {
-  overview: {
-    total_realized_pnl: 62661.79, total_unrealized_pnl: -53069.99, combined_pnl: 9591.81,
-    total_fees: -2197.76, total_interest: -14364.59, total_dividends: 8436.58,
-    total_withholding_tax: -140.88, total_deposits: 126980.02, total_withdrawals: 6500.00,
-    net_deposits: 120480.02, winning_symbols: 147, losing_symbols: 88, breakeven_symbols: 47,
-    total_symbols_traded: 282, total_trades: 670, stock_trades: 287, option_trades: 378, forex_trades: 5,
-    options_realized_pnl: 54973.46, stocks_realized_pnl: 7688.33
+  fx_rate: 17.5,
+  years: ["2020","2021","2022","2023","2024","2025","2026 YTD"],
+  nav_end:      [18036.63, 16870.73, 12060.92, 25086.68, 45918.30, 144235.33, 92916.30],
+  deposits:     [19500.00, 12800.00, 14500.00, 5190.00, 7850.01, 0.00, 400.00],
+  cum_deposits: [19500.00, 32300.00, 46800.00, 51990.00, 59840.01, 59840.01, 60240.01],
+  twr:          [1.87, -36.01, -72.10, 63.27, 41.10, 214.11, -35.92],
+  mtm:          [-1111.62, -13601.18, -19103.10, 8052.86, 13622.49, 98571.44, -51389.60],
+  realized:     [4342.95, 1910.51, -15874.95, -2726.92, -9310.41, 75029.48, 9291.14],
+  unrealized:   [-5852.50, -21500.82, -24735.41, -13971.02, 8969.26, 32372.05, -28351.74],
+  opt_realized: [423.43, 1071.99, -12860.01, -3501.89, -8536.44, 71019.03, 7357.34],
+  stk_realized: [3919.52, 849.80, -3008.07, 774.96, -774.13, 4010.83, 1927.23],
+  dividends:    [83.19, 10.76, 0.20, 0.28, 382.08, 724.76, 1447.80],
+  interest:     [-10.61, -71.64, -8.12, -143.35, -598.98, -818.22, -1356.39],
+  commissions:  [-376.89, -129.34, -22.30, -14.75, -43.40, -44.00, -21.22],
+  cum_net_pnl:  [-1463.37, -15429.27, -34739.08, -26903.32, -13921.71, 84395.32, 32676.29],
+
+  headline: {
+    nav: 92916.30,
+    net_deposits: 60240.01,
+    lifetime_pnl: 32676.29,
+    mwr_pct: 54.2,
+    twr_cum_pct: -15.67,
+    counterfactual: 50802.53,
+    peak_nav: 144235.33,
+    drawdown_from_peak_pct: -35.6,
+    gross_leverage: 1.69,
+    debit: 64080.61,
+    debit_to_equity_pct: 68.9
   },
-  pnl_by_year: {"2020":4342.95,"2021":1910.51,"2022":-15874.95,"2023":-2726.92,"2024":-9310.41,"2025":75029.48,"2026":9291.14},
-  mtm_by_year: {"2020":-1413.65,"2021":-13719.48,"2022":-19125.69,"2023":8038.38,"2024":13958.59,"2025":99214.79,"2026":-49984.92},
-  fees_by_year: {"2020":-114.0,"2021":-351.8,"2022":-352.0,"2023":-348.0,"2024":-365.88,"2025":-384.32,"2026":-281.76},
-  dividends_by_year: {"2020":166.38,"2021":21.52,"2022":0.4,"2023":0.56,"2024":1292.52,"2025":2466.07,"2026":4489.13},
-  interest_by_year: {"2020":-21.22,"2021":-237.14,"2022":-35.74,"2023":-443.86,"2024":-2333.13,"2025":-5626.47,"2026":-5667.03},
-  cumulative_performance: [
-    {"year":"2020","mark_to_market":-1111.62,"dividends":83.19,"interest":-10.61,"fees":-414.89,"net_change":-1453.93,"cumulative_pnl":-1453.93},
-    {"year":"2021","year":"2021","mark_to_market":-13601.18,"dividends":10.76,"interest":-71.64,"fees":-305.24,"net_change":-13967.29,"cumulative_pnl":-15421.22},
-    {"year":"2022","mark_to_market":-19103.1,"dividends":0.2,"interest":-8.12,"fees":-198.3,"net_change":-19309.32,"cumulative_pnl":-34730.54},
-    {"year":"2023","mark_to_market":8052.86,"dividends":0.28,"interest":-143.35,"fees":-188.75,"net_change":7721.04,"cumulative_pnl":-27009.5},
-    {"year":"2024","mark_to_market":13622.49,"dividends":382.08,"interest":-598.98,"fees":-226.34,"net_change":13179.25,"cumulative_pnl":-13830.25},
-    {"year":"2025","mark_to_market":98571.44,"dividends":724.76,"interest":-818.22,"fees":-236.16,"net_change":98241.82,"cumulative_pnl":84411.56},
-    {"year":"2026","mark_to_market":-51389.6,"dividends":1447.8,"interest":-1356.39,"fees":-162.1,"net_change":-51460.29,"cumulative_pnl":32951.27}
+
+  themes: [
+    ["China / EM (stated thesis)", 608.86],
+    ["Gold (GLD)", 17063.76],
+    ["US index / leveraged beta", 13866.88],
+    ["US single-name tech / other", 11651.40],
+    ["Other / unclassified", 6116.30],
+    ["US growth / ARK complex", -39715.48]
   ],
-  top_winners: [
-    ["BABA1 16JAN26 70 C",20927.94],["BABA1 16JAN26 80 C",17241.42],["NFLX 19JAN24 290 C",15929.77],
-    ["BABA1 16JAN26 100 C",8829.21],["BABA1 19DEC25 90 C",8822.43],["TQQQ 15JAN27 31 C",7357.34],
-    ["AAPL 18JUN26 175 C",5423.5],["HCA 16JAN26 330 C",4040.89],["CQQQ",3595.58],["QQQ 21JAN22 334.0 C",3266.43]
+
+  baba_annual: [-2953.07, -11469.61, -14820.00, -11650.42, -7315.39, 70847.32, -26577.73],
+  baba_cum:    [-2953.07, -14422.68, -29242.68, -40893.10, -48208.49, 22638.83, -3938.90],
+
+  burn_years: ["2020","2021","2022","2023","2024"],
+  burn_contracts: [13, 14, 8, 10, 7],
+  burn_loss: [-4508.34, -18571.66, -13779.04, -21570.52, -10913.51],
+  burn_total: -69343.07,
+
+  friction: [
+    ["Margin / debit interest", -3007.31, "65.7%"],
+    ["Market data & other fees", -915.00, "≈20%"],
+    ["Commissions", -651.90, "14.3%"]
   ],
-  top_losers: [
-    ["BABA 16JUN23 160 C",-3625.02],["PYPL 20JAN23 230 C",-3501.02],["BABA 19JAN24 115 C",-3249.05],
-    ["ARKK 21JAN22 147.18 C",-3050.33],["SKYY 20JAN23 110 C",-3038.14],["PNQI 17SEP21 255.0 C",-3001.93],
-    ["NVAX 15JAN21 115.0 C",-2917.74],["TAN 16JUL21 120.0 C",-2753.31],["ARKK 17SEP21 149.0 C",-2590.58],
-    ["BABA 21JUN24 95 C",-2530.75]
+
+  winners: [
+    ["NFLX", 22923.07], ["GLD", 17063.76], ["AAPL", 13974.94], ["TQQQ", 10657.02], ["EL", 8195.56],
+    ["CQQQ", 8131.84], ["FXI", 4948.71], ["HCA", 4040.89], ["TCOM", 2685.51], ["QQQ", 2253.24]
   ],
-  asset_allocation: {"Stocks":133543.22,"Equity and Index Options":37958.37},
+  losers: [
+    ["PYPL", -18051.28], ["ARKF", -9313.01], ["SKYY", -7569.56], ["ARKK", -6612.83], ["DIS", -5792.64],
+    ["MJ", -5115.24], ["PDD", -5048.00], ["JETS", -4442.65], ["BABA", -3938.90], ["BYND", -3677.93]
+  ],
+
+  scenarios: [
+    ["Base (2026-07-28)", null, 92916, null, "68.9%", "1.69×"],
+    ["−30% on China/EM", -40310, 52607, -43.4, "121.8%", "2.22×"],
+    ["−50% on China/EM", -67183, 25734, -72.3, "249.0%", "3.50×"]
+  ],
+
+  book: {
+    nav: 92916.30, cash: -64080.61, stocks: 119243.09, options: 37958.37,
+    gross: 157201.46, china_em: 134365.24, baba_complex: 78031.26,
+    leaps_cost: 37109.20, leaps_mv: 16980.56
+  },
+
   latest_positions: [
-    {"symbol":"GCARSOA1","asset_category":"Stocks","quantity":100,"value":15169,"unrealized_pl":2729,"close_price":151.69},
-    {"symbol":"BABA","asset_category":"Stocks","quantity":530,"value":61050.7,"unrealized_pl":-6449.09,"close_price":115.19},
-    {"symbol":"JD","asset_category":"Stocks","quantity":600,"value":19074,"unrealized_pl":-211.06,"close_price":31.79},
-    {"symbol":"FXI","asset_category":"Stocks","quantity":200,"value":7130,"unrealized_pl":1686.61,"close_price":35.65},
-    {"symbol":"PBR","asset_category":"Stocks","quantity":200,"value":3614,"unrealized_pl":647.13,"close_price":18.07},
-    {"symbol":"PDD","asset_category":"Stocks","quantity":100,"value":8571,"unrealized_pl":-3908,"close_price":85.71},
-    {"symbol":"BILI","asset_category":"Stocks","quantity":100,"value":1806,"unrealized_pl":-1203.93,"close_price":18.06},
-    {"symbol":"BYDDY","asset_category":"Stocks","quantity":500,"value":5755,"unrealized_pl":-507.5,"close_price":11.51},
-    {"symbol":"KWEB","asset_category":"Stocks","quantity":100,"value":2731,"unrealized_pl":-348.05,"close_price":27.31},
-    {"symbol":"TME","asset_category":"Stocks","quantity":300,"value":2856,"unrealized_pl":-2481.5,"close_price":9.52},
-    {"symbol":"XPEV","asset_category":"Stocks","quantity":200,"value":2542,"unrealized_pl":-958,"close_price":12.71},
-    {"symbol":"RERE","asset_category":"Stocks","quantity":400,"value":1732,"unrealized_pl":-566,"close_price":4.33},
-    {"symbol":"TCEHY","asset_category":"Stocks","quantity":10,"value":577,"unrealized_pl":112.4,"close_price":57.7},
-    {"symbol":"TCOM","asset_category":"Stocks","quantity":20,"value":906.2,"unrealized_pl":-201.2,"close_price":45.31},
-    {"symbol":"GLD 15JAN27 272 C","asset_category":"Equity and Index Options","quantity":1,"value":10450.69,"unrealized_pl":6949.63,"close_price":104.51},
-    {"symbol":"BABA2 15JAN27 90 C","asset_category":"Equity and Index Options","quantity":1,"value":3128,"unrealized_pl":1090.95,"close_price":31.28},
-    {"symbol":"EL 15JAN27 75 C","asset_category":"Equity and Index Options","quantity":4,"value":6670.32,"unrealized_pl":128.4,"close_price":16.68},
-    {"symbol":"VALE 15JAN27 12 C","asset_category":"Equity and Index Options","quantity":4,"value":1115.52,"unrealized_pl":748.7,"close_price":2.79},
-    {"symbol":"BABA 21JAN28 160 C","asset_category":"Equity and Index Options","quantity":6,"value":8998.2,"unrealized_pl":-15301.99,"close_price":14.997},
-    {"symbol":"BABA 21JAN28 140 C","asset_category":"Equity and Index Options","quantity":1,"value":1989.32,"unrealized_pl":-1781.73,"close_price":19.89}
+    {"symbol":"BABA","asset_category":"Stocks","quantity":530,"value":61050.70,"unrealized_pl":-6449.09},
+    {"symbol":"JD","asset_category":"Stocks","quantity":600,"value":19074.00,"unrealized_pl":-211.06},
+    {"symbol":"GCARSOA1 (MXN)","asset_category":"Stocks","quantity":100,"value":866.80,"unrealized_pl":155.94},
+    {"symbol":"PDD","asset_category":"Stocks","quantity":100,"value":8571.00,"unrealized_pl":-3908.00},
+    {"symbol":"FXI","asset_category":"Stocks","quantity":200,"value":7130.00,"unrealized_pl":1686.61},
+    {"symbol":"BYDDY","asset_category":"Stocks","quantity":500,"value":5755.00,"unrealized_pl":-507.50},
+    {"symbol":"PBR","asset_category":"Stocks","quantity":200,"value":3614.00,"unrealized_pl":647.13},
+    {"symbol":"TME","asset_category":"Stocks","quantity":300,"value":2856.00,"unrealized_pl":-2481.50},
+    {"symbol":"KWEB","asset_category":"Stocks","quantity":100,"value":2731.00,"unrealized_pl":-348.05},
+    {"symbol":"XPEV","asset_category":"Stocks","quantity":200,"value":2542.00,"unrealized_pl":-958.00},
+    {"symbol":"BILI","asset_category":"Stocks","quantity":100,"value":1806.00,"unrealized_pl":-1203.93},
+    {"symbol":"RERE","asset_category":"Stocks","quantity":400,"value":1732.00,"unrealized_pl":-566.00},
+    {"symbol":"TCOM","asset_category":"Stocks","quantity":20,"value":906.20,"unrealized_pl":-201.20},
+    {"symbol":"TCEHY","asset_category":"Stocks","quantity":10,"value":577.00,"unrealized_pl":112.40},
+    {"symbol":"YOLO","asset_category":"Stocks","quantity":10,"value":25.00,"unrealized_pl":-118.21},
+    {"symbol":"KHRN.H (CAD)","asset_category":"Stocks","quantity":108,"value":3.17,"unrealized_pl":-34.25},
+    {"symbol":"GLD 15JAN27 272 C","asset_category":"Options","quantity":1,"value":10450.69,"unrealized_pl":6949.63},
+    {"symbol":"BABA 21JAN28 160 C","asset_category":"Options","quantity":6,"value":8998.20,"unrealized_pl":-15301.99},
+    {"symbol":"EL 15JAN27 75 C","asset_category":"Options","quantity":4,"value":6670.32,"unrealized_pl":128.40},
+    {"symbol":"BABA2 15JAN27 90 C","asset_category":"Options","quantity":1,"value":3128.00,"unrealized_pl":1090.95},
+    {"symbol":"BABA2 17JUN27 135 C","asset_category":"Options","quantity":2,"value":2865.04,"unrealized_pl":-4135.87},
+    {"symbol":"JD 21JAN28 32 C","asset_category":"Options","quantity":4,"value":2526.28,"unrealized_pl":-305.02},
+    {"symbol":"BABA 21JAN28 140 C","asset_category":"Options","quantity":1,"value":1989.32,"unrealized_pl":-1781.73},
+    {"symbol":"VALE 15JAN27 12 C","asset_category":"Options","quantity":4,"value":1115.52,"unrealized_pl":748.70},
+    {"symbol":"TCOM 15JAN27 60 C","asset_category":"Options","quantity":1,"value":127.50,"unrealized_pl":-1277.56},
+    {"symbol":"VALE 15JAN27 20 C","asset_category":"Options","quantity":5,"value":87.50,"unrealized_pl":-13.03}
   ],
+
+  plan: {
+    comps: [
+      { name: "BABA", trailing: "17.7x", forward: 12.7, evEbitda: "14.6x", evRev: "EV/Rev 1.72x", mcap: "$276.1bn" },
+      { name: "JD", trailing: "22.5x", forward: 7.5, evEbitda: "5.3x", evRev: "EV/Rev 0.14x", mcap: "$42.9bn" },
+      { name: "PDD", trailing: "8.9x", forward: 7.0, evEbitda: "3.9x", evRev: "EV/Rev 0.88x", mcap: "$122.0bn" },
+      { name: "Tencent", trailing: "16.7x", forward: 12.3, evEbitda: "14.4x", evRev: "P/S 5.5x", mcap: "HK$4,202bn" },
+      { name: "AMZN", trailing: "27.7x", forward: 23.3, evEbitda: "16.5x", evRev: "P/S 3.3x", mcap: "$2.48T" },
+      { name: "META", trailing: "21.6x", forward: 16.0, evEbitda: "13.8x", evRev: "P/S 7.0x", mcap: "$1.51T" },
+      { name: "GOOGL", trailing: "16.4x", forward: 22.7, evEbitda: "23.0x", evRev: "P/S 9.2x", mcap: "$4.08T" },
+      { name: "EBAY", trailing: "26.2x", forward: 17.4, evEbitda: "18.6x", evRev: "P/S 4.5x", mcap: "$52.1B" }
+    ],
+    discounts: [
+      { label: "BABA vs AMZN", value: "−45.5%", sub: "fwd P/E 12.7x vs 23.3x" },
+      { label: "JD vs AMZN", value: "−67.8%", sub: "7.5x fwd · 0.14x EV/Rev · 3.2% yield" },
+      { label: "PDD vs AMZN", value: "−67.9%", sub: "3.9x EV/EBITDA · ~CNY 417bn net cash" },
+      { label: "Tencent vs META", value: "−23.1%", sub: "12.3x fwd · 34.3% op margin" }
+    ],
+    wealth: {
+      total: 184230, ibkr_nav: 92916, mx_value: 91314, combined_cost: 143574,
+      combined_pnl: 40656, combined_pnl_pct: 28.3,
+      baba_exposure: 154667, baba_pct: 84.0,
+      china_em: 220702, china_em_pct: 119.8,
+      jd_exposure: 28775, debit: 64081
+    },
+    targets: [
+      ["IBKR margin debit", "$64,081 (69.0% of NAV)", "≤ $24,150 by 2026-10-31 · ≤ $23,229 (25% hard cap)", "2026-12-31"],
+      ["Combined BABA exposure", "$154,667 (84.0%)", "≤ 60% by 2027-03-31 · ≤ 40% on strength triggers", "trigger-based"],
+      ["Combined China/EM", "119.8% of wealth", "≤ 100% by 2026-10-31 · ≤ 80% by mid-2027", "phased"],
+      ["Annual new options premium", "$33,727 pace (36.3% of NAV)", "≤ $4,646 (5% of NAV) per year", "immediate"],
+      ["IBKR options market value", "$37,958 (20.6% of wealth)", "≤ $27,634 (15% of wealth)", "2026-09-30"],
+      ["Excess liquidity (IBKR)", "not monitored", "≥ 30% of NAV at all times", "immediate"]
+    ],
+    debit_path: [
+      ["Now", 64081, "69.0% of NAV"],
+      ["Step 1 · sell tail", 51264, "55.2%"],
+      ["Step 2 · core-adjacent", 24150, "26.0%"],
+      ["Step 3 · covered calls", 23229, "25.0% hard cap"]
+    ],
+    step1: [
+      ["BILI", 100, 1806, -1204], ["TME", 300, 2856, -2482], ["XPEV", 200, 2542, -958],
+      ["KWEB", 100, 2731, -348], ["RERE", 400, 1732, -566], ["TCOM (stock)", 20, 906, -201],
+      ["KHRN.H", 108, 4, -47], ["YOLO", 10, 25, -118]
+    ],
+    step2: [
+      ["Sell PDD 100 sh — thesis kept via complex, not the line", 8571],
+      ["Sell BYDDY 500 sh — non-core, no thesis", 5755],
+      ["Sell JD 200 of 600 sh — dedupe vs Mexican account", 6358],
+      ["Sell BABA2 17JUN27 135C ×2 — theta bleeder (−59%)", 2865],
+      ["Sell FXI 100 of 200 sh — bank +$1,687, cut beta overlap", 3565]
+    ],
+    ladder: [
+      [1, "$125", 165, "~$20,600", "~73%"],
+      [2, "$140", 165, "~$23,100", "~60%"],
+      [3, "$155", 165, "~$25,600", "~46%"],
+      [4, "$175", 168, "~$29,400", "≈40% (incl. IBKR trim)"]
+    ],
+    rules: [
+      ["No margin-funded purchases, ever.", "The $64,081 debit was built in five months buying into a −36% year. Hard cap: debit ≤ 25% of NAV; purchases only from settled cash."],
+      ["Deposit policy.", "New deposits split 50/50 between debit reduction (until $0) and cash. No deposit may fund options premium."],
+      ["Anti-averaging-down rule.", "Add only at ≥ +20% above the most recent add price — pyramiding into strength, never into weakness. Would have blocked every 2026 tranche."],
+      ["Margin firewall.", "Excess liquidity ≥ 30% of NAV, checked weekly (daily if the sleeve moves >5%). IBKR liquidates without margin calls; this rule is the only margin call the account will ever get."],
+      ["Circuit-breaker.", "NAV −20% ($74,333) → de-lever to zero debit immediately. Combined wealth −30% ($128,961) → all option buying halts for 12 months."],
+      ["Profit-taking ladder.", "Sell 20% of remaining BABA core at +50% ($173), +100% ($230), +200% ($345) — mechanically; ≥50% of proceeds to cash/debit."],
+      ["One-theme rule.", "Combined China/EM ≤ 100% of wealth at all times, measured monthly. Current: 119.8%. This rule alone would have prevented the 2026 margin escalation."]
+    ],
+    shock: {
+      labels: ["NAV after −30% sleeve shock", "Debit/NAV after shock", "Annual fixed carry drag"],
+      pre: [52607, 121.8, 6300],
+      post: [64513, 37.4, 900]
+    }
+  },
+
   finantech: {
     overview: { total_cost_basis: 1452933.67, total_value: 1591823.07, total_unrealized_pl: 138889.40, return_pct: 9.6, num_positions: 5 },
     positions: [
       {"symbol":"BABAN.MX","quantity":663,"avg_cost":1815.08,"current_price":2015.00,"cost_basis":1203397.91,"value":1335945.00,"unrealized_pl":132546.64,"return_pct":11.0,
        "trades":[
-         {"date":"20240624","qty":150,"price":1342.50,"note":"First 200k"},
-         {"date":"20240701","qty":75,"price":1328.00,"note":"3"},
-         {"date":"20240710","qty":75,"price":1335.27,"note":"4"},
-         {"date":"20250225","qty":19,"price":2650.00,"note":""},
-         {"date":"20250314","qty":19,"price":2773.55,"note":""},
-         {"date":"20250320","qty":36,"price":2761.80,"note":""},
-         {"date":"20260227","qty":80,"price":2488.00,"note":""},
-         {"date":"20260611","qty":209,"price":1917.54,"note":""}
+         {"date":"20240624","qty":150,"price":1342.50},{"date":"20240701","qty":75,"price":1328.00},
+         {"date":"20240710","qty":75,"price":1335.27},{"date":"20250225","qty":19,"price":2650.00},
+         {"date":"20250314","qty":19,"price":2773.55},{"date":"20250320","qty":36,"price":2761.80},
+         {"date":"20260227","qty":80,"price":2488.00},{"date":"20260611","qty":209,"price":1917.54}
        ]},
       {"symbol":"JDN.MX","quantity":302,"avg_cost":600.00,"current_price":560.00,"cost_basis":181200.00,"value":169120.00,"unrealized_pl":-12078.81,"return_pct":-6.7,
-       "trades":[
-         {"date":"20240807","qty":205,"price":490.00,"note":"1"},
-         {"date":"20250225","qty":37,"price":812.13,"note":""},
-         {"date":"20250314","qty":60,"price":845.00,"note":""}
-       ]},
+       "trades":[{"date":"20240807","qty":205,"price":490.00},{"date":"20250225","qty":37,"price":812.13},{"date":"20250314","qty":60,"price":845.00}]},
       {"symbol":"CEMEXCPO.MX","quantity":1610,"avg_cost":11.54,"current_price":20.95,"cost_basis":18579.40,"value":33729.50,"unrealized_pl":15150.10,"return_pct":81.5,
-       "trades":[{"date":"20241011","qty":1610,"price":11.54,"note":""}]},
+       "trades":[{"date":"20241011","qty":1610,"price":11.54}]},
       {"symbol":"GCARSOA1.MX","quantity":153,"avg_cost":120.70,"current_price":151.69,"cost_basis":18467.10,"value":23208.57,"unrealized_pl":4741.47,"return_pct":25.7,
-       "trades":[{"date":"20241011","qty":153,"price":120.70,"note":""}]},
+       "trades":[{"date":"20241011","qty":153,"price":120.70}]},
       {"symbol":"EL.MX","quantity":21,"avg_cost":1490.00,"current_price":1420.00,"cost_basis":31290.00,"value":29820.00,"unrealized_pl":-1470.00,"return_pct":-4.7,
-       "trades":[{"date":"20250325","qty":21,"price":1490.00,"note":""}]}
+       "trades":[{"date":"20250325","qty":21,"price":1490.00}]}
     ]
-  },
-  fx_rate: 17.5
+  }
 };
 
 // ===== STATE =====
 let state = {
-  fx: RAW.fx_rate,
   activeTab: 'combined',
-  sort: { col: null, dir: 1 },
   ibkrSort: { col: 'value', dir: -1 },
   ftSort: { col: 'value', dir: -1 },
-  combinedSort: { col: 'value', dir: -1 },
-  search: { ibkr: '', finantech: '', combined: '' },
-  yearFilter: 'all'
+  combinedSort: { col: 'value', dir: -1 }
 };
 
 // ===== UTILS =====
@@ -709,219 +901,186 @@ const fmtMXN = (n) => {
 const fmtPct = (n) => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
 const sign = (n) => n >= 0 ? 'pos' : 'neg';
 
-// ===== CALCULATED DATA =====
-function getCalculated() {
-  const ibkrValue = RAW.asset_allocation.Stocks + RAW.asset_allocation['Equity and Index Options'];
-  const ibkrUnrealized = RAW.overview.total_unrealized_pnl;
-  const ibkrRealized = RAW.overview.total_realized_pnl;
-  const ibkrCostBasis = RAW.overview.net_deposits + RAW.overview.total_fees + RAW.overview.total_interest;
-
-  const ftValueMXN = RAW.finantech.overview.total_value;
-  const ftValueUSD = ftValueMXN / state.fx;
-  const ftUnrealizedMXN = RAW.finantech.overview.total_unrealized_pl;
-  const ftUnrealizedUSD = ftUnrealizedMXN / state.fx;
-  const ftCostBasisMXN = RAW.finantech.overview.total_cost_basis;
-  const ftCostBasisUSD = ftCostBasisMXN / state.fx;
-
-  const combinedValue = ibkrValue + ftValueUSD;
-  const combinedUnrealized = ibkrUnrealized + ftUnrealizedUSD;
-  const combinedCostBasis = ibkrCostBasis + ftCostBasisUSD;
-
-  // Build combined positions list
-  const ibkrPositions = RAW.latest_positions.map(p => ({
-    symbol: p.symbol,
-    portfolio: 'IBKR',
-    quantity: p.quantity,
-    value: p.value,
-    unrealized: p.unrealized_pl,
-    return_pct: ((p.unrealized_pl / (p.value - p.unrealized_pl)) * 100) || 0,
-    asset_category: p.asset_category,
-    close_price: p.close_price
-  }));
-
-  const ftPositions = RAW.finantech.positions.map(p => ({
-    symbol: p.symbol,
-    portfolio: 'Finantech',
-    quantity: p.quantity,
-    value: p.value / state.fx,
-    unrealized: p.unrealized_pl / state.fx,
-    return_pct: p.return_pct,
-    asset_category: 'Stocks',
-    close_price: p.current_price,
-    trades: p.trades
-  }));
-
-  return { ibkrValue, ibkrUnrealized, ibkrRealized, ibkrCostBasis,
-           ftValueUSD, ftUnrealizedUSD, ftCostBasisUSD, ftValueMXN, ftUnrealizedMXN, ftCostBasisMXN,
-           combinedValue, combinedUnrealized, combinedCostBasis,
-           ibkrPositions, ftPositions };
-}
-
-// ===== RENDER FUNCTIONS =====
+// ===== RENDER: COMBINED =====
 function renderCombined() {
-  const d = getCalculated();
-  const combinedReturn = ((d.combinedUnrealized / d.combinedCostBasis) * 100);
-  const ibkrWeight = (d.ibkrValue / d.combinedValue * 100).toFixed(1);
-  const ftWeight = (d.ftValueUSD / d.combinedValue * 100).toFixed(1);
+  const fx = RAW.fx_rate;
+  const ibkrValue = RAW.headline.nav;
+  const ibkrPnl = RAW.headline.lifetime_pnl;
+  const ibkrCost = RAW.headline.net_deposits;
+  const ftValueUSD = RAW.finantech.overview.total_value / fx;
+  const ftUnrealizedUSD = RAW.finantech.overview.total_unrealized_pl / fx;
+  const ftCostUSD = RAW.finantech.overview.total_cost_basis / fx;
+  const combinedValue = ibkrValue + ftValueUSD;
+  const combinedPnl = ibkrPnl + ftUnrealizedUSD;
+  const combinedCost = ibkrCost + ftCostUSD;
+  const combinedReturn = combinedPnl / combinedCost * 100;
+  const ibkrWeight = (ibkrValue / combinedValue * 100).toFixed(1);
+  const ftWeight = (ftValueUSD / combinedValue * 100).toFixed(1);
 
-  document.getElementById('combinedTotal').textContent = fmtK(d.combinedValue);
-  document.getElementById('combinedTotal').className = 'big-number ' + sign(d.combinedUnrealized);
+  document.getElementById('combinedTotal').textContent = fmtK(combinedValue);
+  document.getElementById('combinedTotal').className = 'big-number ' + sign(combinedPnl);
+  document.getElementById('fxNote').textContent = 'finantech converted at MXN/USD ' + fx.toFixed(1) + ' · 2026-07-28';
 
   const cards = [
-    { label: 'IBKR Value', value: d.ibkrValue, sub: 'USD account', fmt: fmt },
-    { label: 'Finantech Value', value: d.ftValueUSD, sub: `${fmtMXN(d.ftValueMXN)} @ ${state.fx.toFixed(1)}`, fmt: fmt },
-    { label: 'Combined Cost', value: d.combinedCostBasis, sub: 'total invested', fmt: fmt },
-    { label: 'Combined Unrealized', value: d.combinedUnrealized, sub: 'open positions', fmt: fmt },
-    { label: 'IBKR Realized', value: d.ibkrRealized, sub: 'lifetime closed P&L', fmt: fmt },
-    { label: 'Combined Return', value: fmtPct(combinedReturn), sub: 'unrealized / cost basis', isText: true }
+    { label: 'IBKR Equity (NAV)', value: ibkrValue, sub: 'net of $64.1k margin debit' },
+    { label: 'Finantech Value', value: ftValueUSD, sub: fmtMXN(RAW.finantech.overview.total_value) },
+    { label: 'Capital Invested', value: combinedCost, sub: 'net deposits + FT cost basis' },
+    { label: 'Combined P&L', value: combinedPnl, sub: 'IBKR lifetime + FT unrealized' },
+    { label: 'IBKR Lifetime Return', value: '+' + RAW.headline.mwr_pct + '%', sub: 'money-weighted', isText: true, cls: 'pos' },
+    { label: 'Finantech Return', value: '+' + RAW.finantech.overview.return_pct + '%', sub: 'unrealized', isText: true, cls: 'pos' }
   ];
   document.getElementById('combinedCards').innerHTML = cards.map(c => `
     <div class="card">
       <div class="card-label">${c.label}</div>
-      <div class="card-value ${c.isText ? sign(d.combinedUnrealized) : sign(c.value)}">${c.isText ? c.value : (c.fmt || fmt)(c.value)}</div>
+      <div class="card-value ${c.isText ? (c.cls || '') : sign(c.value)}">${c.isText ? c.value : fmt(c.value)}</div>
       <div class="card-sub">${c.sub}</div>
     </div>
   `).join('');
 
-  const ibkrReturn = ((d.ibkrUnrealized / d.ibkrCostBasis) * 100).toFixed(1);
   document.getElementById('combinedInsight').innerHTML = `
-    <strong>Cross-portfolio view:</strong> Combined worth <strong>${fmtK(d.combinedValue)}</strong> USD. IBKR <strong>${ibkrWeight}%</strong> · Finantech <strong>${ftWeight}%</strong>. Cost basis ${fmtK(d.combinedCostBasis)}, unrealized <strong style="color:var(--${d.combinedUnrealized >= 0 ? 'positive' : 'negative'})">${d.combinedUnrealized >= 0 ? '+' : ''}${fmtK(d.combinedUnrealized)}</strong> (${fmtPct(combinedReturn)}). IBKR unrealized return ${ibkrReturn}%, Finantech ${RAW.finantech.overview.return_pct}%.
+    <strong>Cross-portfolio view:</strong> Combined worth <strong>${fmtK(combinedValue)}</strong> USD — IBKR <strong>${ibkrWeight}%</strong> · Finantech <strong>${ftWeight}%</strong>. Combined P&amp;L <strong style="color:var(--${combinedPnl >= 0 ? 'positive' : 'negative'})">${combinedPnl >= 0 ? '+' : ''}${fmtK(combinedPnl)}</strong> (${fmtPct(combinedReturn)} on ${fmtK(combinedCost)} invested). Note: IBKR NAV is equity <em>after</em> the $64.1k margin debit; gross long exposure there is ${fmtK(RAW.book.gross)} (1.69× NAV).
   `;
 
-  // Combined allocation chart
+  window.charts = window.charts || [];
   if (window.combinedAllocChart) window.combinedAllocChart.destroy();
   window.combinedAllocChart = new Chart(document.getElementById('combinedAllocChart'), {
     type: 'doughnut',
     data: {
-      labels: ['IBKR (USD)', 'Finantech (MXN→USD)'],
-      datasets: [{ data: [d.ibkrValue, d.ftValueUSD], backgroundColor: ['rgba(14,165,233,0.7)', 'rgba(245,158,11,0.7)'], borderWidth: 0, hoverOffset: 6 }]
+      labels: ['IBKR equity (USD)', 'Finantech (MXN→USD)'],
+      datasets: [{ data: [ibkrValue, ftValueUSD], backgroundColor: ['rgba(14,165,233,0.7)', 'rgba(245,158,11,0.7)'], borderWidth: 0, hoverOffset: 6 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '65%',
       plugins: {
         legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 15 } },
-        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmtK(c.parsed)} (${(c.parsed / d.combinedValue * 100).toFixed(1)}%)` } }
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmtK(c.parsed)} (${(c.parsed / combinedValue * 100).toFixed(1)}%)` } }
       }
     }
   });
 
-  // Combined table
-  let allPositions = [...d.ibkrPositions, ...d.ftPositions];
-  if (state.search.combined) {
-    const q = state.search.combined.toLowerCase();
-    allPositions = allPositions.filter(p => p.symbol.toLowerCase().includes(q) || p.portfolio.toLowerCase().includes(q));
-  }
-  allPositions = sortData(allPositions, state.combinedSort);
+  // Combined table: IBKR positions (USD) + Finantech (converted)
+  const ibkrPositions = RAW.latest_positions.map(p => ({ symbol: p.symbol, portfolio: 'IBKR', value: p.value, unrealized: p.unrealized_pl, trades: null }));
+  const ftPositions = RAW.finantech.positions.map(p => ({ symbol: p.symbol, portfolio: 'Finantech', value: p.value / fx, unrealized: p.unrealized_pl / fx, trades: p.trades }));
+  let allPositions = [...ibkrPositions, ...ftPositions];
+  allPositions = sortData(allPositions.map(p => ({...p, weight: p.value / combinedValue * 100})), state.combinedSort);
 
-  const tbody = document.querySelector('#combinedTable tbody');
-  tbody.innerHTML = allPositions.map(p => {
-    const weight = (p.value / d.combinedValue * 100).toFixed(1);
-    return `<tr onclick="toggleDetail(this, '${p.symbol}', '${p.portfolio}')">
+  document.querySelector('#combinedTable tbody').innerHTML = allPositions.map(p => `
+    <tr>
       <td>${p.symbol}</td>
       <td style="text-align:center"><span style="font-size:0.65rem;padding:0.15rem 0.4rem;background:var(--card-bg);border:1px solid var(--line);">${p.portfolio}</span></td>
       <td style="text-align:right">${fmt(p.value)}</td>
       <td class="${sign(p.unrealized)}" style="text-align:right">${fmt(p.unrealized)}</td>
-      <td style="text-align:right">${weight}%</td>
+      <td style="text-align:right">${p.weight.toFixed(1)}%</td>
     </tr>
-    ${p.trades ? renderTradesRow(p) : ''}`;
-  }).join('');
-}
-
-function renderTradesRow(p) {
-  const tradesHtml = p.trades.map(t => `
-    <div class="detail-item">
-      <div class="detail-label">${t.date} · ${t.qty} @ $${t.price.toLocaleString()}</div>
-      <div class="detail-val">${t.note || 'Buy'}</div>
-    </div>
   `).join('');
-  return `<tr class="row-detail" data-parent="${p.symbol}"><td colspan="5"><div class="detail-grid">${tradesHtml}</div></td></tr>`;
 }
 
-window.toggleDetail = function(row, symbol, portfolio) {
-  const detail = row.nextElementSibling;
-  if (detail && detail.classList.contains('row-detail')) {
-    detail.classList.toggle('show');
-    row.classList.toggle('expanded');
-  }
-};
-
+// ===== RENDER: IBKR =====
 function renderIBKR() {
-  const ov = RAW.overview;
+  const h = RAW.headline;
   const cards = [
-    { label: 'Realized P&L', value: ov.total_realized_pnl, sub: 'closed positions' },
-    { label: 'Unrealized P&L', value: ov.total_unrealized_pnl, sub: 'open positions' },
-    { label: 'Combined P&L', value: ov.combined_pnl, sub: 'realized + unrealized' },
-    { label: 'Net Deposits', value: ov.net_deposits, sub: 'deposits - withdrawals' },
-    { label: 'Total Dividends', value: ov.total_dividends, sub: 'income received' },
-    { label: 'Total Interest', value: ov.total_interest, sub: 'margin / cash interest' },
-    { label: 'Total Fees', value: ov.total_fees, sub: 'commissions + other' },
-    { label: 'Win Rate', value: (ov.winning_symbols / (ov.winning_symbols + ov.losing_symbols) * 100).toFixed(1) + '%', sub: `${ov.winning_symbols}W / ${ov.losing_symbols}L`, isText: true }
+    { label: 'Equity (NAV)', value: h.nav, sub: 'as of 2026-07-28' },
+    { label: 'Net Deposits', value: h.net_deposits, sub: 'lifetime contributions' },
+    { label: 'Lifetime P&L (MWR)', value: h.lifetime_pnl, sub: '+' + h.mwr_pct + '% on net capital' },
+    { label: 'Cumulative TWR', value: h.twr_cum_pct + '%', sub: 'deposit timing stripped out', isText: true, cls: 'neg' },
+    { label: 'Peak NAV (end-2025)', value: h.peak_nav, sub: h.drawdown_from_peak_pct + '% from peak' },
+    { label: 'Gross Leverage', value: h.gross_leverage + '×', sub: 'exposure / NAV', isText: true },
+    { label: 'Margin Debit', value: -h.debit, sub: h.debit_to_equity_pct + '% of equity' },
+    { label: 'BABA Complex', value: '84.0%', sub: 'of NAV in one issuer', isText: true, cls: 'neg' }
   ];
   document.getElementById('summaryCards').innerHTML = cards.map(c => `
     <div class="card">
       <div class="card-label">${c.label}</div>
-      <div class="card-value ${c.isText ? (ov.combined_pnl >= 0 ? 'pos' : 'neg') : sign(c.value)}">${c.isText ? c.value : fmt(c.value)}</div>
+      <div class="card-value ${c.isText ? (c.cls || '') : sign(c.value)}">${c.isText ? c.value : fmt(c.value)}</div>
       <div class="card-sub">${c.sub}</div>
     </div>
   `).join('');
 
-  const totalReturn = ((ov.combined_pnl / ov.net_deposits) * 100).toFixed(1);
-  const bestYear = Object.entries(RAW.pnl_by_year).sort((a,b) => b[1]-a[1])[0];
-  const worstYear = Object.entries(RAW.pnl_by_year).sort((a,b) => a[1]-b[1])[0];
-  const optionsPct = ((ov.options_realized_pnl / ov.total_realized_pnl) * 100).toFixed(0);
   document.getElementById('insightBox').innerHTML = `
-    <strong>The bottom line:</strong> Across ${ov.total_trades} trades over 6.5 years, you've realized <strong style="color:var(--positive)">${fmt(ov.total_realized_pnl)}</strong> in closed positions but hold <strong style="color:var(--negative)">${fmt(ov.total_unrealized_pnl)}</strong> in unrealized losses. Combined return on net deposits is <strong>${totalReturn}%</strong>.<br><br>
-    <strong>Key observations:</strong> ${bestYear[0]} best at ${fmt(bestYear[1])}; ${worstYear[0]} worst at ${fmt(worstYear[1])}. Options generated ${optionsPct}% of realized gains. Interest costs total ${fmt(ov.total_interest)}.
+    <strong>Post-mortem verdict:</strong> In dollars the account is ahead — <strong style="color:var(--positive)">${fmt(h.lifetime_pnl)}</strong> on ${fmt(h.net_deposits)} of net deposits (+54.2%). But the trading itself lost money: chain-linked time-weighted return is <strong style="color:var(--negative)">−15.67%</strong>. Had all ${fmtK(h.net_deposits)} been deployed at inception, it would be worth <strong>${fmtK(h.counterfactual)}</strong> today. The positive dollar result is a deposit-timing artifact: 77.7% of capital arrived by end-2022, and the single +214% year (2025) ran on a mid-sized base with zero deposits. At the 2022 trough the account retained <strong>25.8¢ per deposited dollar</strong> — and survived only because deposits stopped and there was no margin debt. Neither condition holds today.
   `;
 
-  // Winners/Losers
-  document.querySelector('#winnersTable tbody').innerHTML = RAW.top_winners.map(([s,v]) =>
+  document.getElementById('mwrTwrInsight').innerHTML = `
+    <strong>Two regimes:</strong> 2020–2022 — ${fmtK(46800)} deposited (77.7% of lifetime capital) into the worst performance years; NAV ended 2022 at ${fmtK(12060.92)}, below the 2020 close despite all that inflow. 2023–2026 — deposits nearly stopped; NAV was driven purely by market results, peaking at ${fmtK(144235.33)} end-2025 before retracing to ${fmtK(92916.30)}. 2025 alone (+${fmtK(98571.44)} mark-to-market) exceeds the combined MTM of all other periods (−${fmtK(63530.15)}) and single-handedly turns the lifetime dollar figure positive.
+  `;
+
+  document.getElementById('optionsInsight').innerHTML = `
+    <strong>Every extreme outcome came from the options book.</strong> Options were 81.0% of the 2022 realized loss and 94.7% of the 2025 realized gain; lifetime option realized P&amp;L is +$54,973 vs +$7,700 for stocks, which never left the narrow band of −$3k to +$4k per year. Realized P&amp;L is a lagging, actively managed indicator here — unrealized P&amp;L is the leading one: 2021 realized +$1,911 while parking −$21,501 of unrealized losses, and 2026 repeats the signature (+$9,291 realized, −$28,352 unrealized in the re-loaded BABA book). Expired options burned <strong style="color:var(--negative)">−$69,343</strong> across 52 contracts (2020–2024) — 2.12× the account's entire lifetime net profit. Nine BABA contracts alone: −$21,974.
+  `;
+
+  document.getElementById('thesisInsight').innerHTML = `
+    <strong>Thesis audit (multipolar China/EM vs "inflated US"):</strong> The thesis sleeve earned <strong>+$608.86 lifetime — statistically zero</strong>, 1.9% of the net dollar result. The profits came from outside the thesis: NFLX +$22.9k, GLD +$17.1k, AAPL +$14.0k, TQQQ +$10.7k, QQQ +$2.3k — a combined +$66.9k, 2.05× net lifetime P&amp;L. The closest thing to an anti-mega-cap bet, the long ARK/growth complex, was the single largest destroyer of capital at −$39.7k. 2025 was one beta event in one name — five adjusted BABA1 call sales crystallized +$56,710 (79.9% of the year's options realized) — not a repeatable process: BABA was profitable in exactly <strong>one of seven</strong> calendar periods.
+  `;
+
+  document.getElementById('riskInsight').innerHTML = `
+    <strong>Current risk state:</strong> The book is 26 lines but one trade — China/EM is 144.6% of NAV ($134.4k) and the BABA complex alone 84.0% ($78.0k), funded by a −$64,081 margin debit. Interest is annualizing at ≈2.5% of NAV (−$1,356 in 7 months of 2026); the open BABA calls have already lost 54.2% of premium paid ($37.1k cost → $17.0k). NAV is consumed from two directions — theta and interest — before any directional outcome. IBKR issues <strong>no margin calls</strong>: breaches are liquidated automatically. A −30% sleeve move puts debit/NAV at 121.8% — forced-liquidation territory. The Feb–Mar 2026 reload repeated the 2020–2024 averaging-down pattern at ≈3× the premium velocity, this time on borrowed money: 400 shares @ $135.69 avg ($54.3k) + $19.7k of new 2028 LEAPS.
+  `;
+
+  // Risk cards
+  const b = RAW.book;
+  const riskCards = [
+    { label: 'China/EM Sleeve', value: '144.6%', sub: fmtK(b.china_em) + ' of NAV', cls: 'neg' },
+    { label: 'Gross Exposure', value: '1.69×', sub: fmtK(b.gross) + ' long' },
+    { label: 'Debit / Equity', value: '68.9%', sub: fmt(-b.cash) + ' borrowed', cls: 'neg' },
+    { label: 'Open BABA Calls', value: '−54.2%', sub: 'premium lost, theta running', cls: 'neg' },
+    { label: 'Interest Run-Rate', value: '≈2.5%', sub: 'of NAV per year', cls: 'neg' },
+    { label: 'Cash Line', value: b.cash, sub: 'from +$13.1k in Jan 2026' }
+  ];
+  document.getElementById('riskCards').innerHTML = riskCards.map(c => `
+    <div class="card">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value ${c.cls || (typeof c.value === 'number' ? sign(c.value) : '')}">${typeof c.value === 'number' ? fmt(c.value) : c.value}</div>
+      <div class="card-sub">${c.sub}</div>
+    </div>
+  `).join('');
+
+  // Scenario table
+  document.querySelector('#scenarioTable tbody').innerHTML = RAW.scenarios.map(s => `
+    <tr>
+      <td>${s[0]}</td>
+      <td class="${s[1] === null ? '' : 'neg'}" style="text-align:right">${s[1] === null ? '—' : fmtK(s[1])}</td>
+      <td style="text-align:right">${fmtK(s[2])}</td>
+      <td class="${s[3] === null ? '' : 'neg'}" style="text-align:right">${s[3] === null ? '—' : s[3] + '%'}</td>
+      <td style="text-align:right">${s[4]}</td>
+      <td style="text-align:right">${s[5]}</td>
+    </tr>
+  `).join('');
+
+  // Winners / losers
+  document.querySelector('#winnersTable tbody').innerHTML = RAW.winners.map(([s,v]) =>
     `<tr><td>${s}</td><td class="pos" style="text-align:right">${fmt(v)}</td></tr>`
   ).join('');
-  document.querySelector('#losersTable tbody').innerHTML = RAW.top_losers.map(([s,v]) =>
+  document.querySelector('#losersTable tbody').innerHTML = RAW.losers.map(([s,v]) =>
     `<tr><td>${s}</td><td class="neg" style="text-align:right">${fmt(v)}</td></tr>`
   ).join('');
 
-  // Trade stats
-  const tradeCards = [
-    { label: 'Total Trades', value: ov.total_trades.toLocaleString(), sub: 'all-time' },
-    { label: 'Stock Trades', value: ov.stock_trades.toLocaleString(), sub: `${(ov.stock_trades/ov.total_trades*100).toFixed(0)}%` },
-    { label: 'Option Trades', value: ov.option_trades.toLocaleString(), sub: `${(ov.option_trades/ov.total_trades*100).toFixed(0)}%` },
-    { label: 'Symbols', value: ov.total_symbols_traded.toLocaleString(), sub: 'unique tickers' },
-    { label: 'Options P&L', value: fmt(ov.options_realized_pnl), sub: `${optionsPct}% of realized` },
-    { label: 'Stocks P&L', value: fmt(ov.stocks_realized_pnl), sub: `${(100-optionsPct).toFixed(0)}% of realized` }
-  ];
-  document.getElementById('tradeStats').innerHTML = tradeCards.map(c => `
-    <div class="card"><div class="card-label">${c.label}</div><div class="card-value">${c.value}</div><div class="card-sub">${c.sub}</div></div>
-  `).join('');
+  renderIBKRPositions();
 }
 
 function renderIBKRPositions() {
-  let positions = [...RAW.latest_positions];
-  if (state.search.ibkr) {
-    const q = state.search.ibkr.toLowerCase();
-    positions = positions.filter(p => p.symbol.toLowerCase().includes(q));
-  }
-  positions = sortData(positions.map(p => ({...p, return_pct: ((p.unrealized_pl/(p.value-p.unrealized_pl))*100)||0})), state.ibkrSort);
-
+  let positions = sortData(
+    RAW.latest_positions.map(p => ({...p, qty: p.quantity, unrealized: p.unrealized_pl})),
+    state.ibkrSort
+  );
   document.querySelector('#positionsTable tbody').innerHTML = positions.map(p => `
     <tr>
       <td>${p.symbol}</td>
-      <td>${p.quantity}</td>
+      <td>${p.qty}</td>
       <td style="text-align:right">${fmt(p.value)}</td>
-      <td class="${sign(p.unrealized_pl)}" style="text-align:right">${fmt(p.unrealized_pl)}</td>
+      <td class="${sign(p.unrealized)}" style="text-align:right">${fmt(p.unrealized)}</td>
     </tr>
   `).join('');
 }
 
+// ===== RENDER: FINANTECH =====
 function renderFinantech() {
   const ft = RAW.finantech;
   const ftOv = ft.overview;
   const ftCards = [
     { label: 'Cost Basis', value: ftOv.total_cost_basis, sub: 'total invested', fmt: fmtMXN },
-    { label: 'Current Value', value: ftOv.total_value, sub: 'mark-to-market', fmt: fmtMXN },
+    { label: 'Current Value', value: ftOv.total_value, sub: '2026-07-28 marks', fmt: fmtMXN },
     { label: 'Unrealized P&L', value: ftOv.total_unrealized_pl, sub: 'open positions', fmt: fmtMXN },
-    { label: 'Return', value: ftOv.return_pct + '%', sub: 'since inception', isText: true }
+    { label: 'Return', value: '+' + ftOv.return_pct + '%', sub: 'since inception', isText: true }
   ];
   document.getElementById('finantechCards').innerHTML = ftCards.map(c => `
     <div class="card">
@@ -934,27 +1093,118 @@ function renderFinantech() {
   const ftBest = ft.positions.reduce((a,b) => a.return_pct > b.return_pct ? a : b);
   const ftWorst = ft.positions.reduce((a,b) => a.return_pct < b.return_pct ? a : b);
   document.getElementById('finantechInsight').innerHTML = `
-    <strong>Finantech:</strong> Up <strong style="color:var(--positive)">${ftOv.return_pct}%</strong> with ${fmtMXN(ftOv.total_unrealized_pl)} unrealized on ${fmtMXN(ftOv.total_cost_basis)} invested. Best: <strong>${ftBest.symbol}</strong> +${ftBest.return_pct}%. Worst: <strong>${ftWorst.symbol}</strong> ${ftWorst.return_pct}%. BABAN.MX is ~84% of portfolio — concentration risk.
+    <strong>Finantech:</strong> Up <strong style="color:var(--positive)">${ftOv.return_pct}%</strong> with ${fmtMXN(ftOv.total_unrealized_pl)} unrealized on ${fmtMXN(ftOv.total_cost_basis)} invested. Best: <strong>${ftBest.symbol}</strong> +${ftBest.return_pct}%. Worst: <strong>${ftWorst.symbol}</strong> ${ftWorst.return_pct}%. BABAN.MX is ~84% of the account — the same single-issuer concentration as the IBKR book.
   `;
-}
 
-function renderFinantechPositions() {
-  let positions = [...RAW.finantech.positions];
-  if (state.search.finantech) {
-    const q = state.search.finantech.toLowerCase();
-    positions = positions.filter(p => p.symbol.toLowerCase().includes(q));
-  }
-  positions = sortData(positions, state.ftSort);
-
+  let positions = sortData([...ft.positions], state.ftSort);
   document.querySelector('#finantechTable tbody').innerHTML = positions.map(p => `
-    <tr onclick="toggleDetail(this, '${p.symbol}', 'Finantech')">
+    <tr>
       <td>${p.symbol}</td>
       <td>${p.quantity.toLocaleString()}</td>
       <td style="text-align:right">${fmtMXN(p.value)}</td>
       <td class="${sign(p.return_pct)}" style="text-align:right">${fmtPct(p.return_pct)}</td>
     </tr>
-    ${renderTradesRow(p)}
   `).join('');
+}
+
+// ===== RENDER: BABA PLAN =====
+function renderPlan() {
+  const p = RAW.plan;
+  const w = p.wealth;
+
+  document.getElementById('planVerdict').innerHTML = `
+    <strong>Audit verdict:</strong> the cheapness claim is <strong>factually grounded</strong> — the China complex trades at 20–70% discounts to Western comps, with JD and PDD at single-digit multiples backed by net cash near half of market cap. Keep the thesis; discard its two corollaries: (a) cheapness limits downside — refuted by BABA's <strong>52.3% peak-to-trough drawdown within the last 12 months</strong> ($192.67 → $91.99; now $115.19) while already cheap on every multiple; (b) the re-rating is imminent enough to finance with leverage — refuted by <strong>one profitable BABA year out of seven</strong> at a cost of ~$48k of interim losses before the single payoff. Being right about value and being paid for it are separated by a timing variable you do not control.
+  `;
+
+  document.getElementById('discountCards').innerHTML = p.discounts.map(d => `
+    <div class="card">
+      <div class="card-label">${d.label}</div>
+      <div class="card-value pos">${d.value}</div>
+      <div class="card-sub">${d.sub}</div>
+    </div>
+  `).join('');
+
+  document.querySelector('#compsTable tbody').innerHTML = p.comps.map(c => `
+    <tr>
+      <td><strong>${c.name}</strong></td>
+      <td style="text-align:right">${c.trailing}</td>
+      <td style="text-align:right">${c.forward}x</td>
+      <td style="text-align:right">${c.evEbitda}</td>
+      <td style="text-align:right">${c.evRev}</td>
+      <td style="text-align:right">${c.mcap}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('discountInsight').innerHTML = `
+    <strong>What the discount prices:</strong> (1) BABA's free cash flow went <strong>−CNY 50.7bn in FY2026</strong> as AI capex hit CNY 126.9bn; EBIT margin fell 15.2% → 6.2%, buybacks collapsed 86.7 → 7.6bn, net cash thinned ~179bn → ~35bn — the market is paid a discount to trust FY2026 was a trough. (2) Growth deceleration: BABA revenue +2.7% vs AMZN +16.6%. (3) Self-inflicted wounds (JD's subsidy war: 0.3% EBIT margin) and simultaneous US-listing tail risk — a four-name China basket is not diversification. (4) The risk premium's duration is unknowable: "cheap" is supportable; "re-rates on your timeline" is not.
+  `;
+
+  const wealthCards = [
+    { label: 'Total Wealth', value: w.total, sub: 'IBKR $92.9k + Mexican $91.3k' },
+    { label: 'Combined P&L', value: w.combined_pnl, sub: '+' + w.combined_pnl_pct + '% on $143.6k invested' },
+    { label: 'Combined BABA', value: w.baba_pct + '%', sub: fmtK(w.baba_exposure) + ' of wealth', isText: true, cls: 'neg' },
+    { label: 'Combined China/EM', value: w.china_em_pct + '%', sub: fmtK(w.china_em) + ' — more than everything owned', isText: true, cls: 'neg' },
+    { label: 'Combined JD', value: w.jd_exposure, sub: '15.6% of wealth' },
+    { label: 'IBKR Debit', value: -w.debit, sub: '69.0% of IBKR NAV' }
+  ];
+  document.getElementById('wealthCards').innerHTML = wealthCards.map(c => `
+    <div class="card">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value ${c.isText ? (c.cls || '') : sign(c.value)}">${c.isText ? c.value : fmt(c.value)}</div>
+      <div class="card-sub">${c.sub}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('realityInsight').innerHTML = `
+    <strong>"How am I doing in reality" — both answers.</strong> Favorable: combined cost $143,574 → wealth $184,230 = <strong style="color:var(--positive)">+28.3%</strong>; since the mid-2024 pivot the BABA bet is net profitable and the Mexican account (+9.6%, unlevered, diversified) is quietly doing its job. Structural: the +28.3% is one stock's round trip — strip BABA and the IBKR record is −15.67% TWR with −$69,343 of expiration burn, and every dollar of net wealth traces to five instruments (BABA-one-year, NFLX, AAPL, GLD, TQQQ). With BABA at 84.0% of wealth, one underlying decides the entire outcome; the two answers are the same answer at different horizons.
+  `;
+
+  document.querySelector('#targetsTable tbody').innerHTML = p.targets.map(t => `
+    <tr>
+      <td>${t[0]}</td>
+      <td style="text-align:right">${t[1]}</td>
+      <td style="text-align:right"><strong>${t[2]}</strong></td>
+      <td style="text-align:right">${t[3]}</td>
+    </tr>
+  `).join('');
+
+  document.querySelector('#step1Table tbody').innerHTML = p.step1.map(s => `
+    <tr>
+      <td>${s[0]}</td>
+      <td style="text-align:right">${s[1]}</td>
+      <td style="text-align:right">${fmt(s[2])}</td>
+      <td class="neg" style="text-align:right">${fmt(s[3])}</td>
+    </tr>
+  `).join('') + `<tr><td><strong>Total → debit</strong></td><td></td><td style="text-align:right"><strong>$12,602</strong></td><td></td></tr>`;
+
+  document.querySelector('#step2Table tbody').innerHTML = p.step2.map(s => `
+    <tr><td>${s[0]}</td><td style="text-align:right">${fmt(s[1])}</td></tr>
+  `).join('') + `<tr><td><strong>Total → debit $51,264 → $24,150</strong></td><td style="text-align:right"><strong>$27,114</strong></td></tr>`;
+
+  document.getElementById('stepsInsight').innerHTML = `
+    <strong>Steps 3–4 — income and LEAPS discipline:</strong> Write covered calls on 300 of 530 IBKR BABA shares (30–45Δ, 45–60 DTE, strike ≥ $130 so assignment is never a loss) ≈ <strong>$3.1–5.5k/yr</strong> — sized to fund the entire theta budget plus the final paydown to the 25% cap. New options premium capped at <strong>5% of NAV ($4,646/yr)</strong> — the 2026 pace of $33.7k annualized has exhausted the budget through 2030, so no new long premium until 2027. Keep a ~$12.1k moonshot sleeve (2027–28 BABA + JD calls = 6.6% of wealth); the roll protocol bans rolling down-and-out for new cash — the exact strike-ratchet (275 → 70) that produced serial total losses in 2020–2024. Expiration firewall: no position held into its final 60 days without a logged decision.
+  `;
+
+  document.querySelector('#ladderTable tbody').innerHTML = p.ladder.map(l => `
+    <tr>
+      <td>${l[0]}</td>
+      <td style="text-align:right">${l[1]}</td>
+      <td style="text-align:right">${l[2]}</td>
+      <td style="text-align:right">${l[3]}</td>
+      <td style="text-align:right">${l[4]}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('rulesList').innerHTML = p.rules.map((r, i) => `
+    <div class="rule-item">
+      <span class="rule-num">RULE ${i + 1}</span>
+      <strong>${r[0]}</strong> ${r[1]}
+    </div>
+  `).join('');
+
+  document.getElementById('closingInsight').innerHTML = `
+    <strong>Closing:</strong> The thesis can be right and the structure can still kill the account. If the re-rating comes, the retained shares, the Mexican residual, and the nine long-dated calls capture it at a multiple of the sleeve. If the −30% year comes first — the 52-week range says it comes roughly once a year — the account survives at <strong style="color:var(--positive)">37.4% debt-to-equity</strong> instead of dying at <strong style="color:var(--negative)">121.8%</strong>. The thesis is unchanged; only the bet that it must pay before the structure breaks is removed. <em>Decision-support analysis, not personalized financial advice.</em>
+  `;
 }
 
 // ===== SORTING =====
@@ -972,7 +1222,7 @@ function sortData(data, sortSpec) {
   });
 }
 
-function setupSort(tableId, sortKey, dataKey) {
+function setupSort(tableId, sortKey) {
   const table = document.querySelector(tableId);
   if (!table) return;
   table.querySelectorAll('th[data-sort]').forEach(th => {
@@ -981,8 +1231,11 @@ function setupSort(tableId, sortKey, dataKey) {
       const current = state[sortKey];
       const dir = current.col === col ? -current.dir : -1;
       state[sortKey] = { col, dir };
-      // Update visual indicators
-      table.querySelectorAll('th').forEach(h => h.classList.remove('sort-active'));
+      table.querySelectorAll('th').forEach(h => {
+        h.classList.remove('sort-active');
+        const ind = h.querySelector('.sort-indicator');
+        if (ind) ind.textContent = '↕';
+      });
       th.classList.add('sort-active');
       th.querySelector('.sort-indicator').textContent = dir === 1 ? '↑' : '↓';
       renderAll();
@@ -990,8 +1243,9 @@ function setupSort(tableId, sortKey, dataKey) {
   });
 }
 
-// ===== CHARTS (IBKR only - stable) =====
-let cumulativeChart, yearlyChart, allocChart, ftAllocChart;
+// ===== CHARTS =====
+let allCharts = [];
+function track(c) { allCharts.push(c); return c; }
 
 function initCharts() {
   const isDark = () => document.body.classList.contains('dark');
@@ -1001,60 +1255,203 @@ function initCharts() {
   Chart.defaults.font.size = 11;
   Chart.defaults.color = chartText();
 
-  // Cumulative
-  const cumData = RAW.cumulative_performance;
-  cumulativeChart = new Chart(document.getElementById('cumulativeChart'), {
-    type: 'line',
+  const barColors = (arr) => arr.map(v => v >= 0 ? 'rgba(21,128,61,0.7)' : 'rgba(185,28,28,0.7)');
+  const moneyTooltip = { callbacks: { label: (c) => (c.dataset.label ? c.dataset.label + ': ' : '') + fmt(c.parsed.y !== undefined ? c.parsed.y : c.parsed) } };
+  const moneyY = () => ({ grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } });
+  const noXGrid = { grid: { display: false } };
+  const legendTop = { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } };
+
+  // 1. NAV path & deposits (dual axis)
+  track(new Chart(document.getElementById('navChart'), {
+    type: 'bar',
     data: {
-      labels: cumData.map(d => d.year),
+      labels: RAW.years,
       datasets: [
-        { label: 'Cumulative P&L', data: cumData.map(d => d.cumulative_pnl), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.08)', fill: true, tension: 0.25, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2 },
-        { label: 'Mark-to-Market', data: cumData.map(d => d.mark_to_market), borderColor: '#f59e0b', backgroundColor: 'transparent', fill: false, tension: 0.25, pointRadius: 3, borderWidth: 1.5, borderDash: [4,4] }
+        { type: 'line', label: 'NAV (period end)', data: RAW.nav_end, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.08)', fill: true, tension: 0.25, pointRadius: 4, borderWidth: 2, yAxisID: 'y' },
+        { type: 'bar', label: 'Net deposits', data: RAW.deposits, backgroundColor: 'rgba(168,162,158,0.45)', yAxisID: 'y1' }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 12, usePointStyle: true } }, tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) } } },
-      scales: { x: { grid: { display: false } }, y: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } } }
+      plugins: { legend: legendTop, tooltip: moneyTooltip },
+      scales: {
+        x: noXGrid,
+        y: { position: 'left', ...moneyY() },
+        y1: { position: 'right', grid: { display: false }, ticks: { callback: v => fmtK(v) } }
+      }
     }
-  });
+  }));
 
-  // Yearly
-  const yrLabels = Object.keys(RAW.pnl_by_year);
-  const yrRealized = Object.values(RAW.pnl_by_year);
-  yearlyChart = new Chart(document.getElementById('yearlyChart'), {
+  // 2. TWR by year
+  track(new Chart(document.getElementById('twrChart'), {
     type: 'bar',
     data: {
-      labels: yrLabels,
-      datasets: [
-        { label: 'Realized P&L', data: yrRealized, backgroundColor: yrRealized.map(v => v >= 0 ? 'rgba(21,128,61,0.7)' : 'rgba(185,28,28,0.7)') },
-        { label: 'Dividends', data: Object.values(RAW.dividends_by_year), backgroundColor: 'rgba(14,165,233,0.5)' },
-        { label: 'Interest', data: Object.values(RAW.interest_by_year), backgroundColor: 'rgba(245,158,11,0.5)' },
-        { label: 'Fees', data: Object.values(RAW.fees_by_year), backgroundColor: 'rgba(168,162,158,0.4)' }
-      ]
+      labels: RAW.years,
+      datasets: [{ label: 'TWR %', data: RAW.twr, backgroundColor: barColors(RAW.twr) }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } }, tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) } } },
-      scales: { x: { grid: { display: false }, stacked: false }, y: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) }, stacked: false } }
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => 'TWR: ' + fmtPct(c.parsed.y) } } },
+      scales: { x: noXGrid, y: { grid: { color: chartGrid() }, ticks: { callback: v => v + '%' } } }
     }
-  });
+  }));
 
-  // IBKR allocation
-  allocChart = new Chart(document.getElementById('allocationChart'), {
+  // 3. Cumulative net P&L
+  track(new Chart(document.getElementById('cumulativeChart'), {
+    type: 'line',
+    data: {
+      labels: RAW.years,
+      datasets: [
+        { label: 'Cumulative net P&L', data: RAW.cum_net_pnl, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.08)', fill: true, tension: 0.25, pointRadius: 4, borderWidth: 2 },
+        { label: 'Cumulative deposits', data: RAW.cum_deposits, borderColor: '#a8a29e', borderDash: [4,4], backgroundColor: 'transparent', fill: false, tension: 0, pointRadius: 3, borderWidth: 1.5 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: legendTop, tooltip: moneyTooltip },
+      scales: { x: noXGrid, y: moneyY() }
+    }
+  }));
+
+  // 4. Realized vs unrealized
+  track(new Chart(document.getElementById('realUnrealChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.years,
+      datasets: [
+        { label: 'Realized', data: RAW.realized, backgroundColor: 'rgba(14,165,233,0.65)' },
+        { label: 'Unrealized', data: RAW.unrealized, backgroundColor: 'rgba(245,158,11,0.6)' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: legendTop, tooltip: moneyTooltip },
+      scales: { x: noXGrid, y: moneyY() }
+    }
+  }));
+
+  // 5. Options vs stocks realized
+  track(new Chart(document.getElementById('optStockChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.years,
+      datasets: [
+        { label: 'Options realized', data: RAW.opt_realized, backgroundColor: barColors(RAW.opt_realized) },
+        { label: 'Stocks realized', data: RAW.stk_realized, backgroundColor: 'rgba(168,162,158,0.5)' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: legendTop, tooltip: moneyTooltip },
+      scales: { x: noXGrid, y: moneyY() }
+    }
+  }));
+
+  // 6. Expiration burn
+  track(new Chart(document.getElementById('burnChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.burn_years,
+      datasets: [
+        { type: 'bar', label: 'Realized loss at expiry', data: RAW.burn_loss, backgroundColor: 'rgba(185,28,28,0.65)', yAxisID: 'y' },
+        { type: 'line', label: 'Contracts expired', data: RAW.burn_contracts, borderColor: '#a855f7', backgroundColor: 'transparent', pointRadius: 4, borderWidth: 2, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: legendTop, tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + (c.dataset.yAxisID === 'y1' ? c.parsed.y : fmt(c.parsed.y)) } } },
+      scales: {
+        x: noXGrid,
+        y: { position: 'left', ...moneyY() },
+        y1: { position: 'right', grid: { display: false }, ticks: { stepSize: 5 } }
+      }
+    }
+  }));
+
+  // 7. Income & costs by year
+  track(new Chart(document.getElementById('costsChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.years,
+      datasets: [
+        { label: 'Dividends', data: RAW.dividends, backgroundColor: 'rgba(21,128,61,0.6)' },
+        { label: 'Margin interest', data: RAW.interest, backgroundColor: 'rgba(185,28,28,0.6)' },
+        { label: 'Commissions', data: RAW.commissions, backgroundColor: 'rgba(245,158,11,0.55)' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: legendTop, tooltip: moneyTooltip },
+      scales: { x: noXGrid, y: moneyY() }
+    }
+  }));
+
+  // 8. Friction doughnut
+  track(new Chart(document.getElementById('frictionChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Stocks', 'Options'],
-      datasets: [{ data: [RAW.asset_allocation.Stocks, RAW.asset_allocation['Equity and Index Options']], backgroundColor: ['rgba(21,128,61,0.7)', 'rgba(14,165,233,0.6)'], borderWidth: 0, hoverOffset: 6 }]
+      labels: RAW.friction.map(f => f[0]),
+      datasets: [{ data: RAW.friction.map(f => -f[1]), backgroundColor: ['rgba(185,28,28,0.65)', 'rgba(245,158,11,0.6)', 'rgba(168,162,158,0.55)'], borderWidth: 0, hoverOffset: 6 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '65%',
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 15 } }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmt(c.parsed)} (${((c.parsed / (RAW.asset_allocation.Stocks + RAW.asset_allocation['Equity and Index Options'])) * 100).toFixed(1)}%)` } } }
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 12 } },
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmt(-c.parsed)} (${RAW.friction[c.dataIndex][2]})` } }
+      }
     }
-  });
+  }));
 
-  // Finantech allocation
-  ftAllocChart = new Chart(document.getElementById('finantechAllocChart'), {
+  // 9. Theme buckets (horizontal)
+  track(new Chart(document.getElementById('themeChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.themes.map(t => t[0]),
+      datasets: [{ label: 'Lifetime P&L', data: RAW.themes.map(t => t[1]), backgroundColor: barColors(RAW.themes.map(t => t[1])) }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => 'Lifetime P&L: ' + fmt(c.parsed.x) } } },
+      scales: { y: { grid: { display: false } }, x: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } } }
+    }
+  }));
+
+  // 10. BABA complex
+  track(new Chart(document.getElementById('babaChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.years,
+      datasets: [
+        { type: 'bar', label: 'Annual P&L', data: RAW.baba_annual, backgroundColor: barColors(RAW.baba_annual), yAxisID: 'y' },
+        { type: 'line', label: 'Cumulative P&L', data: RAW.baba_cum, borderColor: '#0ea5e9', backgroundColor: 'transparent', tension: 0.25, pointRadius: 4, borderWidth: 2, yAxisID: 'y' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: legendTop, tooltip: moneyTooltip },
+      scales: { x: noXGrid, y: moneyY() }
+    }
+  }));
+
+  // 11. IBKR allocation (stocks vs options vs debit)
+  track(new Chart(document.getElementById('allocationChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Stocks', 'Options', 'Margin debit'],
+      datasets: [{ data: [RAW.book.stocks, RAW.book.options, RAW.book.cash], backgroundColor: ['rgba(21,128,61,0.7)', 'rgba(14,165,233,0.6)', 'rgba(185,28,28,0.6)'], borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 15 } },
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmt(c.parsed)} (${(c.parsed / RAW.book.nav * 100).toFixed(1)}% of NAV)` } }
+      }
+    }
+  }));
+
+  // 12. Finantech allocation
+  track(new Chart(document.getElementById('finantechAllocChart'), {
     type: 'doughnut',
     data: {
       labels: RAW.finantech.positions.map(p => p.symbol),
@@ -1062,52 +1459,93 @@ function initCharts() {
     },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '65%',
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 12 } }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmtMXN(c.parsed)} (${((c.parsed / RAW.finantech.overview.total_value) * 100).toFixed(1)}%)` } } }
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 12 } },
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${fmtMXN(c.parsed)} (${((c.parsed / RAW.finantech.overview.total_value) * 100).toFixed(1)}%)` } }
+      }
     }
-  });
+  }));
+
+  // 13. Forward P/E — China vs Western comps
+  const chinaNames = ['BABA', 'JD', 'PDD', 'Tencent'];
+  track(new Chart(document.getElementById('fpeChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.plan.comps.map(c => c.name),
+      datasets: [{
+        label: 'Forward P/E',
+        data: RAW.plan.comps.map(c => c.forward),
+        backgroundColor: RAW.plan.comps.map(c => chinaNames.includes(c.name) ? 'rgba(14,165,233,0.7)' : 'rgba(168,162,158,0.5)')
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => 'Forward P/E: ' + c.parsed.y + 'x' + (chinaNames.includes(c.label) ? ' · China' : ' · Western') } } },
+      scales: { x: noXGrid, y: { grid: { color: chartGrid() }, ticks: { callback: v => v + 'x' } } }
+    }
+  }));
+
+  // 14. Combined exposure vs wealth
+  track(new Chart(document.getElementById('exposureChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Total wealth', 'Combined BABA', 'Combined China/EM', 'Combined JD'],
+      datasets: [{
+        label: 'USD',
+        data: [RAW.plan.wealth.total, RAW.plan.wealth.baba_exposure, RAW.plan.wealth.china_em, RAW.plan.wealth.jd_exposure],
+        backgroundColor: ['rgba(168,162,158,0.5)', 'rgba(185,28,28,0.65)', 'rgba(245,158,11,0.6)', 'rgba(14,165,233,0.6)']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => fmt(c.parsed.x) + ' (' + (c.parsed.x / RAW.plan.wealth.total * 100).toFixed(1) + '% of wealth)' } } },
+      scales: { y: { grid: { display: false } }, x: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } } }
+    }
+  }));
+
+  // 15. Debit paydown path
+  track(new Chart(document.getElementById('debitChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.plan.debit_path.map(d => d[0]),
+      datasets: [{
+        label: 'Margin debit',
+        data: RAW.plan.debit_path.map(d => d[1]),
+        backgroundColor: ['rgba(185,28,28,0.65)', 'rgba(245,158,11,0.6)', 'rgba(21,128,61,0.55)', 'rgba(21,128,61,0.75)']
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => fmt(c.parsed.y) + ' · ' + RAW.plan.debit_path[c.dataIndex][2] } } },
+      scales: { x: noXGrid, y: moneyY() }
+    }
+  }));
+
+  // 16. Pre/post plan shock comparison
+  track(new Chart(document.getElementById('shockChart'), {
+    type: 'bar',
+    data: {
+      labels: RAW.plan.shock.labels,
+      datasets: [
+        { label: 'Pre-plan', data: RAW.plan.shock.pre, backgroundColor: 'rgba(185,28,28,0.65)' },
+        { label: 'Post-plan', data: RAW.plan.shock.post, backgroundColor: 'rgba(21,128,61,0.65)' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: legendTop,
+        tooltip: { callbacks: { label: (c) => {
+          const i = c.dataIndex;
+          const v = c.parsed.y;
+          return c.dataset.label + ': ' + (i === 1 ? v + '%' : i === 2 ? fmtK(v) + '/yr' : fmtK(v));
+        } } }
+      },
+      scales: { x: noXGrid, y: { grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } } }
+    }
+  }));
 }
-
-// ===== YEAR FILTER =====
-document.getElementById('yearChips')?.addEventListener('click', (e) => {
-  if (!e.target.classList.contains('chip')) return;
-  document.querySelectorAll('#yearChips .chip').forEach(c => c.classList.remove('active'));
-  e.target.classList.add('active');
-  state.yearFilter = e.target.dataset.year;
-  updateCumulativeChart();
-});
-
-function updateCumulativeChart() {
-  let data = RAW.cumulative_performance;
-  if (state.yearFilter !== 'all') {
-    const idx = data.findIndex(d => d.year === state.yearFilter);
-    data = idx >= 0 ? data.slice(0, idx + 1) : data;
-  }
-  cumulativeChart.data.labels = data.map(d => d.year);
-  cumulativeChart.data.datasets[0].data = data.map(d => d.cumulative_pnl);
-  cumulativeChart.data.datasets[1].data = data.map(d => d.mark_to_market);
-  cumulativeChart.update();
-}
-
-// ===== FX CONTROLS =====
-const fxSlider = document.getElementById('fxSlider');
-const fxInput = document.getElementById('fxInput');
-const fxVal = document.getElementById('fxVal');
-
-function updateFX(val) {
-  state.fx = parseFloat(val);
-  fxSlider.value = state.fx;
-  fxInput.value = state.fx;
-  fxVal.textContent = state.fx.toFixed(1);
-  renderAll();
-}
-
-fxSlider?.addEventListener('input', (e) => updateFX(e.target.value));
-fxInput?.addEventListener('change', (e) => updateFX(e.target.value));
-
-// ===== SEARCH =====
-document.getElementById('combinedSearch')?.addEventListener('input', (e) => { state.search.combined = e.target.value; renderCombined(); });
-document.getElementById('ibkrSearch')?.addEventListener('input', (e) => { state.search.ibkr = e.target.value; renderIBKRPositions(); });
-document.getElementById('finantechSearch')?.addEventListener('input', (e) => { state.search.finantech = e.target.value; renderFinantechPositions(); });
 
 // ===== TABS =====
 document.getElementById('mainTabs').addEventListener('click', (e) => {
@@ -1120,20 +1558,20 @@ document.getElementById('mainTabs').addEventListener('click', (e) => {
 });
 
 // ===== DARK MODE =====
-const darkToggle = document.getElementById('darkToggle');
 function applyDark(dark) {
   document.body.classList.toggle('dark', dark);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', dark ? '#0c0a09' : '#f5f5f4');
-  Chart.defaults.color = document.body.classList.contains('dark') ? '#a8a29e' : '#57534e';
-  const cg = document.body.classList.contains('dark') ? 'rgba(245,245,244,0.08)' : 'rgba(12,10,9,0.08)';
-  [cumulativeChart, yearlyChart, allocChart, ftAllocChart, window.combinedAllocChart].forEach(ch => {
+  Chart.defaults.color = dark ? '#a8a29e' : '#57534e';
+  const cg = dark ? 'rgba(245,245,244,0.08)' : 'rgba(12,10,9,0.08)';
+  allCharts.forEach(ch => {
     if (!ch) return;
-    if (ch.options.scales?.y) ch.options.scales.y.grid.color = cg;
-    if (ch.options.scales?.x) ch.options.scales.x.grid.color = cg;
+    Object.values(ch.options.scales || {}).forEach(sc => { if (sc.grid && sc.grid.display !== false) sc.grid.color = cg; });
     ch.update('none');
   });
+  if (window.combinedAllocChart) window.combinedAllocChart.update('none');
 }
+const darkToggle = document.getElementById('darkToggle');
 let saved = null;
 try { saved = localStorage.getItem('dzr-portfolio-dark'); } catch(e) {}
 if (saved === '1') applyDark(true);
@@ -1149,14 +1587,13 @@ darkToggle.addEventListener('click', () => {
 function renderAll() {
   renderCombined();
   renderIBKR();
-  renderIBKRPositions();
   renderFinantech();
-  renderFinantechPositions();
+  renderPlan();
 }
 
-setupSort('#combinedTable', 'combinedSort', 'combined');
-setupSort('#positionsTable', 'ibkrSort', 'ibkr');
-setupSort('#finantechTable', 'ftSort', 'finantech');
+setupSort('#combinedTable', 'combinedSort');
+setupSort('#positionsTable', 'ibkrSort');
+setupSort('#finantechTable', 'ftSort');
 
 initCharts();
 renderAll();
