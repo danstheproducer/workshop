@@ -941,9 +941,8 @@ function renderCombined() {
     <strong>Cross-portfolio view:</strong> Combined worth <strong>${fmtK(combinedValue)}</strong> USD — IBKR <strong>${ibkrWeight}%</strong> · Finantech <strong>${ftWeight}%</strong>. Combined P&amp;L <strong style="color:var(--${combinedPnl >= 0 ? 'positive' : 'negative'})">${combinedPnl >= 0 ? '+' : ''}${fmtK(combinedPnl)}</strong> (${fmtPct(combinedReturn)} on ${fmtK(combinedCost)} invested). Note: IBKR NAV is equity <em>after</em> the $64.1k margin debit; gross long exposure there is ${fmtK(RAW.book.gross)} (1.69× NAV).
   `;
 
-  window.charts = window.charts || [];
-  if (window.combinedAllocChart) window.combinedAllocChart.destroy();
-  window.combinedAllocChart = new Chart(document.getElementById('combinedAllocChart'), {
+  if (combinedAllocChart) combinedAllocChart.destroy();
+  combinedAllocChart = new Chart(document.getElementById('combinedAllocChart'), {
     type: 'doughnut',
     data: {
       labels: ['IBKR equity (USD)', 'Finantech (MXN→USD)'],
@@ -1245,6 +1244,7 @@ function setupSort(tableId, sortKey) {
 
 // ===== CHARTS =====
 let allCharts = [];
+let combinedAllocChart = null;
 function track(c) { allCharts.push(c); return c; }
 
 function initCharts() {
@@ -1569,7 +1569,7 @@ function applyDark(dark) {
     Object.values(ch.options.scales || {}).forEach(sc => { if (sc.grid && sc.grid.display !== false) sc.grid.color = cg; });
     ch.update('none');
   });
-  if (window.combinedAllocChart) window.combinedAllocChart.update('none');
+  if (combinedAllocChart) combinedAllocChart.update('none');
 }
 const darkToggle = document.getElementById('darkToggle');
 let saved = null;
