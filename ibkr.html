@@ -250,6 +250,51 @@
     letter-spacing: 0.08em;
   }
 
+  /* Drill-down disclosures */
+  details.drill {
+    border: 1px solid var(--line);
+    background: var(--card-bg);
+  }
+  details.drill summary {
+    cursor: pointer;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    user-select: none;
+  }
+  details.drill summary::-webkit-details-marker { display: none; }
+  details.drill summary::before { content: '▸'; transition: transform 0.15s ease; font-size: 0.8rem; }
+  details.drill[open] summary::before { transform: rotate(90deg); }
+  details.drill summary:hover { color: var(--ink); }
+  .drill-body {
+    padding: 0.25rem 1.1rem 1.1rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .drill-body strong { color: var(--ink); }
+  .event-row {
+    display: flex;
+    gap: 0.9rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .event-row:last-child { border-bottom: none; }
+  .event-date { min-width: 108px; flex-shrink: 0; color: var(--ink); font-weight: 500; font-size: 0.74rem; }
+  .event-note { font-size: 0.76rem; }
+  .theme-map { display: flex; flex-direction: column; gap: 0.5rem; }
+  .theme-map .tm-name { color: var(--ink); font-weight: 500; font-size: 0.76rem; }
+  .theme-map .tm-members { font-size: 0.74rem; }
+
   .rules-list { display: flex; flex-direction: column; gap: 0.6rem; }
   .rule-item {
     background: var(--card-bg);
@@ -365,10 +410,68 @@
     <div class="insight" id="insightBox"></div>
 
     <div class="section">
+      <div class="section-label">the big picture — NAV, deposits &amp; what was happening</div>
+      <div class="chart-wrap tall">
+        <canvas id="timelineChart"></canvas>
+      </div>
+      <details class="drill">
+        <summary>event log — what each marker meant for the book</summary>
+        <div class="drill-body" id="eventLog"></div>
+      </details>
+    </div>
+
+    <div class="section">
+      <div class="section-label">deposit ledger — nominal, inflation-adjusted &amp; time-adjusted</div>
+      <div class="cards" id="depositCards"></div>
+      <div class="table-scroll">
+        <table id="depositsTable">
+          <thead><tr>
+            <th>Year</th>
+            <th style="text-align:right">Deposit</th>
+            <th style="text-align:right">In Jun-2026 $ (CPI)</th>
+            <th style="text-align:right">TWR factor since</th>
+            <th style="text-align:right">Value today (time-adj)</th>
+            <th style="text-align:right">Adjusted gain/loss</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <details class="drill">
+        <summary>methodology — how the adjusted values are computed</summary>
+        <div class="drill-body">
+          <div><strong>Time-adjusted value.</strong> Each year's deposit is treated as made at the start of that year and compounded forward by the account's own chain-linked time-weighted returns (TWR factors: 1.0187 × 0.6399 × 0.2790 × 1.6327 × 1.4110 × 3.1411 × 0.6408 = 0.8433 cumulative). The "TWR factor since" column is the product of factors from that year through 2026-07-28 — what $1 deposited then is worth now under the account's actual trading path.</div>
+          <div><strong>Inflation-adjusted (CPI).</strong> Deposits restated in June-2026 purchasing power using BLS CPI-U (all urban consumers): 2020 = 258.811, 2021 = 270.970, 2022 = 292.655, 2023 = 304.702, 2024 = 313.689, 2025 = 321.943, Jun 2026 = 333.952. [Source: U.S. Bureau of Labor Statistics, CPI-U series CUUR0000SA0, retrieved 2026-07-30]</div>
+          <div><strong>Reconciliation.</strong> The time-adjusted column sums to ≈$92,418 vs the actual NAV of $92,916 — the ~$498 gap is intra-year deposit timing (real deposits arrived mid-year, not at the year-start convention) plus ±$0.02 statement display rounding. Adjusted net gain here (+$32.2k) vs the exact NAV-based figure (+$32,676.29) differs for the same reason.</div>
+        </div>
+      </details>
+    </div>
+
+    <div class="section">
       <div class="section-label">NAV path &amp; deposits</div>
       <div class="chart-wrap tall">
         <canvas id="navChart"></canvas>
       </div>
+      <details class="drill">
+        <summary>yearly NAV bridge — statement ledger, start to end</summary>
+        <div class="drill-body">
+          <div class="table-scroll">
+            <table id="bridgeTable">
+              <thead><tr>
+                <th>Year</th>
+                <th style="text-align:right">Start NAV</th>
+                <th style="text-align:right">Deposits</th>
+                <th style="text-align:right">MTM P&amp;L</th>
+                <th style="text-align:right">Dividends</th>
+                <th style="text-align:right">Interest</th>
+                <th style="text-align:right">Comm. + fees</th>
+                <th style="text-align:right">End NAV</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div>Each row reconciles one activity statement: Start + deposits + MTM + dividends + interest + commissions/fees ≈ End (within ±$1 statement display rounding), and each End equals the next year's Start to the cent.</div>
+        </div>
+      </details>
     </div>
 
     <div class="insight" id="mwrTwrInsight"></div>
@@ -432,6 +535,10 @@
       <div class="chart-wrap">
         <canvas id="themeChart"></canvas>
       </div>
+      <details class="drill">
+        <summary>theme membership — which symbols sit in each bucket</summary>
+        <div class="drill-body theme-map" id="themeMap"></div>
+      </details>
     </div>
 
     <div class="section">
@@ -734,11 +841,48 @@ const RAW = {
 
   winners: [
     ["NFLX", 22923.07], ["GLD", 17063.76], ["AAPL", 13974.94], ["TQQQ", 10657.02], ["EL", 8195.56],
-    ["CQQQ", 8131.84], ["FXI", 4948.71], ["HCA", 4040.89], ["TCOM", 2685.51], ["QQQ", 2253.24]
+    ["CQQQ", 8131.84], ["FXI", 4948.71], ["HCA", 4040.89], ["TCOM", 2685.51], ["QQQ", 2253.24],
+    ["IVW", 1744.76], ["RCL", 1381.27], ["VALE", 1234.19], ["PFE", 1190.70], ["CCL", 769.52]
   ],
   losers: [
     ["PYPL", -18051.28], ["ARKF", -9313.01], ["SKYY", -7569.56], ["ARKK", -6612.83], ["DIS", -5792.64],
-    ["MJ", -5115.24], ["PDD", -5048.00], ["JETS", -4442.65], ["BABA", -3938.90], ["BYND", -3677.93]
+    ["MJ", -5115.24], ["PDD", -5048.00], ["JETS", -4442.65], ["BABA", -3938.90], ["BYND", -3677.93],
+    ["AAL", -3536.91], ["TME", -3022.00], ["PNQI", -2913.17], ["TAN", -2753.31], ["NVAX", -2482.69]
+  ],
+
+  twr_factors: [1.0187, 0.6399, 0.2790, 1.6327, 1.4110, 3.1411, 0.6408],
+  cpi_u: [258.811, 270.970, 292.655, 304.702, 313.689, 321.943, 333.952], // BLS CUUR0000SA0; 2026 = Jun 2026
+
+  nav_bridge: {
+    start: [0, 18036.63, 16870.73, 12060.92, 25086.68, 45918.30, 144235.33],
+    other_fees: [-46.33, -175.62, -176.49, -174.01, -185.52, -229.57, -162.78] // other fees + withholding tax
+  },
+
+  theme_members: [
+    ["China / EM (stated thesis) · +$608.86", "BABA (incl. adjusted BABA1/BABA2), PDD, JD, TME, BILI, XPEV, BYDDY, RERE, LI, KURE, KWEB, FXI, CQQQ, TCEHY, TCOM — Chinese ADRs and China ETFs — plus EWW, GCARSOA1, VALE, PBR, HSBC (LatAm / UK-listed EM proxies)"],
+    ["Gold · +$17,063.76", "GLD (sole member)"],
+    ["US index / leveraged beta · +$13,866.88", "QQQ, TQQQ (principal), plus IVW, SPY, TZA, JNUG, UCO, LABU, ERX, URTY"],
+    ["US growth / ARK complex · −$39,715.48", "ARKF, ARKK, ARKQ, ARKW, SKYY, PNQI, TAN, MJ, DIS (principal), plus PTON, ZM, COIN, FSLY, EBS, CLOV"],
+    ["US single-name tech / other · +$11,651.40", "Winners: NFLX, AAPL, EL, HCA, RCL, PFE, CCL. Losers: PYPL, BYND, AAL, NVAX. Plus other US single names"],
+    ["Other / unclassified · +$6,116.30", "Small 2020 punts and residuals: AMC, GME, NKLA, WKHS, ACB, SNDL, BB, SPG, WYNN, airline/cruise reopening trades, FX translation lines (CAD/MXN)"]
+  ],
+
+  events: [
+    { x: 2020.29, date: "Apr 2020", label: "Account funded", note: "Funded into the COVID crash recovery; $19.5k deposited this year — 370 trades, commissions peak." },
+    { x: 2020.84, date: "Nov 2020", label: "Ant IPO suspended", note: "Ant Group's IPO pulled days before listing; BABA starts its multi-year slide. First BABA LEAPS bought at 270–275 strikes." },
+    { x: 2021.02, date: "Jan 2021", label: "Trump EO on Chinese cos", note: "Executive order bars US investment in listed Chinese firms; NYSE delistings begin; ADR risk premium reprices across the whole complex." },
+    { x: 2021.55, date: "Jul 2021", label: "China tech crackdown", note: "Didi probe, tutoring-sector ban, 'common prosperity'. Strikes ratchet 220 → 150 as the year's TWR hits −36%." },
+    { x: 2021.70, date: "Sep 2021", label: "Evergrande crisis", note: "Property-sector contagion crushes China/EM sentiment; −$21.5k of unrealized losses parked in the option book." },
+    { x: 2022.15, date: "Feb 2022", label: "Ukraine invasion", note: "Global risk-off; EM outflows accelerate." },
+    { x: 2022.25, date: "Mar 2022", label: "SEC delisting list + Fed hikes", note: "ADRs named under the HFCAA delisting law; the hiking cycle begins. Worst year: TWR −72.1% — 25.8¢ kept per deposited dollar." },
+    { x: 2022.87, date: "Nov 2022", label: "Zero-COVID ends", note: "Reopening rally off the trough; NAV bottoms at $12,061. Deposits stop — the condition that lets the account survive." },
+    { x: 2023.25, date: "Mar 2023", label: "BABA 1+6+N split", note: "Restructuring announced. Expiration burn peaks at −$21.6k this year — the account is a passive decay book." },
+    { x: 2024.73, date: "Sep 2024", label: "China stimulus bazooka", note: "Sharp policy rally; surviving calls recover — unrealized flips +$9.0k while realized stays negative on expirations." },
+    { x: 2025.05, date: "Jan 2025", label: "DeepSeek moment", note: "China AI re-rating ignites; BABA's cloud/AI narrative forms. The thesis's only winning year begins." },
+    { x: 2025.27, date: "Apr 2025", label: "'Liberation Day' tariffs", note: "Trump tariff shock; violent drawdown inside what still ends a +214% TWR year." },
+    { x: 2025.99, date: "End 2025", label: "The payoff year", note: "Five BABA1 adjusted-call sales crystallize +$56.7k; NAV peaks at $144,235 (+214.1% TWR). One year in seven." },
+    { x: 2026.16, date: "Feb–Mar 2026", label: "The reload", note: "$54.3k of BABA shares (avg $135.69) + $19.7k of 2028 LEAPS bought on margin; cash swings +$13.1k → −$64.1k." },
+    { x: 2026.57, date: "Jul 2026", label: "Statement date", note: "NAV $92,916; TWR −35.9% YTD; BABA complex 84% of NAV; open calls −54.2% on premium." }
   ],
 
   scenarios: [
@@ -1054,6 +1198,89 @@ function renderIBKR() {
   ).join('');
 
   renderIBKRPositions();
+  renderDepositLedger();
+  renderDrills();
+}
+
+// ===== DEPOSIT LEDGER (nominal / CPI-adjusted / time-adjusted) =====
+function renderDepositLedger() {
+  const cpiNow = RAW.cpi_u[6]; // Jun 2026
+  let totNom = 0, totCpi = 0, totTimeAdj = 0;
+  const rows = RAW.deposits.map((dep, i) => {
+    const factor = RAW.twr_factors.slice(i).reduce((a, b) => a * b, 1);
+    const cpiAdj = dep * (cpiNow / RAW.cpi_u[i]);
+    const timeAdj = dep * factor;
+    const gl = timeAdj - dep;
+    totNom += dep; totCpi += cpiAdj; totTimeAdj += timeAdj;
+    return { year: RAW.years[i], dep, cpiAdj, factor, timeAdj, gl };
+  });
+  const totGL = totTimeAdj - totNom;
+  const realGain = RAW.headline.nav - totCpi;
+
+  const cards = [
+    { label: 'Deposits (nominal)', value: totNom, sub: '7 years of contributions' },
+    { label: 'In Jun-2026 dollars', value: totCpi, sub: 'CPI-U adjusted · +' + ((totCpi / totNom - 1) * 100).toFixed(1) + '% inflation' },
+    { label: 'Time-adjusted value', value: totTimeAdj, sub: 'each cohort at account TWR path' },
+    { label: 'Adjusted net gain', value: totGL, sub: 'time-adj value − nominal deposits' },
+    { label: 'Real gain vs inflation', value: realGain, sub: 'NAV − CPI-adjusted deposits (' + fmtPct(realGain / totCpi * 100) + ')' }
+  ];
+  document.getElementById('depositCards').innerHTML = cards.map(c => `
+    <div class="card">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value ${sign(c.value)}">${fmt(c.value)}</div>
+      <div class="card-sub">${c.sub}</div>
+    </div>
+  `).join('');
+
+  document.querySelector('#depositsTable tbody').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.year}</td>
+      <td style="text-align:right">${fmt(r.dep)}</td>
+      <td style="text-align:right">${fmt(r.cpiAdj)}</td>
+      <td style="text-align:right">${r.factor.toFixed(3)}×</td>
+      <td style="text-align:right">${fmt(r.timeAdj)}</td>
+      <td class="${sign(r.gl)}" style="text-align:right">${r.gl >= 0 ? '+' : ''}${fmt(r.gl)}</td>
+    </tr>
+  `).join('') + `
+    <tr>
+      <td><strong>Total</strong></td>
+      <td style="text-align:right"><strong>${fmt(totNom)}</strong></td>
+      <td style="text-align:right"><strong>${fmt(totCpi)}</strong></td>
+      <td style="text-align:right">—</td>
+      <td style="text-align:right"><strong>${fmt(totTimeAdj)}</strong></td>
+      <td class="${sign(totGL)}" style="text-align:right"><strong>${totGL >= 0 ? '+' : ''}${fmt(totGL)}</strong></td>
+    </tr>`;
+}
+
+// ===== DRILL-DOWN CONTENT (event log, theme map, NAV bridge) =====
+function renderDrills() {
+  document.getElementById('eventLog').innerHTML = RAW.events.map(e => `
+    <div class="event-row">
+      <div class="event-date">${e.date}</div>
+      <div class="event-note"><strong>${e.label}.</strong> ${e.note}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('themeMap').innerHTML = RAW.theme_members.map(t => `
+    <div>
+      <div class="tm-name">${t[0]}</div>
+      <div class="tm-members">${t[1]}</div>
+    </div>
+  `).join('');
+
+  const nb = RAW.nav_bridge;
+  document.querySelector('#bridgeTable tbody').innerHTML = RAW.years.map((y, i) => `
+    <tr>
+      <td>${y}</td>
+      <td style="text-align:right">${fmt(nb.start[i])}</td>
+      <td style="text-align:right">${fmt(RAW.deposits[i])}</td>
+      <td class="${sign(RAW.mtm[i])}" style="text-align:right">${fmt(RAW.mtm[i])}</td>
+      <td style="text-align:right">${fmt(RAW.dividends[i])}</td>
+      <td class="neg" style="text-align:right">${fmt(RAW.interest[i])}</td>
+      <td class="neg" style="text-align:right">${fmt(RAW.commissions[i] + nb.other_fees[i])}</td>
+      <td style="text-align:right"><strong>${fmt(RAW.nav_end[i])}</strong></td>
+    </tr>
+  `).join('');
 }
 
 function renderIBKRPositions() {
@@ -1245,21 +1472,73 @@ function setupSort(tableId, sortKey) {
 // ===== CHARTS =====
 let allCharts = [];
 let combinedAllocChart = null;
+const chartInitDone = { ibkr: false, finantech: false, plan: false };
 function track(c) { allCharts.push(c); return c; }
 
-function initCharts() {
-  const isDark = () => document.body.classList.contains('dark');
-  const chartText = () => isDark() ? '#a8a29e' : '#57534e';
-  const chartGrid = () => isDark() ? 'rgba(245,245,244,0.08)' : 'rgba(12,10,9,0.08)';
-  Chart.defaults.font.family = "'JetBrains Mono', monospace";
-  Chart.defaults.font.size = 11;
-  Chart.defaults.color = chartText();
+const isDark = () => document.body.classList.contains('dark');
+const chartText = () => isDark() ? '#a8a29e' : '#57534e';
+const chartGrid = () => isDark() ? 'rgba(245,245,244,0.08)' : 'rgba(12,10,9,0.08)';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = chartText();
 
-  const barColors = (arr) => arr.map(v => v >= 0 ? 'rgba(21,128,61,0.7)' : 'rgba(185,28,28,0.7)');
-  const moneyTooltip = { callbacks: { label: (c) => (c.dataset.label ? c.dataset.label + ': ' : '') + fmt(c.parsed.y !== undefined ? c.parsed.y : c.parsed) } };
-  const moneyY = () => ({ grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } });
-  const noXGrid = { grid: { display: false } };
-  const legendTop = { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } };
+const barColors = (arr) => arr.map(v => v >= 0 ? 'rgba(21,128,61,0.7)' : 'rgba(185,28,28,0.7)');
+const moneyTooltip = { callbacks: { label: (c) => (c.dataset.label ? c.dataset.label + ': ' : '') + fmt(c.parsed.y !== undefined ? c.parsed.y : c.parsed) } };
+const moneyY = () => ({ grid: { color: chartGrid() }, ticks: { callback: v => fmtK(v) } });
+const noXGrid = { grid: { display: false } };
+const legendTop = { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } };
+
+function initIbkrCharts() {
+  if (chartInitDone.ibkr) return;
+  chartInitDone.ibkr = true;
+
+  // 0. Master timeline — NAV, deposits, event markers
+  const tlX = (i) => i < 6 ? i + 2020.99 : 2026.57;
+  const navPts = RAW.nav_end.map((v, i) => ({ x: tlX(i), y: v }));
+  const depPts = RAW.cum_deposits.map((v, i) => ({ x: tlX(i), y: v }));
+  const evtPts = RAW.events.map(e => ({ x: e.x, y: 156000 }));
+  const wrapNote = (s, n) => {
+    const out = []; let cur = '';
+    s.split(' ').forEach(w => {
+      if ((cur + ' ' + w).trim().length > n) { out.push(cur.trim()); cur = w; }
+      else cur += ' ' + w;
+    });
+    if (cur.trim()) out.push(cur.trim());
+    return out;
+  };
+  track(new Chart(document.getElementById('timelineChart'), {
+    type: 'line',
+    data: {
+      datasets: [
+        { label: 'NAV', data: navPts, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.08)', fill: true, tension: 0.25, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2 },
+        { label: 'Cumulative deposits', data: depPts, borderColor: '#a8a29e', borderDash: [4,4], stepped: true, fill: false, pointRadius: 0, borderWidth: 1.5 },
+        { label: 'Events (hover)', data: evtPts, type: 'scatter', pointStyle: 'triangle', radius: 7, hoverRadius: 9, backgroundColor: 'rgba(245,158,11,0.9)', borderColor: '#f59e0b', borderWidth: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'nearest', intersect: false },
+      plugins: {
+        legend: legendTop,
+        tooltip: {
+          callbacks: {
+            title: (items) => {
+              const it = items[0];
+              if (it.dataset.label === 'Events (hover)') return RAW.events[it.dataIndex].date + ' — ' + RAW.events[it.dataIndex].label;
+              return RAW.years[it.dataIndex];
+            },
+            label: (c) => {
+              if (c.dataset.label === 'Events (hover)') return wrapNote(RAW.events[c.dataIndex].note, 52);
+              return c.dataset.label + ': ' + fmt(c.parsed.y);
+            }
+          }
+        }
+      },
+      scales: {
+        x: { type: 'linear', min: 2020.2, max: 2027.1, grid: { display: false }, ticks: { stepSize: 1, callback: v => (Number.isInteger(v) && v >= 2020 && v <= 2026) ? v : '' } },
+        y: { ...moneyY(), suggestedMax: 168000 }
+      }
+    }
+  }));
 
   // 1. NAV path & deposits (dual axis)
   track(new Chart(document.getElementById('navChart'), {
@@ -1449,6 +1728,11 @@ function initCharts() {
       }
     }
   }));
+}
+
+function initFtCharts() {
+  if (chartInitDone.finantech) return;
+  chartInitDone.finantech = true;
 
   // 12. Finantech allocation
   track(new Chart(document.getElementById('finantechAllocChart'), {
@@ -1465,6 +1749,11 @@ function initCharts() {
       }
     }
   }));
+}
+
+function initPlanCharts() {
+  if (chartInitDone.plan) return;
+  chartInitDone.plan = true;
 
   // 13. Forward P/E — China vs Western comps
   const chinaNames = ['BABA', 'JD', 'PDD', 'Tencent'];
@@ -1555,10 +1844,11 @@ document.getElementById('mainTabs').addEventListener('click', (e) => {
   e.target.classList.add('active');
   document.getElementById('tab-' + e.target.dataset.tab).classList.add('active');
   state.activeTab = e.target.dataset.tab;
-  // Charts initialized while their panel was display:none have 0x0 size — force a resize now visible
+  // Charts are created lazily on first visit — a chart built while its panel is display:none gets a 0x0 canvas
   requestAnimationFrame(() => {
-    allCharts.forEach(ch => { if (ch) { ch.resize(); ch.update('none'); } });
-    if (combinedAllocChart) { combinedAllocChart.resize(); combinedAllocChart.update('none'); }
+    if (state.activeTab === 'ibkr') initIbkrCharts();
+    else if (state.activeTab === 'finantech') initFtCharts();
+    else if (state.activeTab === 'plan') initPlanCharts();
   });
 });
 
@@ -1600,8 +1890,13 @@ setupSort('#combinedTable', 'combinedSort');
 setupSort('#positionsTable', 'ibkrSort');
 setupSort('#finantechTable', 'ftSort');
 
-initCharts();
 renderAll();
+// If the page is restored on a non-default tab, initialize that tab's charts now
+requestAnimationFrame(() => {
+  if (state.activeTab === 'ibkr') initIbkrCharts();
+  else if (state.activeTab === 'finantech') initFtCharts();
+  else if (state.activeTab === 'plan') initPlanCharts();
+});
 </script>
 </body>
 </html>
