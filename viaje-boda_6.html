@@ -1077,7 +1077,7 @@ function ensureMap(){
   const segVis=function(){ el.classList.toggle('lowzoom', map.getZoom()<6); };
   map.on('zoomend', segVis); map.whenReady(segVis);
   L.tileLayer(dark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
-  const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, ferry:{c:'#22D3EE',i:'⛴️',dash:'2,7',bend:0.12} };
+  const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, ferry:{c:'#22D3EE',i:'⛴️',dash:'2,7',bend:0.12}, train:{c:'#F97316',i:'🚆',dash:null,bend:0.16} };
   const MX=[19.4326,-99.1332];
   const route=['madrid','galicia','barcelona','dubrovnik','hvar','estambul'].map(id=>CITIES.find(c=>c.id===id));
   const legs=[
