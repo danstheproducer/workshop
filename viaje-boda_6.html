@@ -346,9 +346,9 @@ const CITIES = [
     desc:'La esquina atlántica y verde de España, y la razón del viaje: la boda en el Pazo de Cea. Marisco que no existe igual en ningún otro lado (las rías son criaderos naturales), albariño frío y un ritmo donde la comida dura tres horas. Base: AC Hotel Palacio Universal (Marriott), frente al puerto de Vigo, a ~30 min del pazo. Dos noches: se vuela desde Madrid el viernes a mediodía para las ostras y la cena estrella, y el sábado es la boda. Al día siguiente, rumbo a Barcelona.',
     days:[
       { events:[
-        { time:'12:00', title:'Tren AVE Madrid → Vigo', icon:'🚆', tag:'transporte', dur:'~4h30m',
-          desc:'AVE de alta velocidad Madrid (Chamartín) → Vigo-Guixar, ~4h30m. Salida ~12:00 del viernes, llegada ~16:30 a Vigo — a tiempo para las ostras y Maruja Limón a las 20:45. Ventajas del tren: sin límites de equipaje de mano, más espacio, llegada al centro de Vigo.',
-          tips:['🎟️ Renfe AVE MAD→VGO · reservar en renfe.com','🚕 Vigo-Guixar → hotel: taxi ~10 min · el centro está a pie','🧳 El tren permite más equipaje que el avión: maletas de boda sin problema'] },
+        { time:'11:17', title:'Tren AVE Madrid → Vigo', icon:'🚆', tag:'transporte', dur:'~3h59m',
+          desc:'AVE Confortave confirmado: Madrid Chamartín → Vigo Urzaiz, 11:17→15:16 (coche 1). Localizador LZBCVC. Plazas asignadas: 8A, 8B, 8C, 8D, 9B. Menú de almuerzo incluido. Acceso cierra 2 min antes de salida. Llegada directa al centro de Vigo — a tiempo para check-in y Maruja Limón a las 20:45.',
+          tips:['🎟️ Localizador LZBCVC · billetes confirmados','🚕 Vigo Urzaiz → hotel: taxi ~10 min · el centro está a pie','🧳 El tren permite más equipaje que el avión: maletas de boda sin problema'] },
         { time:'16:30', title:'Check-in AC Hotel Palacio Universal', icon:'🏨', tag:'hotel',
           desc:'AC Hotel by Marriott (4★) en Cánovas del Castillo 28, frente al puerto y al Real Club Náutico. Habitaciones con vista al mar. Reserva ya confirmada (Amex Viajes #31094043). Dejar maletas y salir a la ría.',
           tips:['🌊 Pedir subir a las habitaciones ocean view apenas estén listas','🚶 Todo el marisco y el Casco Vello a pie desde aquí'] },
@@ -670,8 +670,8 @@ const CITIES = [
 const RESERVATIONS = [
   { id:'flight-main', em:'✅', city:'Vuelos', name:'Ida: México → Madrid ✓ (Daniel, Samuel y Etna)', date:'25 Ago 11:15 → 26 Ago 5:50', deadline:'✅ CONFIRMADO', cat:'Transporte', done:true,
     note:'Daniel: MEX → MAD directo IB304, mar 25 ago 11:15 → mié 26 ago 5:50 (10h35m). Samuel & Etna: IB304 mismo vuelo, booking UXIJNH / COLZF5, tickets 075 5236 465902/3. Llegada de madrugada: pedir early check-in en CoolRooms. El grupo converge en Madrid: cada quien reserva su propia llegada — punto de encuentro, CoolRooms Palacio de Atocha, todos ahí a más tardar la noche del jue 27.', link:'https://www.google.com/travel/flights?q=Flights%20from%20MEX%20to%20MAD%20on%202026-08-25' },
-  { id:'flight-vgo', em:'🚆', city:'España', name:'Tren AVE Madrid → Vigo · 28 Ago', date:'28 Ago ~12:00 · ~4h30m', deadline:'🟢 Reservar pronto', cat:'Transporte', done:false,
-    note:'AVE de alta velocidad Madrid (Chamartín) → Vigo-Guixar, ~4h30m. Salida ~12:00 del viernes, llegada ~16:30 a Vigo — a tiempo para las ostras y Maruja Limón a las 20:45. ~1,500-2,500 MXN pp. Ventajas del tren: sin límites de equipaje de mano, más espacio, llegada al centro de Vigo (no a Peinador).', link:'https://www.renfe.com/es/es' },
+  { id:'flight-vgo', em:'✅', city:'España', name:'Tren AVE Madrid → Vigo · 28 Ago ✓', date:'28 Ago 11:17 → 15:16 · ~3h59m', deadline:'✅ CONFIRMADO — Renfe AVE Confortave', cat:'Transporte', done:true,
+    note:'AVE Confortave confirmado: Madrid Chamartín → Vigo Urzaiz, vie 28 ago 11:17→15:16 (coche 1). Localizador LZBCVC. Plazas: 8A (L. Melgarejo), 8B (D. Martínez), 8C (S. Martínez), 8D (E. Vélez), 9B (M. Quintana). Menú de almuerzo incluido. ~62,30 € pp. Acceso cierra 2 min antes de salida. Llegada directa al centro de Vigo — a tiempo para check-in y Maruja Limón a las 20:45.', link:'https://www.renfe.com/es/es' },
   { id:'flight-bcn', em:'✈️', city:'España', name:'Vuelo Vigo → Barcelona · 30 Ago (TARDE)', date:'30 Ago ~14:30 · ~1h45m', deadline:'🟠 Reservar la frecuencia de la tarde', cat:'Transporte', done:false,
     note:'Vueling VGO→BCN directo (~1h45m) — reservar la frecuencia de la TARDE (~14-17h): la boda termina a la 1:00 y la mañana del 30 es para dormir. Si ese domingo solo opera el vuelo matinal, avisar (se replantearía la última hora de la fiesta). ~1,800-3,200 MXN pp. Aerobús a Plaça Catalunya (~6 EUR) o taxi ~35 EUR.', link:'https://www.google.com/travel/flights?q=Flights%20from%20VGO%20to%20BCN%20on%202026-08-30' },
   { id:'flight-dbv', em:'✅', city:'Croacia', name:'Vuelo Barcelona → Dubrovnik · 1 Sep ✓', date:'1 Sep 11:35 → 13:55 · 2h20m', deadline:'✅ CONFIRMADO — Vueling VY7720', cat:'Transporte', done:true,
@@ -976,7 +976,7 @@ function renderItin(){
 
 const TRAVELIN = {
   'madrid':       { ic:'🤝', mode:'Punto de encuentro del grupo', dur:'llegadas escalonadas' },
-  'galicia':      { ic:'🚆', mode:'Tren AVE Madrid → Vigo',    dur:'~4h30m' },
+  'galicia':      { ic:'🚆', mode:'Tren AVE Madrid → Vigo',    dur:'~3h59m' },
   'barcelona':    { ic:'✈️', mode:'Vuelo Vigo → Barcelona', dur:'~1h45m' },
   'dubrovnik':    { ic:'✈️', mode:'Vuelo Barcelona → Dubrovnik', dur:'~2h20m' },
   'hvar':         { ic:'⛴️', mode:'Ferry Dubrovnik → Hvar', dur:'~3h45m' },
