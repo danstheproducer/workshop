@@ -1028,7 +1028,42 @@ function arcPts(a,b,bend){
 let mapNodes=[], euroBounds=[], LEGINFO=[];
 function showLeg(leg){
   if(!leg) return;
-  fillModal('<div class="seclbl">Trayecto</div><p class="h3" style="margin:8px 0 12px">'+esc(leg.name)+'</p>'+leg.detail.map(function(l){return '<p class="note" style="font-size:14px;line-height:1.75;color:var(--tx2);margin-bottom:3px">'+esc(l)+'</p>';}).join('')+'<button class="gbtn" onclick="closeModal()">Cerrar</button>');
+  let h = '<div class="seclbl">Trayecto</div>';
+  h += '<p class="h3" style="margin:8px 0 10px">'+esc(leg.name)+'</p>';
+  const statusColor = leg.status==='CONFIRMADO' ? '#34D399' : '#F59E0B';
+  const statusBg = leg.status==='CONFIRMADO' ? 'rgba(52,211,153,0.12)' : 'rgba(245,158,11,0.12)';
+  h += '<span style="display:inline-block;background:'+statusBg+';color:'+statusColor+';padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:12px">'+esc(leg.status)+'</span>';
+  if(leg.number){ h += '<div style="font-size:13px;color:var(--tx-dim);margin-bottom:12px">'+esc(leg.number)+'</div>'; }
+  if(leg.departure || leg.arrival){
+    h += '<div style="background:var(--bg-bar);border-radius:10px;padding:14px;margin:10px 0">';
+    if(leg.departure) h += '<div style="display:flex;justify-content:space-between;margin:4px 0"><span style="color:var(--tx-dim);font-size:12px">Salida</span><span style="font-weight:700;font-size:13px">'+esc(leg.departure)+'</span></div>';
+    if(leg.arrival) h += '<div style="display:flex;justify-content:space-between;margin:4px 0"><span style="color:var(--tx-dim);font-size:12px">Llegada</span><span style="font-weight:700;font-size:13px">'+esc(leg.arrival)+'</span></div>';
+    if(leg.duration || leg.dur) h += '<div style="display:flex;justify-content:space-between;margin:4px 0"><span style="color:var(--tx-dim);font-size:12px">Duración</span><span style="font-weight:700;font-size:13px">'+esc(leg.duration || leg.dur)+'</span></div>';
+    h += '</div>';
+  }
+  const details=[];
+  if(leg.route) details.push({label:'Ruta', value:leg.route});
+  if(leg.booking) details.push({label:'Booking / Localizador', value:leg.booking});
+  if(leg.seats) details.push({label:'Plazas / Asientos', value:leg.seats});
+  if(leg.checked) details.push({label:'Checked bags', value:leg.checked});
+  if(leg.carryon) details.push({label:'Carry-on', value:leg.carryon});
+  if(leg.price) details.push({label:'Precio', value:leg.price});
+  if(details.length){
+    h += '<div style="margin:12px 0">';
+    details.forEach(function(d){
+      h += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--divider)"><span style="color:var(--tx-dim);font-size:12px">'+esc(d.label)+'</span><span style="font-size:12px;font-weight:600;text-align:right;max-width:60%">'+esc(d.value)+'</span></div>';
+    });
+    h += '</div>';
+  }
+  if(leg.notes && leg.notes.length){
+    h += '<div style="margin:12px 0">';
+    leg.notes.forEach(function(n){
+      h += '<p class="note" style="font-size:13px;line-height:1.6;color:var(--tx2);margin-bottom:6px;padding-left:14px;position:relative">• '+esc(n)+'</p>';
+    });
+    h += '</div>';
+  }
+  h += '<button class="gbtn" onclick="closeModal()" style="margin-top:10px">Cerrar</button>';
+  fillModal(h);
   document.getElementById('modal').classList.add('on');
 }
 function mapLegendHTML(){
@@ -1046,19 +1081,20 @@ function ensureMap(){
   const MX=[19.4326,-99.1332];
   const route=['madrid','galicia','barcelona','dubrovnik','hvar','estambul'].map(id=>CITIES.find(c=>c.id===id));
   const legs=[
-    {mode:'flight',dur:'~1h15m', name:'Madrid → Vigo', detail:['✈️ Madrid-Barajas → Vigo (Peinador)','Vuelo directo ~1h15m (Iberia/Air Nostrum)','La mañana del viernes, rumbo a la boda']},
-    {mode:'flight',dur:'~1h45m', name:'Vigo → Barcelona', detail:['✈️ Vigo → Barcelona','Vuelo directo ~1h45m (Vueling)','La mañana después de la boda']},
-    {mode:'flight',dur:'~2h20m', name:'Barcelona → Dubrovnik', detail:['✈️ Barcelona → Dubrovnik','Vuelo directo ~2h20m (Vueling/Croatia Airlines, temporada)','Del Mediterráneo al Adriático']},
-    {mode:'ferry', dur:'~3h45m', name:'Dubrovnik → Hvar', detail:['⛴️ Catamarán Krilo/Jadrolinija por la costa dálmata','~3h45m con parada en Korčula','Reservar online, se llena en verano']},
-    {mode:'flight',dur:'~5h', name:'Hvar → Estambul', detail:['⛴️ Ferry Hvar → Split · ~1h','🏛️ Medio día en Split (Palacio de Diocleciano)','✈️ Vuelo directo Split → Estambul · ~2h (Croatia Airlines, sáb 5 sep)']},
+    {mode:'train',dur:'~3h59m', name:'Madrid → Vigo', status:'CONFIRMADO', number:'AVE Confortave', route:'Madrid Chamartín → Vigo Urzaiz', departure:'28 Ago 11:17', arrival:'28 Ago 15:16', duration:'~3h59m', booking:'Localizador LZBCVC', seats:'Coche 1: 8A, 8B, 8C, 8D, 9B', checked:'— (maletas libres en tren)', carryon:'Sin límite estricto', price:'~62,30 € pp', notes:['Menú de almuerzo incluido','Acceso cierra 2 min antes de salida','Llegada directa al centro de Vigo — taxi ~10 min al hotel'], detail:['🚆 AVE Confortave · Madrid Chamartín → Vigo Urzaiz','11:17→15:16 · localizador LZBCVC','Coche 1 · plazas 8A-8D, 9B · menú incluido']},
+    {mode:'flight',dur:'~1h45m', name:'Vigo → Barcelona', status:'PENDIENTE', number:'Vueling', route:'Vigo (Peinador) → Barcelona', departure:'30 Ago ~14:30', arrival:'30 Ago ~16:15', duration:'~1h45m', booking:'—', seats:'—', checked:'—', carryon:'Standard Vueling', price:'~1.800-3.200 MXN pp', notes:['Reservar frecuencia de la TARDE (~14-17h)','Si solo opera vuelo matinal, avisar para replanear'], detail:['✈️ Vueling · Vigo → Barcelona','~1h45m directo · reservar tarde','La mañana después de la boda']},
+    {mode:'flight',dur:'~2h20m', name:'Barcelona → Dubrovnik', status:'CONFIRMADO', number:'VY7720', route:'BCN T1 → Dubrovnik (DBV)', departure:'1 Sep 11:35', arrival:'1 Sep 13:55', duration:'~2h20m', booking:'JJ8Q5Z', seats:'—', checked:'Incluido o extra según tarifa', carryon:'STRICTO: 1 pieza max 40×30×20 cm bajo el asiento. Segunda pieza o exceso = facturación extra.', price:'Incluido en booking', notes:['Croacia es Schengen: sin visa ni cambio de moneda','Usa EURO desde 2023'], detail:['✈️ Vueling VY7720 · BCN T1 → DBV','11:35→13:55 · booking JJ8Q5Z','⚠️ Carry-on estricto: 40×30×20 cm']},
+    {mode:'ferry', dur:'~3h45m', name:'Dubrovnik → Hvar', status:'PENDIENTE', number:'Krilo coastal catamaran', route:'Dubrovnik → Mljet → Korčula → Hvar', departure:'3 Sep ~15:30', arrival:'3 Sep ~19:30', duration:'~3h45m', booking:'krilo.hr', seats:'—', checked:'—', carryon:'Mochila de día + maleta mediana', price:'~50 € pp', notes:['Opera diario 1 Abr–31 Oct','Reservar con antelación en krilo.hr','Plan B por viento: transfer por tierra a Drvenik + ferry corto a Sućuraj'], detail:['⛴️ Krilo · Dubrovnik → Hvar','~3h45m con parada en Korčula','Reservar online, se llena en verano']},
+    {mode:'flight',dur:'~5h', name:'Hvar → Estambul', status:'CONFIRMADO', number:'OU4352 (ferry + vuelo)', route:'Hvar → Split (ferry ~1h) + Split → IST (vuelo)', departure:'5 Sep 21:10', arrival:'5 Sep 00:10+1', duration:'~5h total', booking:'85JJ8F', seats:'07E, 07F, 08A, 08E, 08F', checked:'1 checked bag + 1 hand bag por persona', carryon:'Standard Croatia Airlines', price:'€1.384,82 total (6p)', notes:['Aterriza Terminal I de IST','Türkiye va 1h ADELANTE de España/Croacia','Ferry Hvar→Split: reservar Krilo 09:00 o 10:00'], detail:['⛴️ Ferry Hvar → Split · ~1h','✈️ Croatia Airlines OU4352 · Split → Estambul','21:10→00:10+1 · booking 85JJ8F · asientos 07E-08F']},
   ];
   LEGINFO=[];
   const OCEAN=[
-    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.62, dur:'10h35m', detail:['✈️ CDMX (MEX) → Madrid (MAD)','Vuelo directo CONFIRMADO ✓ · 10h35m','Sale mar 25 ago 11:15, aterriza mié 26 a las 5:50 am']},
+    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.62, dur:'10h35m', status:'CONFIRMADO', number:'IB304', route:'CDMX (MEX) → Madrid (MAD)', departure:'25 Ago 11:15', arrival:'26 Ago 5:50', duration:'10h35m', booking:'UXIJNH / COLZF5', seats:'—', checked:'Incluido (tickets 075 5236 465902/3)', carryon:'Standard (1 pieza de mano + artículo personal)', passengers:'Daniel, Samuel, Etna', price:'Incluido en booking', notes:['Llegada de madrugada: pedir early check-in en CoolRooms','Samuel & Etna viajan en el mismo vuelo que Daniel'], detail:['✈️ IB304 · CDMX (MEX) → Madrid (MAD)','Directo CONFIRMADO · 10h35m','11:15→5:50+1 · booking UXIJNH / COLZF5']},
   ];
   OCEAN.forEach(function(o){
     L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
-    const idx=LEGINFO.push({name:o.name,detail:o.detail})-1;
+    const idx=LEGINFO.push(o)-1;
+    L.polyline(o.pts,{color:'transparent',weight:14,opacity:0}).on('click',function(){showLeg(LEGINFO[idx]);}).addTo(map);
     const q=o.pts[Math.round(o.pts.length*o.at)];
     L.marker(q,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:#F59E0B" onclick="showLeg(LEGINFO['+idx+'])">✈️ '+o.dur+'</span>',iconSize:[0,0]})}).addTo(map);
   });
@@ -1067,8 +1103,9 @@ function ensureMap(){
   for(let i=0;i<route.length-1;i++){
     const m=MODE[legs[i].mode], pts=arcPts(route[i].coords,route[i+1].coords,m.bend);
     L.polyline(pts,{color:m.c,weight:2.2,opacity:.9,dashArray:m.dash}).addTo(map);
+    const idx=LEGINFO.push(legs[i])-1;
+    L.polyline(pts,{color:'transparent',weight:14,opacity:0}).on('click',function(){showLeg(LEGINFO[idx]);}).addTo(map);
     const mid=pts[Math.floor(pts.length*(LABEL_AT[i]!==undefined?LABEL_AT[i]:0.5))];
-    const idx=LEGINFO.push({name:legs[i].name,detail:legs[i].detail})-1;
     L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:'+m.c+'" onclick="showLeg(LEGINFO['+idx+'])">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
   }
   euroBounds=[]; mapNodes=[];
