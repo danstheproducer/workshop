@@ -982,6 +982,14 @@ const TRAVELIN = {
   'hvar':         { ic:'⛴️', mode:'Ferry Dubrovnik → Hvar', dur:'~3h45m' },
   'estambul':     { ic:'✈️', mode:'Hvar → Split → Estambul (ferry + vuelo directo)', dur:'~5h' },
 };
+const TRIP_LEGS = [
+  {type:'ocean', cityId:'madrid', mode:'flight', dur:'10h35m', name:'México → Madrid', status:'CONFIRMADO', number:'IB304', route:'CDMX (MEX) → Madrid (MAD)', departure:'25 Ago 11:15', arrival:'26 Ago 5:50', duration:'10h35m', booking:'UXIJNH / COLZF5', seats:'—', checked:'Incluido (tickets 075 5236 465902/3)', carryon:'Standard (1 pieza de mano + artículo personal)', passengers:'Daniel, Samuel, Etna', price:'Incluido en booking', notes:['Llegada de madrugada: pedir early check-in en CoolRooms','Samuel & Etna viajan en el mismo vuelo que Daniel'], detail:['✈️ IB304 · CDMX (MEX) → Madrid (MAD)','Directo CONFIRMADO · 10h35m','11:15→5:50+1 · booking UXIJNH / COLZF5']},
+  {type:'route', cityId:'galicia', mode:'train', dur:'~3h59m', name:'Madrid → Vigo', status:'CONFIRMADO', number:'AVE Confortave', route:'Madrid Chamartín → Vigo Urzaiz', departure:'28 Ago 11:17', arrival:'28 Ago 15:16', duration:'~3h59m', booking:'Localizador LZBCVC', seats:'Coche 1: 8A, 8B, 8C, 8D, 9B', checked:'— (maletas libres en tren)', carryon:'Sin límite estricto', price:'~62,30 € pp', notes:['Menú de almuerzo incluido','Acceso cierra 2 min antes de salida','Llegada directa al centro de Vigo — taxi ~10 min al hotel'], detail:['🚆 AVE Confortave · Madrid Chamartín → Vigo Urzaiz','11:17→15:16 · localizador LZBCVC','Coche 1 · plazas 8A-8D, 9B · menú incluido']},
+  {type:'route', cityId:'barcelona', mode:'flight', dur:'~1h45m', name:'Vigo → Barcelona', status:'PENDIENTE', number:'Vueling', route:'Vigo (Peinador) → Barcelona', departure:'30 Ago ~14:30', arrival:'30 Ago ~16:15', duration:'~1h45m', booking:'—', seats:'—', checked:'—', carryon:'Standard Vueling', price:'~1.800-3.200 MXN pp', notes:['Reservar frecuencia de la TARDE (~14-17h)','Si solo opera vuelo matinal, avisar para replanear'], detail:['✈️ Vueling · Vigo → Barcelona','~1h45m directo · reservar tarde','La mañana después de la boda']},
+  {type:'route', cityId:'dubrovnik', mode:'flight', dur:'~2h20m', name:'Barcelona → Dubrovnik', status:'CONFIRMADO', number:'VY7720', route:'BCN T1 → Dubrovnik (DBV)', departure:'1 Sep 11:35', arrival:'1 Sep 13:55', duration:'~2h20m', booking:'JJ8Q5Z', seats:'—', checked:'Incluido o extra según tarifa', carryon:'STRICTO: 1 pieza max 40×30×20 cm bajo el asiento. Segunda pieza o exceso = facturación extra.', price:'Incluido en booking', notes:['Croacia es Schengen: sin visa ni cambio de moneda','Usa EURO desde 2023'], detail:['✈️ Vueling VY7720 · BCN T1 → DBV','11:35→13:55 · booking JJ8Q5Z','⚠️ Carry-on estricto: 40×30×20 cm']},
+  {type:'route', cityId:'hvar', mode:'ferry', dur:'~3h45m', name:'Dubrovnik → Hvar', status:'PENDIENTE', number:'Krilo coastal catamaran', route:'Dubrovnik → Mljet → Korčula → Hvar', departure:'3 Sep ~15:30', arrival:'3 Sep ~19:30', duration:'~3h45m', booking:'krilo.hr', seats:'—', checked:'—', carryon:'Mochila de día + maleta mediana', price:'~50 € pp', notes:['Opera diario 1 Abr–31 Oct','Reservar con antelación en krilo.hr','Plan B por viento: transfer por tierra a Drvenik + ferry corto a Sućuraj'], detail:['⛴️ Krilo · Dubrovnik → Hvar','~3h45m con parada en Korčula','Reservar online, se llena en verano']},
+  {type:'route', cityId:'estambul', mode:'flight', dur:'~5h', name:'Hvar → Estambul', status:'CONFIRMADO', number:'OU4352 (ferry + vuelo)', route:'Hvar → Split (ferry ~1h) + Split → IST (vuelo)', departure:'5 Sep 21:10', arrival:'5 Sep 00:10+1', duration:'~5h total', booking:'85JJ8F', seats:'07E, 07F, 08A, 08E, 08F', checked:'1 checked bag + 1 hand bag por persona', carryon:'Standard Croatia Airlines', price:'€1.384,82 total (6p)', notes:['Aterriza Terminal I de IST','Türkiye va 1h ADELANTE de España/Croacia','Ferry Hvar→Split: reservar Krilo 09:00 o 10:00'], detail:['⛴️ Ferry Hvar → Split · ~1h','✈️ Croatia Airlines OU4352 · Split → Estambul','21:10→00:10+1 · booking 85JJ8F · asientos 07E-08F']}
+];
 const NIGHTS = { madrid:'2 noches', galicia:'2 noches', barcelona:'2 noches', dubrovnik:'2 noches', hvar:'2 noches', estambul:'5 noches' };
 function renderOverview(){
   const seen=[], legs=[];
@@ -995,14 +1003,15 @@ function renderOverview(){
   let h='<div class="wrap">';
   h += '<div class="ov-head"><div class="ov-title">El Viaje Completo</div><div class="ov-sub">27 Ago – 10 Sep 2026 · '+AGENDA.length+' días compartidos · 6 viajeros · final a la carta en Estambul</div><div class="ov-sub" style="margin-top:5px">🍃 El plan es un menú, no tarea: cualquier parada se salta sin culpa. Lo único fijo: vuelos, ferrys y LA BODA.</div></div>';
   h += '<div class="ovl">';
-  h += '<div class="ovl-move"><span class="ovl-mi">✈️</span>Vuelo de Daniel ✓ CONFIRMADO: MEX mar 25 · 11:15 → MAD mié 26 · 5:50 am (10h35m) · los demás llegan por su lado</div>';
+  h += '<div class="ovl-move" onclick="showLeg(TRIP_LEGS[0])" style="cursor:pointer"><span class="ovl-mi">✈️</span>Vuelo de Daniel ✓ CONFIRMADO: MEX mar 25 · 11:15 → MAD mié 26 · 5:50 am (10h35m) · los demás llegan por su lado</div>';
   legs.forEach(function(a){
     const inCity=AGENDA.filter(function(x){ return x.cityId===a.cityId; });
     const first=inCity[0], last=inCity[inCity.length-1];
     const range=fmtRange(first.date,last.date);
     const place=a.city.replace('✈️ ','').split(' · ')[0];
     const t=TRAVELIN[a.cityId];
-    if(t) h += '<div class="ovl-move"><span class="ovl-mi">'+t.ic+'</span>'+esc(t.mode)+' · '+esc(t.dur)+'</div>';
+    const legIdx = TRIP_LEGS.findIndex(function(l){ return l.cityId===a.cityId; });
+    if(t) h += '<div class="ovl-move"'+(legIdx>=0?' onclick="showLeg(TRIP_LEGS['+legIdx+'])" style="cursor:pointer"':'')+'><span class="ovl-mi">'+t.ic+'</span>'+esc(t.mode)+' · '+esc(t.dur)+'</div>';
     h += '<button class="ovl-row" onclick="setDay('+first.day+')">'
       + '<span class="ovl-dot" style="background:'+a.color+'"></span>'
       + '<span class="ovl-em">'+a.emoji+'</span>'
@@ -1080,17 +1089,9 @@ function ensureMap(){
   const MODE={ flight:{c:'#F59E0B',i:'✈️',dash:null,bend:0.16}, ferry:{c:'#22D3EE',i:'⛴️',dash:'2,7',bend:0.12}, train:{c:'#F97316',i:'🚆',dash:null,bend:0.16} };
   const MX=[19.4326,-99.1332];
   const route=['madrid','galicia','barcelona','dubrovnik','hvar','estambul'].map(id=>CITIES.find(c=>c.id===id));
-  const legs=[
-    {mode:'train',dur:'~3h59m', name:'Madrid → Vigo', status:'CONFIRMADO', number:'AVE Confortave', route:'Madrid Chamartín → Vigo Urzaiz', departure:'28 Ago 11:17', arrival:'28 Ago 15:16', duration:'~3h59m', booking:'Localizador LZBCVC', seats:'Coche 1: 8A, 8B, 8C, 8D, 9B', checked:'— (maletas libres en tren)', carryon:'Sin límite estricto', price:'~62,30 € pp', notes:['Menú de almuerzo incluido','Acceso cierra 2 min antes de salida','Llegada directa al centro de Vigo — taxi ~10 min al hotel'], detail:['🚆 AVE Confortave · Madrid Chamartín → Vigo Urzaiz','11:17→15:16 · localizador LZBCVC','Coche 1 · plazas 8A-8D, 9B · menú incluido']},
-    {mode:'flight',dur:'~1h45m', name:'Vigo → Barcelona', status:'PENDIENTE', number:'Vueling', route:'Vigo (Peinador) → Barcelona', departure:'30 Ago ~14:30', arrival:'30 Ago ~16:15', duration:'~1h45m', booking:'—', seats:'—', checked:'—', carryon:'Standard Vueling', price:'~1.800-3.200 MXN pp', notes:['Reservar frecuencia de la TARDE (~14-17h)','Si solo opera vuelo matinal, avisar para replanear'], detail:['✈️ Vueling · Vigo → Barcelona','~1h45m directo · reservar tarde','La mañana después de la boda']},
-    {mode:'flight',dur:'~2h20m', name:'Barcelona → Dubrovnik', status:'CONFIRMADO', number:'VY7720', route:'BCN T1 → Dubrovnik (DBV)', departure:'1 Sep 11:35', arrival:'1 Sep 13:55', duration:'~2h20m', booking:'JJ8Q5Z', seats:'—', checked:'Incluido o extra según tarifa', carryon:'STRICTO: 1 pieza max 40×30×20 cm bajo el asiento. Segunda pieza o exceso = facturación extra.', price:'Incluido en booking', notes:['Croacia es Schengen: sin visa ni cambio de moneda','Usa EURO desde 2023'], detail:['✈️ Vueling VY7720 · BCN T1 → DBV','11:35→13:55 · booking JJ8Q5Z','⚠️ Carry-on estricto: 40×30×20 cm']},
-    {mode:'ferry', dur:'~3h45m', name:'Dubrovnik → Hvar', status:'PENDIENTE', number:'Krilo coastal catamaran', route:'Dubrovnik → Mljet → Korčula → Hvar', departure:'3 Sep ~15:30', arrival:'3 Sep ~19:30', duration:'~3h45m', booking:'krilo.hr', seats:'—', checked:'—', carryon:'Mochila de día + maleta mediana', price:'~50 € pp', notes:['Opera diario 1 Abr–31 Oct','Reservar con antelación en krilo.hr','Plan B por viento: transfer por tierra a Drvenik + ferry corto a Sućuraj'], detail:['⛴️ Krilo · Dubrovnik → Hvar','~3h45m con parada en Korčula','Reservar online, se llena en verano']},
-    {mode:'flight',dur:'~5h', name:'Hvar → Estambul', status:'CONFIRMADO', number:'OU4352 (ferry + vuelo)', route:'Hvar → Split (ferry ~1h) + Split → IST (vuelo)', departure:'5 Sep 21:10', arrival:'5 Sep 00:10+1', duration:'~5h total', booking:'85JJ8F', seats:'07E, 07F, 08A, 08E, 08F', checked:'1 checked bag + 1 hand bag por persona', carryon:'Standard Croatia Airlines', price:'€1.384,82 total (6p)', notes:['Aterriza Terminal I de IST','Türkiye va 1h ADELANTE de España/Croacia','Ferry Hvar→Split: reservar Krilo 09:00 o 10:00'], detail:['⛴️ Ferry Hvar → Split · ~1h','✈️ Croatia Airlines OU4352 · Split → Estambul','21:10→00:10+1 · booking 85JJ8F · asientos 07E-08F']},
-  ];
+  const legs=TRIP_LEGS.slice(1);
   LEGINFO=[];
-  const OCEAN=[
-    {name:'México → Madrid', pts:arcPts(MX,route[0].coords,0.18), at:0.62, dur:'10h35m', status:'CONFIRMADO', number:'IB304', route:'CDMX (MEX) → Madrid (MAD)', departure:'25 Ago 11:15', arrival:'26 Ago 5:50', duration:'10h35m', booking:'UXIJNH / COLZF5', seats:'—', checked:'Incluido (tickets 075 5236 465902/3)', carryon:'Standard (1 pieza de mano + artículo personal)', passengers:'Daniel, Samuel, Etna', price:'Incluido en booking', notes:['Llegada de madrugada: pedir early check-in en CoolRooms','Samuel & Etna viajan en el mismo vuelo que Daniel'], detail:['✈️ IB304 · CDMX (MEX) → Madrid (MAD)','Directo CONFIRMADO · 10h35m','11:15→5:50+1 · booking UXIJNH / COLZF5']},
-  ];
+  const OCEAN=[TRIP_LEGS[0]]; OCEAN[0].pts=arcPts(MX,route[0].coords,0.18); OCEAN[0].at=0.62;
   OCEAN.forEach(function(o){
     L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
     const idx=LEGINFO.push(o)-1;
