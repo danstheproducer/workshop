@@ -1094,7 +1094,7 @@ function ensureMap(){
   OCEAN.forEach(function(o){
     L.polyline(o.pts,{color:'#F59E0B',weight:1.4,opacity:.4,dashArray:'3,9'}).addTo(map);
     const idx=LEGINFO.push(o)-1;
-    L.polyline(o.pts,{color:'transparent',weight:14,opacity:0}).on('click',function(){showLeg(LEGINFO[idx]);}).addTo(map);
+    /* clickable line removed - label is clickable */
     const q=o.pts[Math.round(o.pts.length*o.at)];
     L.marker(q,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:#F59E0B" onclick="showLeg(LEGINFO['+idx+'])">✈️ '+o.dur+'</span>',iconSize:[0,0]})}).addTo(map);
   });
@@ -1104,7 +1104,7 @@ function ensureMap(){
     const m=MODE[legs[i].mode], pts=arcPts(route[i].coords,route[i+1].coords,m.bend);
     L.polyline(pts,{color:m.c,weight:2.2,opacity:.9,dashArray:m.dash}).addTo(map);
     const idx=LEGINFO.push(legs[i])-1;
-    L.polyline(pts,{color:'transparent',weight:14,opacity:0}).on('click',function(){showLeg(LEGINFO[idx]);}).addTo(map);
+    /* clickable line removed - label is clickable */
     const mid=pts[Math.floor(pts.length*(LABEL_AT[i]!==undefined?LABEL_AT[i]:0.5))];
     L.marker(mid,{icon:L.divIcon({className:'seg-label',html:'<span class="seglab clickable" style="background:'+m.c+'" onclick="showLeg(LEGINFO['+idx+'])">'+m.i+' '+legs[i].dur+'</span>',iconSize:[0,0]})}).addTo(map);
   }
