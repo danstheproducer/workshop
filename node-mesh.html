@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>node-mesh phone concept — workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fafaf8; --ink:#1a1a18; --ink-soft:#5b5b56; --ink-faint:#9b9b94; --line:#e6e6e1;
+  }
+  body.dark{
+    --bg:#141412; --ink:#e8e8e3; --ink-soft:#a8a8a1; --ink-faint:#6f6f69; --line:#2b2b28;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:14px; line-height:1.6;
+    transition:background .2s,color .2s;
+  }
+  a{color:inherit}
+  .wrap{max-width:680px;margin:0 auto;padding:24px 20px 64px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .back{font-size:12px;text-decoration:none;color:var(--ink-soft)}
+  .back:hover{color:var(--ink)}
+  #toggle{background:none;border:1px solid var(--line);color:var(--ink-soft);font:inherit;font-size:11px;padding:4px 10px;border-radius:999px;cursor:pointer}
+  #toggle:hover{color:var(--ink);border-color:var(--ink-faint)}
+  h1{font-size:20px;font-weight:700;margin:36px 0 8px}
+  .intro{color:var(--ink-soft);font-size:12.5px;max-width:56ch;margin:0 0 40px}
+  .clip{margin:0 0 48px}
+  .clip h2{font-size:13px;font-weight:500;margin:0 0 4px}
+  .clip p{font-size:11.5px;color:var(--ink-faint);margin:0 0 12px}
+  video{width:100%;display:block;border:1px solid var(--line);border-radius:10px;background:#000}
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="back" href="index.html">&larr; workshop</a>
+    <button id="toggle">dark</button>
+  </div>
+
+  <h1>node-mesh phone concept</h1>
+  <p class="intro">Concept renders for an articulated node-mesh device: a rigid core flanked by small tiles that fold and re-form around spherical nodes. Story order, top to bottom.</p>
+
+  <div class="clip">
+    <h2>01 &mdash; the device</h2>
+    <p>Overall concept: how the mesh opens, folds, and stands.</p>
+    <video controls playsinline preload="metadata" src="node-mesh/01-node-mesh-concept.mp4"></video>
+  </div>
+
+  <div class="clip">
+    <h2>02 &mdash; the marble and the book covers</h2>
+    <p>Cutaway: two tiles ride one ball like covers on a marble; nothing touches the sphere.</p>
+    <video controls playsinline preload="metadata" src="node-mesh/02-captured-ball-cutaway.mp4"></video>
+  </div>
+
+  <div class="clip">
+    <h2>03 &mdash; the crossing test</h2>
+    <p>Why a ball instead of a hinge: a cylinder jams when fold lines cross, a sphere doesn&rsquo;t.</p>
+    <video controls playsinline preload="metadata" src="node-mesh/03-crossing-test.mp4"></video>
+  </div>
+
+  <div class="clip">
+    <h2>04 &mdash; captured, not attached</h2>
+    <p>Four tiles share one node through slotted spherical shells that slide over the ball.</p>
+    <video controls playsinline preload="metadata" src="node-mesh/04-captured-not-attached.mp4"></video>
+  </div>
+
+  <div class="clip">
+    <h2>05 &mdash; passive vs. active</h2>
+    <p>Two architectures compared: captured ball (passive) vs. strut hub with EM locking (active).</p>
+    <video controls playsinline preload="metadata" src="node-mesh/05-mechanism-comparison.mp4"></video>
+  </div>
+
+  <div class="clip">
+    <h2>06 &mdash; the fluid-film node</h2>
+    <p>Evolution: a pressurized micro-film bearing &mdash; the shell floats, wear goes to zero, EM valves shape-lock.</p>
+    <video controls playsinline preload="metadata" src="node-mesh/06-fluid-film-node.mp4"></video>
+  </div>
+
+  <div class="clip">
+    <h2>07 &mdash; node close-up + mesh docking</h2>
+    <p>Single node mechanics, then where the second and third nodes attach in the mesh.</p>
+    <video controls playsinline preload="metadata" src="node-mesh/07-node-detail.mp4"></video>
+  </div>
+
+  <footer>concept visualizations &mdash; not a product</footer>
+</div>
+<script>
+  const key='dzr-workshop-dark';
+  const b=document.getElementById('toggle');
+  const apply=d=>{document.body.classList.toggle('dark',d);b.textContent=d?'light':'dark'};
+  apply(localStorage.getItem(key)==='1');
+  b.onclick=()=>{const d=!document.body.classList.contains('dark');localStorage.setItem(key,d?'1':'0');apply(d)};
+</script>
+</body>
+</html>
